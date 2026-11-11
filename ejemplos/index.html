@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ejemplos de uso · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/estilo.css">
+</head>
+<body data-base="../" data-nav="ejemplos">
+<main class="wide">
+  <div class="crumb"><a href="../index.html">Inicio</a><span>Ejemplos de uso</span></div>
+  <h1>Ejemplos de uso</h1>
+  <p class="lede">¿Para qué sirve esto? Aquí está la respuesta: cosas de todos los días que funcionan gracias a lo que estás aprendiendo. Toca cualquiera y mueve los valores.</p>
+  <div id="list"></div>
+</main>
+<script src="../assets/datos.js"></script>
+<script src="../assets/kit.js"></script>
+<script>
+(function(){
+const {$,BASE,bindTerms,PANELS}=Kit;
+const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||'';
+const groups=[...new Set(EJEMPLOS.map(e=>e.tema))];
+$('#list').innerHTML=groups.map(g=>'<h2>'+name(g)+'</h2><div class="grid">'+EJEMPLOS.filter(e=>e.tema===g).map(e=>
+  e.panel?'<button class="tile" type="button" data-p="'+e.panel+'"><b>'+e.titulo+'</b><span>'+PANELS[e.panel].uses.join(' · ')+'</span><em class="tag">Interactivo</em></button>'
+         :'<a class="tile" href="'+BASE+e.url+'"><b>'+e.titulo+'</b><span>'+(e.desc||'')+'</span><em class="tag">Lección completa</em></a>').join('')+'</div>').join('');
+bindTerms();
+})();
+</script>
+</body>
+</html>

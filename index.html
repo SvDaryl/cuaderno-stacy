@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/estilo.css">
+<style>
+.hello{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin:18px 0 8px}
+.ring{width:96px;height:96px}
+.next{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--accent);color:#fff;border-radius:20px;padding:18px 20px;margin:22px 0;text-decoration:none}
+.next small{display:block;opacity:.85;font-size:14px}
+.next b{font-family:var(--display);font-size:24px;font-weight:700;line-height:1.15}
+.next .go{background:#fff;color:var(--accent);border-radius:999px;padding:6px 16px;font-size:15px}
+.news li{margin:6px 0}
+</style>
+</head>
+<body data-base="" data-nav="inicio">
+<main class="wide">
+  <div class="hello">
+    <div>
+      <p class="muted" style="margin:0" id="fecha"></p>
+      <h1 id="hola">Hola</h1>
+      <p class="lede" style="margin-top:6px">Aquí vas a encontrar lecciones que se pueden tocar y mover, ejemplos de la vida real, problemas y exámenes. Voy agregando cosas nuevas seguido.</p>
+    </div>
+    <svg class="ring" viewBox="0 0 100 100" role="img" aria-labelledby="ringT"><title id="ringT">Tu avance</title>
+      <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="10"/>
+      <circle id="arc" cx="50" cy="50" r="42" fill="none" stroke="var(--c3)" stroke-width="10" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="0 264"/>
+      <text id="pct" x="50" y="56" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="700" font-size="22" fill="var(--ink)">0%</text>
+    </svg>
+  </div>
+
+  <a class="next" id="next" href="#"><span><small>Sigue con</small><b id="nextT"></b></span><span class="go">Empezar →</span></a>
+
+  <h2>Materias</h2>
+  <div class="grid" id="materias"></div>
+
+  <h2>Para practicar</h2>
+  <div class="grid">
+    <a class="tile" href="ejemplos/index.html"><b>Ejemplos de uso</b><span>Dónde se usa lo que aprendes: taxis, balones, sismos, música…</span></a>
+    <a class="tile" href="problemas/index.html"><b>Problemas</b><span>Ejercicios con pistas y soluciones paso a paso.</span></a>
+    <a class="tile" href="examenes/index.html"><b>Exámenes</b><span>Ponte a prueba y mándame tu nota por WhatsApp.</span></a>
+  </div>
+
+  <h2>Lo nuevo</h2>
+  <ul class="news" id="news"></ul>
+</main>
+<script src="assets/datos.js"></script>
+<script src="assets/kit.js"></script>
+<script>
+(function(){
+const {$,progress}=Kit;
+$('#hola').textContent='Hola, '+SITE.apodo;
+$('#fecha').textContent=new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
+const ready=TEMAS.filter(t=>t.estado==='lista'),done=ready.filter(t=>progress.isDone(t.id)).length,p=ready.length?done/ready.length:0;
+$('#arc').setAttribute('stroke-dasharray',(264*p).toFixed(1)+' 264');$('#pct').textContent=Math.round(p*100)+'%';
+const nxt=ready.find(t=>!progress.isDone(t.id));
+if(nxt){$('#nextT').textContent=nxt.titulo;$('#next').href=nxt.url;}
+else{$('#nextT').textContent='¡Terminaste todo! Prueba un examen';$('#next').href='examenes/index.html';}
+$('#materias').innerHTML=MATERIAS.map(m=>{
+  const n=TEMAS.filter(t=>t.materia===m.id&&t.estado==='lista').length;
+  return m.activa?'<a class="tile" href="'+m.url+'"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">'+n+' lecciones</em></a>'
+                 :'<div class="tile off"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">Muy pronto</em></div>';}).join('');
+$('#news').innerHTML=ready.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,5)
+  .map(t=>'<li><a href="'+t.url+'">'+t.titulo+'</a> <span class="muted">· '+t.bloque+'</span></li>').join('');
+})();
+</script>
+</body>
+</html>

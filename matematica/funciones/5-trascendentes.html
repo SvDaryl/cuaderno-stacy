@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Funciones trascendentes · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 4</span></div>
+<h1>Funciones trascendentes</h1>
+<p class="lede">Las que van más allá de sumar y multiplicar: exponencial, logarítmica y trigonométricas.</p>
+
+<h2>Exponencial: multiplicar una y otra vez</h2>
+<p>En la <button class="term" data-p="exponencial">exponencial</button> <code>f(x) = a · bˣ</code>, cada vez que x aumenta en 1, el resultado se <b>multiplica</b> por b. Una lineal suma lo mismo en cada paso; la exponencial multiplica. Por eso al principio parecen parecidas y después la exponencial se dispara.</p>
+
+<h2>Logarítmica: la pregunta al revés</h2>
+<p>El <button class="term" data-p="log">logaritmo</button> responde: “¿a qué exponente tengo que elevar la base para obtener este número?”. Como <code>2³ = 8</code>, entonces <code>log₂ 8 = 3</code>. La logarítmica es la <b>inversa</b> de la exponencial: su gráfica es la misma, pero reflejada en la recta y = x.</p>
+
+<div class="card">
+  <div class="seg" id="tSeg" role="group" aria-label="Elige la función">
+    <button data-k="exp" aria-pressed="true">Exponencial</button><button data-k="log" aria-pressed="false">Logarítmica</button><button data-k="trig" aria-pressed="false">Seno</button>
+  </div>
+  <p class="formula" id="tF"></p>
+  <canvas id="tC" data-w="660" data-h="340" aria-label="Gráfica de la función trascendente"></canvas>
+  <div id="tCtl"></div>
+  <div class="readout" id="tR" aria-live="polite"></div>
+</div>
+
+<h2>Trigonométricas: lo que se repite</h2>
+<p>La <button class="term" data-p="seno">función seno</button> sube, baja y vuelve a empezar, como una ola. Sirve para describir todo lo que oscila. En <code>f(x) = A · sen(B·x + C) + D</code> cada letra cambia algo distinto:</p>
+<div class="key"><b>A</b> amplitud: qué tan alta es la ola · <b>B</b> frecuencia: cuántas olas caben (periodo = 2π / B) · <b>C</b> desfase: la corre a los lados · <b>D</b>: la sube o la baja</div>
+<p>Elige “Seno” en el explorador de arriba y prueba cada letra por separado.</p>
+
+<div class="key" style="background:var(--card);border:1px solid var(--line)"><b>¿Y después?</b><br>Ya conoces las familias principales. Lo siguiente es aprender a combinarlas (composición e inversa) y luego los <b>límites</b>, que llevan directo a las <b>derivadas</b>: la pendiente de una curva en cada punto. Esas lecciones vienen pronto.</div>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="¿2 elevado a qué da 32?">
+  <p>¿Cuánto vale <code>log₂ 32</code>?</p>
+  <label><input type="radio" name="q1" value="a"> 16</label>
+  <label><input type="radio" name="q1" value="b"> 5</label>
+  <label><input type="radio" name="q1" value="c"> 6</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Eso! 2⁵ = 32, así que log₂ 32 = 5.</template>
+</div>
+<div class="q" data-ans="a" data-hint="La amplitud es el número que multiplica al seno.">
+  <p>En <code>f(x) = 3 · sen(x) + 1</code>, ¿entre qué valores sube y baja la ola?</p>
+  <label><input type="radio" name="q2" value="a"> Entre −2 y 4</label>
+  <label><input type="radio" name="q2" value="b"> Entre −3 y 3</label>
+  <label><input type="radio" name="q2" value="c"> Entre 0 y 4</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: el seno va de −1 a 1. Por 3 queda de −3 a 3, y +1 lo sube: de −2 a 4.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,controls,seg,onRedraw,lessonNav}=Kit;
+const n1=v=>nf(v,1).replace(',0','');
+const T={
+  exp:{ctl:[{id:'a',label:'a (inicio)',min:0.5,max:3,step:0.1,val:1,fmt:v=>nf(v,1),hint:'El valor en x = 0: donde corta al eje y.'},{id:'b',label:'b (base)',min:0.3,max:3,step:0.1,val:2,fmt:v=>nf(v,1),hint:'Mayor que 1: crece. Entre 0 y 1: decrece.'}],
+    go(v){return{f:'f(x) = '+nf(v.a,1)+' · '+nf(v.b,1)+'ˣ',o:{xr:[-5,5],yr:[-1,12],xs:1,ys:2,fns:[{f:x=>v.a*x+v.a,color:cv('--line'),width:2,dash:[6,6]},{f:x=>v.a*Math.pow(v.b,x),color:cv('--c3')}],pts:[{x:0,y:v.a,color:cv('--c2'),label:'(0 ; '+nf(v.a,1)+')'}]},
+      r:v.b===1?'Con b = 1 no cambia nunca: 1ˣ = 1.':'Cada paso a la derecha se multiplica por <b>'+nf(v.b,1)+'</b>. '+(v.b>1?'Crece':'Decrece')+' y nunca toca el eje x: su rango es ⟨0 ; +∞⟩. La punteada es una recta, para comparar.'};}},
+  log:{ctl:[{id:'b',label:'Base',min:1.5,max:10,step:0.5,val:2,fmt:v=>nf(v,1)}],
+    go(v){const b=v.b;return{f:'f(x) = log'+(b===10?'':'_'+n1(b))+' x      (inversa de '+n1(b)+'ˣ)',o:{xr:[-4,8],yr:[-4,6],xs:1,ys:1,fns:[{f:x=>x,color:cv('--line'),width:1.5,dash:[4,5]},{f:x=>Math.pow(b,x),color:cv('--c3'),width:2,dash:[7,5]},{f:x=>Math.log(x)/Math.log(b),color:cv('--c2'),n:1500}],pts:[{x:1,y:0,color:cv('--c2'),label:'(1 ; 0)'},{x:b,y:1,color:cv('--c1'),label:'('+n1(b)+' ; 1)'}]},
+      r:'La curva roja es el logaritmo; la verde punteada es la exponencial '+n1(b)+'ˣ. Son espejos en la recta y = x. Siempre pasa por (1 ; 0), porque cualquier base elevada a 0 da 1. Dominio: <b>⟨0 ; +∞⟩</b>: no hay logaritmo de 0 ni de negativos.'};}},
+  trig:{ctl:[{id:'A',label:'A (amplitud)',min:0.5,max:3,step:0.1,val:2,fmt:v=>nf(v,1)},{id:'B',label:'B (frecuencia)',min:0.5,max:3,step:0.1,val:1,fmt:v=>nf(v,1)},{id:'C',label:'C (desfase)',min:-3,max:3,step:0.1,val:0,fmt:v=>nf(v,1)},{id:'D',label:'D (sube/baja)',min:-2,max:2,step:0.1,val:0,fmt:v=>nf(v,1)}],
+    go(v){const per=2*Math.PI/v.B;return{f:'f(x) = '+nf(v.A,1)+' · sen('+nf(v.B,1)+'x '+(v.C<0?'− ':'+ ')+nf(Math.abs(v.C),1)+') '+(v.D<0?'− ':'+ ')+nf(Math.abs(v.D),1),o:{xr:[-7,7],yr:[-5,5],xs:1,ys:1,fns:[{f:x=>Math.sin(x),color:cv('--line'),width:2,dash:[6,6]},{f:x=>v.A*Math.sin(v.B*x+v.C)+v.D,color:cv('--c1'),n:900}]},
+      r:'Sube hasta <b>'+nf(v.D+v.A,1)+'</b> y baja hasta <b>'+nf(v.D-v.A,1)+'</b>. Cada ola completa mide <b>'+nf(per,2)+'</b> (el periodo). La punteada es sen x, para comparar.'};}}
+};
+let k='exp',v={};
+function draw(){const d=T[k].go(v);$('#tF').textContent=d.f;plot($('#tC'),d.o);$('#tR').innerHTML=d.r;}
+function set(nk){k=nk;v=controls($('#tCtl'),T[k].ctl,vv=>{v=vv;draw();});draw();}
+seg($('#tSeg'),set);set('exp');onRedraw(draw);
+lessonNav('trascendentes');
+})();
+</script>
+</body>
+</html>

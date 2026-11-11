@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Qué es una función? · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.machine{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:6px 0 12px;font-family:var(--display);font-size:20px}
+.machine .box{background:var(--accent);color:#fff;border-radius:14px;padding:8px 18px}
+.machine .io{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:6px 14px;font-family:var(--mono);font-size:16px;min-width:96px;text-align:center}
+.verdict{font-family:var(--display);font-size:20px;font-weight:700}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 1</span></div>
+<h1>¿Qué es una función?</h1>
+<p class="lede">La máquina que convierte un número en otro, siempre con la misma regla.</p>
+<div class="tip"><b>Las palabras resaltadas se pueden tocar.</b> Te muestran dónde se usa esa idea en la vida real, con un ejemplo que puedes mover.</div>
+
+<h2>Una máquina con una regla</h2>
+<p>Una <button class="term" data-p="funcion">función</button> recibe un número de entrada, le aplica una regla y devuelve un número de salida. A la entrada la llamamos <i>x</i> y a la salida <i>y</i> (o <i>f(x)</i>, que se lee “f de x”).</p>
+<div class="card">
+  <div class="seg" id="mSeg" role="group" aria-label="Elige la regla">
+    <button data-k="0" aria-pressed="true">× 2 + 1</button><button data-k="1" aria-pressed="false">al cuadrado</button><button data-k="2" aria-pressed="false">10 − x</button>
+  </div>
+  <div class="machine"><span class="io" id="mIn"></span><span>→</span><span class="box" id="mRule"></span><span>→</span><span class="io" id="mOut"></span></div>
+  <canvas id="mC" data-w="660" data-h="300" aria-label="Gráfica de la regla con el punto actual"></canvas>
+  <div id="mCtl"></div>
+  <p class="cap">Mueve la entrada. Cada punto de la gráfica es una pareja (entrada, salida). Todos juntos forman la gráfica de la función.</p>
+</div>
+
+<div class="key"><b>La regla de oro</b><br>A cada entrada le toca <b>una sola</b> salida. Si metes 3 en <code>f(x) = 2x + 1</code>, siempre sale 7. Nunca sale a veces 7 y a veces 8.</div>
+
+<h2>Relación o función</h2>
+<p>Una <b>relación</b> es cualquier forma de emparejar números. Es función solo si cumple la regla de oro. Por ejemplo, “persona → su fecha de nacimiento” es función (cada persona nació un solo día). “Fecha → persona que nació ese día” no lo es: un mismo día nacen muchas personas.</p>
+<p>Con una gráfica hay un truco rápido, la <b>prueba de la recta vertical</b>: si alguna recta vertical corta la gráfica en dos o más puntos, a esa <i>x</i> le tocan dos salidas, y entonces <b>no</b> es función.</p>
+<div class="card">
+  <div class="seg" id="vSeg" role="group" aria-label="Elige la gráfica">
+    <button data-k="recta" aria-pressed="true">Recta</button><button data-k="parabola" aria-pressed="false">Parábola</button><button data-k="circulo" aria-pressed="false">Circunferencia</button><button data-k="acostada" aria-pressed="false">Parábola acostada</button>
+  </div>
+  <canvas id="vC" data-w="660" data-h="320" aria-label="Prueba de la recta vertical"></canvas>
+  <div id="vCtl"></div>
+  <div class="readout" aria-live="polite"><span id="vNow"></span><br><span class="verdict" id="vAll"></span></div>
+</div>
+
+<h2>La notación f(x)</h2>
+<p>Escribir <code>f(x) = x² − 1</code> es dar la receta. Para <b>evaluar</b> reemplazas la x por el número:</p>
+<p style="font-family:var(--mono)">f(3) = 3² − 1 = 8 &nbsp;&nbsp; f(−2) = (−2)² − 1 = 3 &nbsp;&nbsp; f(0) = −1</p>
+<p>El punto (3 ; 8) está en la gráfica, porque f(3) = 8.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Reemplaza x por 4: 3 · 4 − 5.">
+  <p>Si <code>f(x) = 3x − 5</code>, ¿cuánto vale f(4)?</p>
+  <label><input type="radio" name="q1" value="a"> 2</label>
+  <label><input type="radio" name="q1" value="b"> 7</label>
+  <label><input type="radio" name="q1" value="c"> 17</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Bien! 3 · 4 − 5 = 12 − 5 = 7.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Mira si alguna x se repite con salidas distintas.">
+  <p>¿Cuál de estas relaciones <b>no</b> es función?</p>
+  <label><input type="radio" name="q2" value="a"> {(1;2), (2;4), (3;6)}</label>
+  <label><input type="radio" name="q2" value="b"> {(1;5), (2;5), (3;5)}</label>
+  <label><input type="radio" name="q2" value="c"> {(1;2), (1;3), (2;4)}</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Exacto: al 1 le tocan dos salidas (2 y 3). En la b todas dan 5, y eso sí está permitido.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,controls,seg,onRedraw,lessonNav}=Kit;
+/* máquina */
+const R=[{t:'× 2 + 1',f:x=>2*x+1,yr:[-10,12]},{t:'al cuadrado',f:x=>x*x,yr:[-2,26]},{t:'10 − x',f:x=>10-x,yr:[0,16]}];
+let mk=0,mv={x:3};
+function mDraw(){const r=R[mk],y=r.f(mv.x);$('#mIn').textContent='x = '+mv.x;$('#mRule').textContent=r.t;$('#mOut').textContent='y = '+y;
+  plot($('#mC'),{xr:[-5,5],yr:r.yr,xs:1,fns:[{f:r.f,color:cv('--c1'),width:2,dash:[5,6]}],pts:[{x:mv.x,y,color:cv('--c2'),label:'('+mv.x+' ; '+y+')'}]});}
+mv=controls($('#mCtl'),[{id:'x',label:'Entrada x',min:-5,max:5,step:1,val:3}],v=>{mv=v;mDraw();});
+seg($('#mSeg'),k=>{mk=+k;mDraw();});onRedraw(mDraw);
+/* recta vertical */
+const V={
+  recta:{fns:[x=>0.5*x+1],cut:a=>1,always:true},
+  parabola:{fns:[x=>x*x/2-2],cut:a=>1,always:true},
+  circulo:{fns:[x=>Math.sqrt(16-x*x),x=>-Math.sqrt(16-x*x)],cut:a=>Math.abs(a)<4?2:Math.abs(a)===4?1:0,always:false},
+  acostada:{fns:[x=>Math.sqrt(2*(x+2)),x=>-Math.sqrt(2*(x+2))],cut:a=>a>-2?2:a===-2?1:0,always:false}};
+let vk='recta',vv={a:1};
+function vDraw(){const s=V[vk],n=s.cut(vv.a),pts=[];
+  s.fns.forEach(f=>{const y=f(vv.a);if(isFinite(y))pts.push({x:vv.a,y,color:n>1?cv('--bad'):cv('--ok')});});
+  const uniq=pts.filter((p,i)=>pts.findIndex(q=>Math.abs(q.y-p.y)<1e-9)===i);
+  plot($('#vC'),{xr:[-6,6],yr:[-5,5],xs:1,ys:1,fns:s.fns.map(f=>({f,color:cv('--c1'),n:1200})),vx:[{x:vv.a,color:n>1?cv('--bad'):cv('--c4')}],pts:uniq});
+  $('#vNow').textContent='En x = '+nf(vv.a,1)+' la recta vertical corta '+(n===0?'ningún punto':n===1?'1 punto':n+' puntos')+'.';
+  $('#vAll').textContent=s.always?'✓ Es función: nunca corta más de un punto.':'✗ No es función: hay rectas verticales que la cortan en 2 puntos.';
+  $('#vAll').style.color=s.always?cv('--ok'):cv('--bad');}
+vv=controls($('#vCtl'),[{id:'a',label:'Mueve la recta',min:-6,max:6,step:0.5,val:1,fmt:v=>'x = '+nf(v,1)}],v=>{vv=v;vDraw();});
+seg($('#vSeg'),k=>{vk=k;vDraw();});onRedraw(vDraw);
+lessonNav('funcion');
+})();
+</script>
+</body>
+</html>

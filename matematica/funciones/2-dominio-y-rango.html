@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dominio y rango · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.lg{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin:8px 4px 0}
+.lg i{display:inline-block;width:14px;height:8px;border-radius:4px;margin-right:6px;vertical-align:1px}
+.rules{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:16px 0}
+.rules div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.rules b{font-family:var(--display);font-size:18px;display:block}
+.rules code{display:inline-block;margin-top:6px}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 2</span></div>
+<h1>Dominio y rango</h1>
+<p class="lede">Qué números pueden entrar a la máquina y cuáles pueden salir.</p>
+
+<h2>Dos preguntas</h2>
+<p>El <button class="term" data-p="dominio">dominio</button> es el conjunto de todas las <b>entradas</b> permitidas, los valores de x que la función acepta. El <b>rango</b> es el conjunto de todas las <b>salidas</b> que la función puede dar, los valores de y.</p>
+<p>En una gráfica es fácil verlos: el dominio es la “sombra” de la gráfica sobre el eje x, y el rango es su sombra sobre el eje y.</p>
+
+<div class="card">
+  <div class="seg" id="dSeg" role="group" aria-label="Elige la función">
+    <button data-k="par" aria-pressed="true">x² en un tramo</button><button data-k="raiz" aria-pressed="false">√(x − h)</button><button data-k="frac" aria-pressed="false">1 / (x − h)</button><button data-k="lin" aria-pressed="false">2x + 1 en un tramo</button>
+  </div>
+  <p class="formula" id="dF"></p>
+  <canvas id="dC" data-w="660" data-h="340" aria-label="Gráfica con el dominio y el rango sombreados"></canvas>
+  <div class="lg"><span><i style="background:var(--c1)"></i>Dominio (sombra en x)</span><span><i style="background:var(--c2)"></i>Rango (sombra en y)</span></div>
+  <div id="dCtl"></div>
+  <div class="readout" id="dR" aria-live="polite"></div>
+</div>
+
+<h2>Cómo encontrarlo sin gráfica</h2>
+<p>Casi siempre el dominio son <b>todos los reales</b> (ℝ), salvo que haya algo prohibido. En el colegio vas a ver sobre todo dos prohibiciones:</p>
+<div class="rules">
+  <div><b>No se divide entre cero</b>En <code>f(x) = 5 / (x − 2)</code>, x no puede ser 2.<br><code>Dom f = ℝ − {2}</code></div>
+  <div><b>No hay raíz cuadrada de negativos</b>En <code>g(x) = √(x + 3)</code>, lo de adentro debe ser ≥ 0: x ≥ −3.<br><code>Dom g = [−3 ; +∞⟩</code></div>
+</div>
+<p>Para el <b>rango</b> piensa qué salidas son posibles. En <code>h(x) = x²</code>, un número al cuadrado nunca es negativo, así que <code>Ran h = [0 ; +∞⟩</code>.</p>
+<div class="key"><b>Cómo se escriben los intervalos</b><br><code>[a ; b]</code> incluye los extremos (punto relleno). <code>⟨a ; b⟩</code> no los incluye (punto vacío). El infinito siempre va con ⟨ o ⟩, porque nunca se alcanza.</div>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="¿Qué valor de x hace cero el denominador?">
+  <p>¿Cuál es el dominio de <code>f(x) = 1 / (x − 3)</code>?</p>
+  <label><input type="radio" name="q1" value="a"> ℝ − {3}</label>
+  <label><input type="radio" name="q1" value="b"> ℝ − {−3}</label>
+  <label><input type="radio" name="q1" value="c"> [3 ; +∞⟩</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Así es: con x = 3 quedaría 1/0, que no existe. Todos los demás valores sirven.</template>
+</div>
+<div class="q" data-ans="b" data-hint="Lo de adentro de la raíz debe ser mayor o igual que 0.">
+  <p>¿Cuál es el dominio de <code>g(x) = √(x − 5)</code>?</p>
+  <label><input type="radio" name="q2" value="a"> ⟨5 ; +∞⟩</label>
+  <label><input type="radio" name="q2" value="b"> [5 ; +∞⟩</label>
+  <label><input type="radio" name="q2" value="c"> ℝ</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Perfecto! x − 5 ≥ 0 da x ≥ 5, y el 5 sí entra porque √0 = 0.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,controls,seg,onRedraw,lessonNav}=Kit;
+const n1=v=>nf(v,1).replace(',0','');
+const F={
+  par:{ctl:[{id:'a',label:'Desde x =',min:-4,max:4,step:0.5,val:-2},{id:'b',label:'Hasta x =',min:-4,max:4,step:0.5,val:3}],
+    draw(v){let a=Math.min(v.a,v.b),b=Math.max(v.a,v.b);const lo=(a<=0&&b>=0)?0:Math.min(a*a,b*b),hi=Math.max(a*a,b*b);
+      return{f:'f(x) = x²,  con '+n1(a)+' ≤ x ≤ '+n1(b),o:{xr:[-5,5],yr:[-2,18],xs:1,ys:2,fns:[{f:x=>x*x,color:cv('--line'),width:2},{f:x=>x*x,color:cv('--c3'),from:a,to:b}],xb:[[a,b,cv('--c1')]],yb:[[lo,hi,cv('--c2')]],pts:[{x:a,y:a*a,color:cv('--c3')},{x:b,y:b*b,color:cv('--c3')}]},
+        r:'Dom = <b>['+n1(a)+' ; '+n1(b)+']</b> &nbsp;·&nbsp; Ran = <b>['+n1(lo)+' ; '+n1(hi)+']</b>'+(a<0&&b>0?'<br>Ojo: el rango empieza en 0 porque la parábola pasa por el fondo (x = 0) dentro del tramo.':'')};}},
+  raiz:{ctl:[{id:'h',label:'h (mueve)',min:-4,max:4,step:0.5,val:1,hint:'La raíz empieza donde lo de adentro vale 0.'}],
+    draw(v){return{f:'f(x) = √(x '+(v.h<0?'+ ':'− ')+n1(Math.abs(v.h))+')',o:{xr:[-5,8],yr:[-2,4],xs:1,ys:1,fns:[{f:x=>Math.sqrt(x-v.h),color:cv('--c3'),from:v.h,to:8,n:800}],xb:[[v.h,99,cv('--c1')]],yb:[[0,99,cv('--c2')]],pts:[{x:v.h,y:0,color:cv('--c3'),label:'empieza en x = '+n1(v.h)}]},
+      r:'Dom = <b>['+n1(v.h)+' ; +∞⟩</b> &nbsp;·&nbsp; Ran = <b>[0 ; +∞⟩</b><br>Antes de x = '+n1(v.h)+' tendrías raíz de un negativo: no existe en los reales.'};}},
+  frac:{ctl:[{id:'h',label:'h (prohibido)',min:-3,max:3,step:0.5,val:1,hint:'Ese valor de x haría 1/0.'}],
+    draw(v){return{f:'f(x) = 1 / (x '+(v.h<0?'+ ':'− ')+n1(Math.abs(v.h))+')',o:{xr:[-5,5],yr:[-5,5],xs:1,ys:1,fns:[{f:x=>1/(x-v.h),color:cv('--c3'),n:1200}],xb:[[-99,v.h-0.04,cv('--c1')],[v.h+0.04,99,cv('--c1')]],yb:[[-99,-0.04,cv('--c2')],[0.04,99,cv('--c2')]],vx:[{x:v.h,color:cv('--bad')}]},
+      r:'Dom = <b>ℝ − {'+n1(v.h)+'}</b> &nbsp;·&nbsp; Ran = <b>ℝ − {0}</b><br>La línea roja es la x prohibida. Y como 1 dividido entre algo nunca da 0, el 0 no está en el rango.'};}},
+  lin:{ctl:[{id:'a',label:'Desde x =',min:-4,max:4,step:0.5,val:-1},{id:'b',label:'Hasta x =',min:-4,max:4,step:0.5,val:2}],
+    draw(v){let a=Math.min(v.a,v.b),b=Math.max(v.a,v.b);return{f:'f(x) = 2x + 1,  con '+n1(a)+' ≤ x ≤ '+n1(b),o:{xr:[-5,5],yr:[-8,10],xs:1,ys:2,fns:[{f:x=>2*x+1,color:cv('--line'),width:2},{f:x=>2*x+1,color:cv('--c3'),from:a,to:b}],xb:[[a,b,cv('--c1')]],yb:[[2*a+1,2*b+1,cv('--c2')]],pts:[{x:a,y:2*a+1,color:cv('--c3')},{x:b,y:2*b+1,color:cv('--c3')}]},
+      r:'Dom = <b>['+n1(a)+' ; '+n1(b)+']</b> &nbsp;·&nbsp; Ran = <b>['+n1(2*a+1)+' ; '+n1(2*b+1)+']</b><br>En una recta que sube, el rango va de f(inicio) a f(final).'};}}
+};
+let k='par',v={};
+function draw(){const d=F[k].draw(v);$('#dF').textContent=d.f;plot($('#dC'),d.o);$('#dR').innerHTML=d.r;}
+function set(nk){k=nk;v=controls($('#dCtl'),F[k].ctl,vv=>{v=vv;draw();});draw();}
+seg($('#dSeg'),set);set('par');onRedraw(draw);
+lessonNav('dominio');
+})();
+</script>
+</body>
+</html>

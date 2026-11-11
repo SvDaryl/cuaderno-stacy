@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Funciones polinómicas · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 4</span></div>
+<h1>Funciones polinómicas</h1>
+<p class="lede">Constante, lineal, cuadrática y cúbica: la misma idea, con una potencia de x más cada vez.</p>
+
+<h2>El grado lo dice todo</h2>
+<p>Un polinomio es una suma de potencias de x con números delante, como <code>4x³ − x + 7</code>. El <b>grado</b> es la potencia más alta, y casi decide sola la forma de la gráfica:</p>
+<div class="key"><b>Grado 0</b>: constante, recta horizontal · <b>Grado 1</b>: <button class="term" data-p="lineal">lineal</button>, recta inclinada · <b>Grado 2</b>: <button class="term" data-p="cuadratica">cuadrática</button>, parábola · <b>Grado 3</b>: <button class="term" data-p="cubica">cúbica</button>, forma de S<br><br>Un polinomio de grado n corta al eje x <b>como máximo n veces</b>.</div>
+
+<h2>Explora cada una</h2>
+<div class="card">
+  <div class="seg" id="pSeg" role="group" aria-label="Elige el grado">
+    <button data-k="c" aria-pressed="false">Constante</button><button data-k="l" aria-pressed="false">Lineal</button><button data-k="q" aria-pressed="true">Cuadrática</button><button data-k="k" aria-pressed="false">Cúbica</button>
+  </div>
+  <p class="formula" id="pF"></p>
+  <canvas id="pC" data-w="660" data-h="340" aria-label="Gráfica del polinomio"></canvas>
+  <div id="pCtl"></div>
+  <div class="readout" id="pR" aria-live="polite"></div>
+</div>
+
+<h2>La cuadrática por dentro</h2>
+<p>Una cuadrática se puede escribir de dos formas. La <b>forma general</b> <code>f(x) = ax² + bx + c</code> es la que más ves en el colegio. La <b>forma vértice</b> <code>f(x) = a(x − h)² + k</code> te dice al toque dónde está el punto más bajo o más alto: el vértice (h ; k).</p>
+<p>Para saber cuántas veces corta al eje x se usa el <b>discriminante</b> <code>Δ = b² − 4ac</code>:</p>
+<div class="key">Δ &gt; 0 → corta 2 veces · Δ = 0 → toca el eje en 1 punto · Δ &lt; 0 → no lo corta<br>Y si corta, los puntos son <code>x = (−b ± √Δ) / 2a</code>.</div>
+<p>En el explorador de arriba, con la cuadrática elegida, mira cómo cambia Δ mientras mueves el vértice hacia arriba y hacia abajo.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="Calcula b² − 4ac con a = 1, b = −4, c = 3.">
+  <p>¿Cuántas veces corta al eje x la función <code>f(x) = x² − 4x + 3</code>?</p>
+  <label><input type="radio" name="q1" value="a"> 2 veces</label>
+  <label><input type="radio" name="q1" value="b"> 1 vez</label>
+  <label><input type="radio" name="q1" value="c"> Ninguna</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! Δ = 16 − 12 = 4 &gt; 0. Corta en x = 1 y x = 3.</template>
+</div>
+<div class="q" data-ans="c" data-hint="El grado es la potencia más alta de x.">
+  <p>¿Qué grado tiene <code>f(x) = 2x − 5x³ + x²</code>?</p>
+  <label><input type="radio" name="q2" value="a"> 1</label>
+  <label><input type="radio" name="q2" value="b"> 2</label>
+  <label><input type="radio" name="q2" value="c"> 3</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: la potencia más alta es x³, así que es cúbica, aunque no esté escrita primero.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,controls,seg,onRedraw,lessonNav}=Kit;
+const n1=v=>nf(v,1).replace(',0','');
+const sg=(v,first)=>v<0?(first?'−':' − ')+n1(-v):(first?'':' + ')+n1(v);
+const P={
+  c:{ctl:[{id:'c',label:'c',min:-5,max:5,step:0.5,val:2,fmt:n1,hint:'Sube o baja la recta horizontal.'}],
+     go(v){return{f:'f(x) = '+n1(v.c),o:{fns:[{f:x=>v.c,color:cv('--c1')}]},r:'Grado 0. Para cualquier x, la salida es '+n1(v.c)+'. Rango = {'+n1(v.c)+'}.'};}},
+  l:{ctl:[{id:'m',label:'m (pendiente)',min:-3,max:3,step:0.1,val:1.5,fmt:v=>nf(v,1),hint:'Cuánto sube y por cada paso a la derecha.'},{id:'b',label:'b (corte en y)',min:-5,max:5,step:0.5,val:-1,fmt:n1}],
+     go(v){const r=v.m!==0?-v.b/v.m:null;return{f:'f(x) = '+nf(v.m,1)+'x'+sg(v.b),o:{fns:[{f:x=>v.m*x+v.b,color:cv('--c1')}],pts:[{x:0,y:v.b,color:cv('--c2'),label:'corte (0 ; '+n1(v.b)+')'}].concat(r!==null&&Math.abs(r)<6?[{x:r,y:0,color:cv('--c3')}]:[])},
+       r:v.m===0?'Con m = 0 se vuelve constante.':'Corta al eje x en <b>x = '+nf(r,2)+'</b>. '+(v.m>0?'Sube':'Baja')+' '+nf(Math.abs(v.m),1)+' por cada unidad a la derecha.'};}},
+  q:{ctl:[{id:'a',label:'a (apertura)',min:-2,max:2,step:0.1,val:1,fmt:v=>nf(v,1),hint:'Negativa: se abre hacia abajo. Cerca de 0: más ancha.'},{id:'h',label:'h (izq./der.)',min:-4,max:4,step:0.5,val:1,fmt:n1},{id:'k',label:'k (arriba/abajo)',min:-5,max:5,step:0.5,val:-3,fmt:n1}],
+     go(v){const a=v.a||0.1,b=-2*a*v.h,c=a*v.h*v.h+v.k,D=b*b-4*a*c,pts=[{x:v.h,y:v.k,color:cv('--c2'),label:'vértice ('+n1(v.h)+' ; '+n1(v.k)+')'}];let roots='';
+       if(D>1e-9){const r1=(-b-Math.sqrt(D))/(2*a),r2=(-b+Math.sqrt(D))/(2*a);pts.push({x:r1,y:0,color:cv('--c3')},{x:r2,y:0,color:cv('--c3')});roots='Corta en x = '+nf(Math.min(r1,r2),2)+' y x = '+nf(Math.max(r1,r2),2)+'.';}
+       else if(Math.abs(D)<=1e-9){pts.push({x:v.h,y:0,color:cv('--c3')});roots='Toca el eje x solo en el vértice.';}else roots='No corta el eje x.';
+       return{f:'f(x) = '+nf(a,1)+'(x'+sg(-v.h)+')²'+sg(v.k)+'   =   '+nf(a,1)+'x²'+sg(b)+'x'+sg(c),o:{fns:[{f:x=>a*(x-v.h)**2+v.k,color:cv('--c2')}],pts},
+         r:'Δ = b² − 4ac = <b>'+nf(D,2)+'</b> → '+roots+' '+(a>0?'Se abre hacia arriba: el vértice es el punto más bajo.':'Se abre hacia abajo: el vértice es el punto más alto.')};}},
+  k:{ctl:[{id:'a',label:'a',min:-1,max:1,step:0.05,val:0.3,fmt:v=>nf(v,2),hint:'Negativa: la S se voltea.'},{id:'r1',label:'raíz 1',min:-5,max:5,step:0.5,val:-3,fmt:n1},{id:'r2',label:'raíz 2',min:-5,max:5,step:0.5,val:0,fmt:n1},{id:'r3',label:'raíz 3',min:-5,max:5,step:0.5,val:3,fmt:n1,hint:'Junta dos raíces y mira cómo la curva solo “rebota” en el eje.'}],
+     go(v){const a=v.a||0.05,f=x=>a*(x-v.r1)*(x-v.r2)*(x-v.r3),u=[...new Set([v.r1,v.r2,v.r3])];
+       return{f:'f(x) = '+nf(a,2)+'(x'+sg(-v.r1)+')(x'+sg(-v.r2)+')(x'+sg(-v.r3)+')',o:{fns:[{f,color:cv('--c4')}],pts:u.map(r=>({x:r,y:0,color:cv('--c3')}))},
+         r:'Escrita así, en factores, las raíces se ven a simple vista: donde algún paréntesis vale 0. Ahora corta el eje x en <b>'+u.length+(u.length===1?' punto':' puntos')+'</b> (máximo 3, porque es grado 3).'};}}
+};
+let k='q',v={};
+function draw(){const d=P[k].go(v);$('#pF').textContent=d.f;plot($('#pC'),Object.assign({xr:[-6,6],yr:[-8,8],xs:1,ys:2},d.o));$('#pR').innerHTML=d.r;}
+function set(nk){k=nk;v=controls($('#pCtl'),P[k].ctl,vv=>{v=vv;draw();});draw();}
+seg($('#pSeg'),set);set('q');onRedraw(draw);
+lessonNav('polinomicas');
+})();
+</script>
+</body>
+</html>

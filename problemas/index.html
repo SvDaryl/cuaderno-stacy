@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Problemas · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+.filters{display:flex;flex-direction:column;gap:6px;margin:18px 0}
+.pb{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin:12px 0}
+.pb.solved{border-color:var(--ok)}
+.pb .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;margin-bottom:4px}
+.pb .meta span{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 10px}
+.pb .meta .lv{background:var(--paper);color:var(--muted)}
+.pb p.en{margin:6px 0 8px;font-size:17px}
+.pb .sol{font-family:var(--mono);font-size:15px;line-height:1.8;margin:6px 0 0}
+.pb .solvebtn{margin-top:8px}
+.count{font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body data-base="../" data-nav="problemas">
+<main>
+  <div class="crumb"><a href="../index.html">Inicio</a><span>Problemas</span></div>
+  <h1>Problemas</h1>
+  <p class="lede">Intenta cada uno en tu cuaderno antes de mirar. Si te trabas, abre la pista; la solución, solo al final.</p>
+  <div class="filters">
+    <div class="seg" id="fT" role="group" aria-label="Filtrar por tema"></div>
+    <div class="seg" id="fL" role="group" aria-label="Filtrar por dificultad">
+      <button data-k="0" aria-pressed="true">Todas</button><button data-k="1" aria-pressed="false">★ Fácil</button><button data-k="2" aria-pressed="false">★★ Media</button><button data-k="3" aria-pressed="false">★★★ Reto</button>
+    </div>
+  </div>
+  <p class="count" id="count" aria-live="polite"></p>
+  <div id="list"></div>
+</main>
+<script src="../assets/datos.js"></script>
+<script src="../assets/kit.js"></script>
+<script>
+(function(){
+/* Para agregar un problema: copia un bloque y cambia el texto. tema = id del tema en datos.js */
+const PROBLEMAS=[
+  {id:'p1',tema:'funcion',nivel:1,en:'Si f(x) = x² − 2x, calcula f(−3).',pista:'Reemplaza cada x por (−3), con paréntesis.',sol:'f(−3) = (−3)² − 2(−3)<br>= 9 + 6<br>= 15'},
+  {id:'p2',tema:'funcion',nivel:2,en:'Si f(x) = 2x + k y además f(3) = 11, ¿cuánto vale k?',pista:'Escribe f(3) con la fórmula e iguálalo a 11.',sol:'f(3) = 2·3 + k = 6 + k<br>6 + k = 11<br>k = 5'},
+  {id:'p3',tema:'dominio',nivel:1,en:'Halla el dominio de f(x) = (x + 1) / (x − 7).',pista:'¿Qué valor haría cero el denominador?',sol:'x − 7 ≠ 0 → x ≠ 7<br>Dom f = ℝ − {7}'},
+  {id:'p4',tema:'dominio',nivel:2,en:'Halla el dominio de f(x) = √(8 − 2x).',pista:'Lo de adentro de la raíz debe ser ≥ 0. Cuidado al despejar.',sol:'8 − 2x ≥ 0<br>8 ≥ 2x<br>x ≤ 4<br>Dom f = ⟨−∞ ; 4]'},
+  {id:'p5',tema:'dominio',nivel:3,en:'Halla el dominio de f(x) = √(x − 1) / (x − 5).',pista:'Hay dos condiciones a la vez: la de la raíz y la del denominador.',sol:'Raíz: x − 1 ≥ 0 → x ≥ 1<br>Denominador: x ≠ 5<br>Dom f = [1 ; 5⟩ ∪ ⟨5 ; +∞⟩'},
+  {id:'p6',tema:'dominio',nivel:2,en:'Halla el rango de f(x) = x² + 3.',pista:'¿Cuál es el valor más pequeño que puede tener x²?',sol:'x² ≥ 0 para todo x<br>x² + 3 ≥ 3<br>Ran f = [3 ; +∞⟩'},
+  {id:'p7',tema:'clasificacion',nivel:1,en:'Clasifica como algebraica o trascendente: a) x³ − x   b) 5ˣ   c) 1/(x + 2)   d) cos x',pista:'Busca si la x está en un exponente, en un log o en un seno/coseno.',sol:'a) algebraica (polinómica)<br>b) trascendente (exponencial)<br>c) algebraica (racional)<br>d) trascendente (trigonométrica)'},
+  {id:'p8',tema:'polinomicas',nivel:2,en:'Para f(x) = x² − 6x + 5, halla el vértice y los puntos donde corta al eje x.',pista:'El vértice está en h = −b / 2a. Para las raíces, factoriza.',sol:'h = −(−6) / (2·1) = 3<br>k = f(3) = 9 − 18 + 5 = −4 → vértice (3 ; −4)<br>x² − 6x + 5 = (x − 1)(x − 5) → corta en x = 1 y x = 5'},
+  {id:'p9',tema:'polinomicas',nivel:3,en:'Un taxi cobró S/ 7 por 2 km y S/ 13 por 5 km. Si la tarifa es lineal, ¿cuánto cobra por 10 km?',pista:'Halla la pendiente con los dos puntos: (2 ; 7) y (5 ; 13).',sol:'m = (13 − 7) / (5 − 2) = 2<br>7 = 2·2 + b → b = 3<br>f(x) = 2x + 3<br>f(10) = 23 → S/ 23'},
+  {id:'p10',tema:'trascendentes',nivel:2,en:'Resuelve 2ˣ⁺¹ = 16.',pista:'Escribe 16 como una potencia de 2.',sol:'16 = 2⁴<br>2ˣ⁺¹ = 2⁴ → x + 1 = 4<br>x = 3'},
+  {id:'p11',tema:'trascendentes',nivel:1,en:'Calcula log₃ 81.',pista:'¿3 elevado a qué da 81?',sol:'3⁴ = 81<br>log₃ 81 = 4'},
+  {id:'p12',tema:'trascendentes',nivel:3,en:'Hay 500 bacterias y se duplican cada hora. Escribe la función y calcula cuántas habrá en 5 horas.',pista:'Cada hora se multiplica por 2: es exponencial con base 2.',sol:'N(t) = 500 · 2ᵗ<br>N(5) = 500 · 32<br>= 16 000 bacterias'}
+];
+const {$,$$,store}=Kit;
+const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||id;
+const temas=[...new Set(PROBLEMAS.map(p=>p.tema))];
+$('#fT').innerHTML='<button data-k="" aria-pressed="true">Todos los temas</button>'+temas.map(t=>'<button data-k="'+t+'" aria-pressed="false">'+name(t)+'</button>').join('');
+let ft='',fl=0;
+function render(){const solved=store.get('resueltos',{});
+  const list=PROBLEMAS.filter(p=>(!ft||p.tema===ft)&&(!fl||p.nivel===fl));
+  $('#count').textContent=list.length+' problemas · resueltos: '+list.filter(p=>solved[p.id]).length;
+  $('#list').innerHTML=list.map((p,i)=>'<article class="pb'+(solved[p.id]?' solved':'')+'"><div class="meta"><span>'+name(p.tema)+'</span><span class="lv">'+'★'.repeat(p.nivel)+'</span></div>'+
+    '<p class="en"><b>'+(i+1)+'.</b> '+p.en+'</p><details><summary>Ver pista</summary><p style="margin:6px 0">'+p.pista+'</p></details>'+
+    '<details><summary>Ver solución</summary><p class="sol">'+p.sol+'</p></details>'+
+    '<button class="btn '+(solved[p.id]?'':'ghost ')+'solvebtn" type="button" data-id="'+p.id+'">'+(solved[p.id]?'✓ Resuelto':'Lo resolví')+'</button></article>').join('');
+  $$('.solvebtn').forEach(b=>b.addEventListener('click',()=>{const s=store.get('resueltos',{});if(s[b.dataset.id])delete s[b.dataset.id];else s[b.dataset.id]=1;store.set('resueltos',s);render();}));}
+function pick(host,cb){$$('button',host).forEach(b=>b.addEventListener('click',()=>{$$('button',host).forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset.k);render();}));}
+pick($('#fT'),k=>ft=k);pick($('#fL'),k=>fl=+k);render();
+})();
+</script>
+</body>
+</html>

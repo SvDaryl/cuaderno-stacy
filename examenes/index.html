@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exámenes · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/estilo.css">
+</head>
+<body data-base="../" data-nav="examenes">
+<main>
+  <div class="crumb"><a href="../index.html">Inicio</a><span>Exámenes</span></div>
+  <h1>Exámenes</h1>
+  <p class="lede">Cuando sientas que ya entendiste un bloque, ponte a prueba. Al terminar puedes mandarme tu nota por WhatsApp.</p>
+  <div class="grid" id="list"></div>
+</main>
+<script src="../assets/datos.js"></script>
+<script src="../assets/kit.js"></script>
+<script>
+(function(){
+const {$,BASE,store}=Kit,best=store.get('notas',{});
+$('#list').innerHTML=EXAMENES.map(e=>'<a class="tile" href="'+BASE+e.url+'"><b>'+e.titulo+'</b><span>'+e.desc+'</span><em class="tag">'+(best[e.id]?'Tu mejor nota: '+best[e.id]:'Sin rendir')+'</em></a>').join('');
+})();
+</script>
+</body>
+</html>

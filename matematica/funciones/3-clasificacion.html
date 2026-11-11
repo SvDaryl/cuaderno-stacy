@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algebraicas y trascendentes · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.tree{display:grid;gap:12px;margin:18px 0}
+.branch{border-radius:18px;padding:14px;border:1px solid var(--line);background:var(--card)}
+.branch>b{font-family:var(--display);font-size:22px;display:block}
+.branch>span{font-size:14px;color:var(--muted)}
+.sub{margin-top:10px;padding:10px;border-radius:14px;background:var(--paper)}
+.sub>b{font-family:var(--display);font-size:17px}
+.leaves{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.leaf{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:6px 12px;cursor:pointer}
+.leaf[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.alg{border-left:6px solid var(--c1)} .tra{border-left:6px solid var(--c3)}
+.alg,.tra{border-radius:0 18px 18px 0}
+.prev{display:grid;grid-template-columns:1fr;gap:6px}
+.game{text-align:center}
+.game .fx{font-family:var(--mono);font-size:26px;margin:14px 0}
+.game .row{justify-content:center}
+.big{font-size:17px;padding:10px 22px}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 3</span></div>
+<h1>Algebraicas y trascendentes</h1>
+<p class="lede">Todas las funciones del colegio caben en dos grandes familias. Saber a cuál pertenece una te dice cómo se va a comportar.</p>
+
+<h2>La pregunta que las separa</h2>
+<p>Mira qué le hacen a la <i>x</i>:</p>
+<div class="key"><b>Algebraica</b>: a la x solo se le suma, resta, multiplica, divide, se eleva a un número fijo o se le saca raíz. Ejemplos: <code>3x² − 1</code>, <code>1/x</code>, <code>√x</code>.<br><br><b>Trascendente</b>: la x está en un exponente, dentro de un logaritmo o de un seno o coseno. “Trasciende” (va más allá de) esas operaciones básicas. Ejemplos: <code>2ˣ</code>, <code>log x</code>, <code>sen x</code>.</div>
+
+<h2>El árbol de familias</h2>
+<p>Toca cada hoja para ver su gráfica.</p>
+<div class="tree">
+  <div class="branch alg"><b>Algebraicas</b><span>Solo operaciones básicas con x</span>
+    <div class="sub"><b>Polinómicas</b> <span class="muted" style="font-size:14px">· suma de potencias de x</span>
+      <div class="leaves"><button class="leaf" data-k="constante">Constante</button><button class="leaf" data-k="lineal">Lineal</button><button class="leaf" data-k="cuadratica">Cuadrática</button><button class="leaf" data-k="cubica">Cúbica</button></div></div>
+    <div class="sub"><b>Otras algebraicas</b>
+      <div class="leaves"><button class="leaf" data-k="racional">Racional</button><button class="leaf" data-k="irracional">Irracional (con raíz)</button></div></div>
+  </div>
+  <div class="branch tra"><b>Trascendentes</b><span>x en el exponente, en un logaritmo o en un seno</span>
+    <div class="leaves"><button class="leaf" data-k="exponencial">Exponencial</button><button class="leaf" data-k="logaritmica">Logarítmica</button><button class="leaf" data-k="trigonometrica">Trigonométrica</button></div>
+  </div>
+</div>
+
+<div class="card prev" aria-live="polite">
+  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><b id="pN" style="font-family:var(--display);font-size:24px"></b><code id="pF"></code></div>
+  <canvas id="pC" data-w="660" data-h="260" aria-label="Gráfica de la familia elegida"></canvas>
+  <p id="pD" style="margin:4px"></p>
+  <div class="row" id="pB"></div>
+</div>
+
+<h2>Juego: ¿a qué familia pertenece?</h2>
+<div class="card game">
+  <p class="muted" id="gS" style="margin:0"></p>
+  <div class="fx" id="gF"></div>
+  <div class="row"><button class="btn big" type="button" data-g="a">Algebraica</button><button class="btn big" type="button" data-g="t" style="background:var(--c3)">Trascendente</button></div>
+  <p class="fb" id="gFb" aria-live="polite" style="min-height:3.4em"></p>
+  <button class="btn ghost" type="button" id="gN">Siguiente</button>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,$$,cv,plot,onRedraw,lessonNav,openPanel}=Kit;
+const L={
+  constante:{n:'Constante',f:'f(x) = 3',g:x=>3,c:'--c1',d:'Siempre da lo mismo. Es una recta horizontal. Ejemplo: la tarifa plana de un servicio.'},
+  lineal:{n:'Lineal',f:'f(x) = 2x − 1',g:x=>2*x-1,c:'--c1',d:'Grado 1. Una recta: cambia siempre al mismo ritmo.',p:'lineal'},
+  cuadratica:{n:'Cuadrática',f:'f(x) = x² − 3',g:x=>x*x-3,c:'--c2',d:'Grado 2. Una parábola con un punto más alto o más bajo: el vértice.',p:'cuadratica'},
+  cubica:{n:'Cúbica',f:'f(x) = x³ − 3x',g:x=>x*x*x-3*x,c:'--c4',d:'Grado 3. Forma de S: puede subir, bajar y volver a subir.',p:'cubica'},
+  racional:{n:'Racional',f:'f(x) = 1 / x',g:x=>1/x,c:'--c1',d:'Una división con x abajo. Tiene valores prohibidos (no se divide entre 0) y ramas que se separan.'},
+  irracional:{n:'Irracional',f:'f(x) = √x',g:x=>Math.sqrt(x),c:'--c1',d:'Tiene x dentro de una raíz. Solo existe donde lo de adentro no es negativo.'},
+  exponencial:{n:'Exponencial',f:'f(x) = 2ˣ',g:x=>Math.pow(2,x),c:'--c3',d:'La x está en el exponente. Crece (o decrece) multiplicándose: lento al inicio y de pronto rapidísimo.',p:'exponencial'},
+  logaritmica:{n:'Logarítmica',f:'f(x) = log₂ x',g:x=>Math.log2(x),c:'--c3',d:'La inversa de la exponencial: pregunta “¿a qué exponente elevo 2 para obtener x?”. Crece cada vez más lento.',p:'log'},
+  trigonometrica:{n:'Trigonométrica',f:'f(x) = sen x',g:x=>Math.sin(x),c:'--c3',d:'Se repite una y otra vez, como una ola. Sirve para todo lo que oscila: sonido, luz, mareas.',p:'seno'}
+};
+let cur='cuadratica';
+function show(){const l=L[cur];$('#pN').textContent=l.n;$('#pF').textContent=l.f;$('#pD').textContent=l.d;
+  $$('.leaf').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur));
+  plot($('#pC'),{xr:[-5,5],yr:[-5,6],xs:1,ys:1,fns:[{f:l.g,color:cv(l.c),n:1000}]});
+  $('#pB').innerHTML=l.p?'<button class="btn ghost" type="button" id="pGo">¿Dónde se usa? ↗</button>':'';
+  if(l.p)$('#pGo').addEventListener('click',()=>openPanel(l.p));}
+$$('.leaf').forEach(b=>b.addEventListener('click',()=>{cur=b.dataset.k;show();}));
+onRedraw(show);
+
+const G=[['f(x) = 5x³ − x + 2','a','Solo potencias fijas de x: es polinómica (cúbica), o sea algebraica.'],
+  ['f(x) = 3ˣ','t','La x está en el exponente: exponencial, trascendente.'],
+  ['f(x) = √(x + 1)','a','Una raíz de x es una operación algebraica: irracional, algebraica.'],
+  ['f(x) = sen(2x)','t','La x está dentro de un seno: trigonométrica, trascendente.'],
+  ['f(x) = (x + 1) / (x − 4)','a','Una división de polinomios: racional, algebraica.'],
+  ['f(x) = log(x − 2)','t','La x está dentro de un logaritmo: trascendente.'],
+  ['f(x) = x² · 2ˣ','t','Basta con que una parte sea trascendente (2ˣ) para que toda la función lo sea.'],
+  ['f(x) = x⁴','a','Aunque tenga exponente, el exponente es un número fijo: algebraica.']];
+let gi=0,score=0,answered=false;
+function gShow(){answered=false;$('#gF').textContent=G[gi][0];$('#gFb').textContent='';$('#gFb').className='fb';$('#gS').textContent='Pregunta '+(gi+1)+' de '+G.length+' · aciertos: '+score;}
+$$('[data-g]').forEach(b=>b.addEventListener('click',()=>{if(answered)return;answered=true;const ok=b.dataset.g===G[gi][1];if(ok)score++;
+  $('#gFb').textContent=(ok?'¡Correcto! ':'No exactamente. ')+G[gi][2];$('#gFb').className='fb '+(ok?'ok':'no');$('#gS').textContent='Pregunta '+(gi+1)+' de '+G.length+' · aciertos: '+score;}));
+$('#gN').addEventListener('click',()=>{if(!answered){$('#gFb').textContent='Responde primero.';$('#gFb').className='fb no';return;}
+  gi++;if(gi>=G.length){$('#gF').textContent=score+' de '+G.length;$('#gFb').textContent=score>=7?'¡Excelente, ya las distingues!':'Vuelve a mirar el árbol y juega otra vez.';$('#gFb').className='fb ok';$('#gS').textContent='Terminaste';gi=0;score=0;answered=true;$('#gN').textContent='Jugar otra vez';return;}
+  $('#gN').textContent='Siguiente';gShow();});
+gShow();
+lessonNav('clasificacion');
+})();
+</script>
+</body>
+</html>

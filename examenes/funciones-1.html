@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Funciones · Examen 1 · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+.bar{position:sticky;top:52px;z-index:3;background:var(--paper);display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px}
+.bar .t{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ex .q.right{border-color:var(--ok)} .ex .q.wrong{border-color:var(--bad)}
+.ex .exp{font-size:15px;margin:6px 0 0;display:none}
+.done .exp{display:block}
+.score{background:var(--accent);color:#fff;border-radius:20px;padding:20px;text-align:center;margin:24px 0}
+.score b{font-family:var(--display);font-size:54px;display:block;line-height:1}
+.score .row{justify-content:center}
+.score .btn{background:#fff;color:var(--accent)}
+.err{color:var(--bad);font-size:14px}
+</style>
+</head>
+<body data-base="../" data-nav="examenes">
+<main>
+  <div class="crumb"><a href="index.html">Exámenes</a><span>Funciones</span></div>
+  <h1>Funciones · Examen 1</h1>
+  <p class="lede">8 preguntas sobre función, dominio y rango, clasificación y polinómicas. Ten a mano papel y lápiz.</p>
+  <div class="bar"><span id="prog">0 de 8 respondidas</span><span class="t" id="clock">00:00</span></div>
+  <form class="ex" id="ex" novalidate></form>
+  <div id="result"></div>
+</main>
+<script src="../assets/datos.js"></script>
+<script src="../assets/kit.js"></script>
+<script>
+(function(){
+const EXAMEN={id:'funciones-1',titulo:'Funciones · Examen 1',preguntas:[
+  {q:'Si f(x) = 2x² − 1, ¿cuánto vale f(−2)?',o:['7','−9','15','9'],a:0,e:'2·(−2)² − 1 = 2·4 − 1 = 7.'},
+  {q:'¿Cuál de estas relaciones es función?',o:['{(1;2), (1;3), (2;5)}','{(2;1), (3;1), (4;1)}','{(0;0), (0;1), (1;1)}','{(5;2), (5;2), (5;3)}'],a:1,e:'Cada x tiene una sola salida. Que todas den 1 está permitido.'},
+  {q:'¿Cuál es el dominio de f(x) = 1 / (x + 4)?',o:['ℝ − {4}','ℝ − {−4}','ℝ − {0}','ℝ'],a:1,e:'x + 4 ≠ 0 → x ≠ −4.'},
+  {q:'¿Cuál es el dominio de g(x) = √(x − 2)?',o:['⟨2 ; +∞⟩','[−2 ; +∞⟩','[2 ; +∞⟩','ℝ'],a:2,e:'x − 2 ≥ 0 → x ≥ 2, y el 2 sí entra.'},
+  {q:'¿Cuál es el rango de h(x) = x² − 5?',o:['[−5 ; +∞⟩','[5 ; +∞⟩','ℝ','⟨−5 ; +∞⟩'],a:0,e:'x² ≥ 0, entonces x² − 5 ≥ −5, y vale −5 cuando x = 0.'},
+  {q:'¿Cuál de estas funciones es trascendente?',o:['f(x) = x⁵ − 1','f(x) = √(3x)','f(x) = 4ˣ','f(x) = 2 / x'],a:2,e:'En 4ˣ la x está en el exponente.'},
+  {q:'¿Qué grado tiene p(x) = 3x² − x⁴ + 2?',o:['2','3','4','−4'],a:2,e:'La potencia más alta de x es 4.'},
+  {q:'¿Cuál es el vértice de f(x) = (x − 2)² + 1?',o:['(−2 ; 1)','(2 ; 1)','(2 ; −1)','(1 ; 2)'],a:1,e:'En a(x − h)² + k el vértice es (h ; k) = (2 ; 1).'}
+]};
+const {$,$$,store}=Kit,P=EXAMEN.preguntas,form=$('#ex');
+form.innerHTML=P.map((p,i)=>'<div class="q" id="q'+i+'"><p><b>'+(i+1)+'.</b> '+p.q+'</p>'+p.o.map((o,j)=>'<label><input type="radio" name="p'+i+'" value="'+j+'"> '+o+'</label>').join('')+'<p class="exp"></p></div>').join('')+
+  '<div class="row"><button class="btn" type="submit">Terminar y ver mi nota</button><span class="err" id="err" aria-live="polite"></span></div>';
+const t0=Date.now();let tick=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('#clock').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},1000);
+form.addEventListener('change',()=>{const n=P.filter((p,i)=>$('input[name="p'+i+'"]:checked')).length;$('#prog').textContent=n+' de '+P.length+' respondidas';$('#err').textContent='';});
+form.addEventListener('submit',e=>{e.preventDefault();
+  const miss=P.map((p,i)=>$('input[name="p'+i+'"]:checked')?null:i+1).filter(Boolean);
+  if(miss.length){$('#err').textContent='Te falta responder: '+miss.join(', ')+'.';return;}
+  clearInterval(tick);const secs=Math.floor((Date.now()-t0)/1000),mins=Math.max(1,Math.round(secs/60));let ok=0;
+  P.forEach((p,i)=>{const v=+$('input[name="p'+i+'"]:checked').value,q=$('#q'+i),r=v===p.a;if(r)ok++;q.classList.add(r?'right':'wrong');
+    $('.exp',q).innerHTML=(r?'<span style="color:var(--ok)">✓ Correcto.</span> ':'<span style="color:var(--bad)">✗ La respuesta era: '+p.o[p.a]+'.</span> ')+p.e;});
+  form.classList.add('done');$$('input,button[type=submit]',form).forEach(x=>x.disabled=true);
+  const nota=ok+'/'+P.length,vig=Math.round(ok/P.length*20),best=store.get('notas',{});
+  const prev=best[EXAMEN.id]?+best[EXAMEN.id].split('/')[0]:-1;if(ok>prev){best[EXAMEN.id]=nota;store.set('notas',best);}
+  const msg='Hola! Soy '+SITE.apodo+' 😊 Terminé "'+EXAMEN.titulo+'" y saqué '+nota+' (equivale a '+vig+' sobre 20) en '+mins+' min.';
+  const wa='https://wa.me/'+(SITE.whatsapp||'')+'?text='+encodeURIComponent(msg);
+  $('#result').innerHTML='<div class="score"><span>Tu nota</span><b>'+nota+'</b><span>'+vig+' sobre 20 · '+mins+' min</span><p>'+(ok===P.length?'¡Perfecto! Dominas el tema.':ok>=6?'¡Muy bien! Revisa abajo las que fallaste.':'Repasa las lecciones de las preguntas en rojo y vuelve a intentarlo.')+'</p>'+
+    '<div class="row"><a class="btn" href="'+wa+'" target="_blank" rel="noopener">Enviar mi nota por WhatsApp</a><a class="btn" href="funciones-1.html">Intentar de nuevo</a></div></div>';
+  $('#result').scrollIntoView({behavior:'smooth',block:'start'});});
+})();
+</script>
+</body>
+</html>
