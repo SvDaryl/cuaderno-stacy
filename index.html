@@ -49,7 +49,7 @@
 
       <h2>Para practicar</h2>
       <div class="prac">
-        <a class="tile" href="ejemplos/index.html"><b>Ejemplos de uso</b><span>Dónde se usa lo que aprendes: taxis, sismos, música y Minecraft.</span></a>
+        <a class="tile" href="ejemplos/index.html"><b>Ejemplos de uso</b><span>Dónde se usa lo que aprendes: taxis, sismos, música y más.</span></a>
         <a class="tile" href="problemas/index.html"><b>Problemas</b><span>Ejercicios con pista y solución paso a paso.</span></a>
         <a class="tile" href="examenes/index.html"><b>Exámenes</b><span>Ponte a prueba y mándame tu nota por WhatsApp.</span></a>
       </div>
@@ -83,7 +83,9 @@ if(nxt){$('#nextT').textContent=nxt.titulo;$('#nextM').textContent=mname(nxt.mat
 else{$('#nextT').textContent='Terminaste todas las lecciones';$('#nextM').textContent='Ahora prueba un examen y mándame tu nota.';$('#next').href='examenes/index.html';}
 $('#materias').innerHTML=MATERIAS.map(m=>{
   const r=TEMAS.filter(t=>t.materia===m.id&&t.estado==='lista'),d=r.filter(t=>progress.isDone(t.id)).length;
-  return m.activa?'<a class="tile mat" href="'+m.url+'"><b>'+m.nombre+'</b><span>'+m.desc+'</span><span class="bar"><span style="--p:'+(r.length?d/r.length*100:0)+'%"></span></span><span class="n"><b>'+d+' de '+r.length+'</b> lecciones entendidas</span></a>'
+  const tot=TEMAS.filter(t=>t.materia===m.id).length;
+  if(m.activa&&!r.length)return '<a class="tile mat" href="'+m.url+'"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">'+tot+' temas en camino</em></a>';
+  return m.activa?'<a class="tile mat" href="'+m.url+'"><b>'+m.nombre+'</b><span>'+m.desc+'</span><span class="bar"><span style="--p:'+(r.length?d/r.length*100:0)+'%"></span></span><span class="n"><b>'+d+' de '+r.length+'</b> lecciones entendidas · '+tot+' temas</span></a>'
                  :'<div class="tile mat off"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">Muy pronto</em></div>';}).join('');
 const fmt=f=>f?new Date(f+'T12:00').toLocaleDateString('es-PE',{day:'numeric',month:'short'}):'';
 $('#news').innerHTML=ready.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,5)

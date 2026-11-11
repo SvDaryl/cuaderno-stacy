@@ -24,29 +24,29 @@
 <main>
 <div class="crumb"><a href="../index.html">Física</a><span>Cinemática · Paso 1</span></div>
 <h1>MRU: velocidad constante</h1>
-<p class="lede">Una vagoneta de Minecraft en un riel recto: ni acelera ni frena, y en cada segundo avanza exactamente lo mismo.</p>
+<p class="lede">Un auto en una pista recta: ni acelera ni frena, y en cada segundo avanza exactamente lo mismo.</p>
 
 <div class="card stage">
   <div class="seg" id="gSeg" role="group" aria-label="Elige la gráfica">
     <button data-k="x" aria-pressed="true">Dónde está (x–t)</button><button data-k="v" aria-pressed="false">Qué tan rápido va (v–t)</button>
   </div>
   <p class="formula" id="fm"></p>
-  <canvas id="tr" data-w="660" data-h="200" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="10" aria-valuenow="4" aria-label="Vagoneta de Minecraft sobre un riel, con marcas de redstone que señalan dónde estaba cada segundo"></canvas>
-  <p class="cap grab"><b>Agarra la vagoneta y arrástrala por el riel</b> con el dedo o el mouse: el tiempo avanza o retrocede según dónde la dejes.</p>
+  <canvas id="tr" data-w="660" data-h="200" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="10" aria-valuenow="4" aria-label="Auto sobre una pista recta, con marcas que señalan dónde estaba cada segundo"></canvas>
+  <p class="cap grab"><b>Agarra el auto y arrástralo por la pista</b> con el dedo o el mouse: el tiempo avanza o retrocede según dónde la dejes.</p>
   <canvas id="gr" data-w="660" data-h="320" role="img" aria-label="Gráfica del movimiento"></canvas>
   <div class="row play"><button class="btn ghost" type="button" id="play">Reproducir</button></div>
   <div id="ctl"></div>
   <div class="readout" id="ro" aria-live="polite"></div>
 </div>
-<p class="tip"><b>Fíjate en las marcas de redstone.</b> Señalan dónde estaba la vagoneta en cada segundo, y siempre quedan a la misma distancia. Eso es un MRU.</p>
+<p class="tip"><b>Fíjate en las marcas moradas.</b> Señalan dónde estaba el auto en cada segundo, y siempre quedan a la misma distancia. Eso es un MRU.</p>
 
 
 <h2>Qué significa MRU</h2>
-<p>Piensa en una vagoneta sobre un riel potenciado. MRU quiere decir <b>M</b>ovimiento <b>R</b>ectilíneo <b>U</b>niforme. <i>Rectilíneo</i> porque va en línea recta; <i>uniforme</i> porque su <button class="term" data-p="mru">velocidad es constante</button>: no sube ni baja.</p>
-<p>En Minecraft 1 bloque equivale a 1 metro, así que usaremos metros. Si cada segundo la vagoneta avanza lo mismo, la distancia crece de forma pareja. Y eso es justo lo que hace una <button class="term" data-p="lineal">función lineal</button>: la posición en cada momento es:</p>
+<p>Piensa en un auto en una pista recta, con el velocímetro clavado en un número. MRU quiere decir <b>M</b>ovimiento <b>R</b>ectilíneo <b>U</b>niforme. <i>Rectilíneo</i> porque va en línea recta; <i>uniforme</i> porque su <button class="term" data-p="mru">velocidad es constante</button>: no sube ni baja.</p>
+<p>Si cada segundo el auto avanza lo mismo, la distancia crece de forma pareja. Y eso es justo lo que hace una <button class="term" data-p="lineal">función lineal</button>: la posición en cada momento es:</p>
 <div class="key"><b class="fx">x = x₀ + v · t</b>
 <dl class="vars">
-  <dt>x</dt><dd>dónde está la vagoneta ahora (m)</dd>
+  <dt>x</dt><dd>dónde está el auto ahora (m)</dd>
   <dt>x₀</dt><dd>dónde empezó, el punto de salida (m)</dd>
   <dt>v</dt><dd>velocidad, que no cambia (m/s)</dd>
   <dt>t</dt><dd>tiempo que pasó (s)</dd>
@@ -55,8 +55,8 @@
 
 
 <h2>La pendiente es la velocidad</h2>
-<p>En la gráfica x–t, lo que sube la recta por cada segundo es la velocidad. Mueve <b>v</b> y mira: más velocidad, recta más empinada; velocidad negativa, la recta baja (la vagoneta va hacia la izquierda).</p>
-<p>En la gráfica v–t, la recta es horizontal porque la velocidad no cambia. Y el <b>área</b> del rectángulo bajo ella, v · t, es justo lo que avanzó la vagoneta.</p>
+<p>En la gráfica x–t, lo que sube la recta por cada segundo es la velocidad. Mueve <b>v</b> y mira: más velocidad, recta más empinada; velocidad negativa, la recta baja (el auto va hacia la izquierda).</p>
+<p>En la gráfica v–t, la recta es horizontal porque la velocidad no cambia. Y el <b>área</b> del rectángulo bajo ella, v · t, es justo lo que avanzó el auto.</p>
 <p>Esta idea de “qué tan rápido cambia algo” es la base de las derivadas que estás viendo en el colegio.</p>
 
 <h2>De km/h a m/s</h2>
@@ -65,7 +65,7 @@
 
 <h2>Pruébate</h2>
 <div class="q" data-ans="a" data-hint="Usa la fórmula de distancia: d = v · t.">
-  <p>Una vagoneta va a 8 m/s con MRU. ¿Cuánto recorre en 15 s?</p>
+  <p>Una ciclista va a 8 m/s con MRU. ¿Cuánto recorre en 15 s?</p>
   <label><input type="radio" name="q1" value="a"> 120 m</label>
   <label><input type="radio" name="q1" value="b"> 23 m</label>
   <label><input type="radio" name="q1" value="c"> 0,53 m</label>
@@ -73,12 +73,12 @@
   <template>¡Sí! d = v · t = 8 × 15 = 120 m.</template>
 </div>
 <div class="q" data-ans="b" data-hint="Primero saca la velocidad en m/s y luego pásala a km/h.">
-  <p>Una vagoneta recorre 80 bloques en 10 s con MRU. ¿Cuál es su velocidad en km/h?</p>
-  <label><input type="radio" name="q2" value="a"> 8 km/h</label>
-  <label><input type="radio" name="q2" value="b"> 28,8 km/h</label>
-  <label><input type="radio" name="q2" value="c"> 22,2 km/h</label>
+  <p>Un auto recorre 200 m en 10 s con MRU. ¿Cuál es su velocidad en km/h?</p>
+  <label><input type="radio" name="q2" value="a"> 20 km/h</label>
+  <label><input type="radio" name="q2" value="b"> 72 km/h</label>
+  <label><input type="radio" name="q2" value="c"> 55,6 km/h</label>
   <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
-  <template>Correcto: v = 80 / 10 = 8 m/s, y 8 × 3,6 = 28,8 km/h.</template>
+  <template>Correcto: v = 200 / 10 = 20 m/s, y 20 × 3,6 = 72 km/h.</template>
 </div>
 
 <nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
@@ -93,7 +93,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const TMAX=10;
 let mode='x',playing=false,T=4,v={x0:10,v:3,t:4},map=null,dragging=false;
 
-/* pista estilo Minecraft: vagoneta sobre un riel, con marcas de redstone cada segundo */
+/* pista: auto sobre una carretera, con una marca morada en cada segundo */
 function drawTrack(T,x){
   /* la pista se ajusta al recorrido completo (0 a 10 s) para que las marcas se vean separadas */
   const e=v.x0+v.v*TMAX,lo=Math.min(v.x0,e),span=Math.max(Math.abs(e-v.x0),20),A=lo-span*0.12,B=lo+span*1.12;
@@ -101,22 +101,22 @@ function drawTrack(T,x){
   map={A,B,M,w};
   const st=[1,2,5,10,20,50,100,200].find(q=>(B-A)/q<=5)||200;
   g.clearRect(0,0,w,h);
-  const{gy,B:bl,u}=Kit.mc.scene(g,w,h,s,{rails:true});
-  g.font=(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--mc-label');g.textAlign='center';
-  const ly=gy+Math.round(bl*1.9);
+  const{gy,u}=Kit.scene.road(g,w,h,s);
+  g.font=(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--sc-label');g.textAlign='center';
+  const ly=Math.round(h*0.82)+Math.round(14*s);
   for(let q=Math.ceil(A/st)*st;q<=B;q+=st)g.fillText(q,X(q),ly);
   g.textAlign='right';g.fillText('m',w-4*s,ly);
-  const k=Math.floor(T+1e-9);g.fillStyle=cv('--mc-redstone');
-  for(let i=0;i<=k;i++){const p=Math.round(X(v.x0+v.v*i));g.fillRect(p-u,gy-3*u-Math.round(u/2),2*u,2*u);}
+  const k=Math.floor(T+1e-9);g.fillStyle=cv('--sc-mark');
+  for(let i=0;i<=k;i++){const p=Math.round(X(v.x0+v.v*i));g.beginPath();g.arc(p,gy+Math.round(h*0.11),1.4*u,0,7);g.fill();}
   const cx=X(x);
-  if(dragging){g.fillStyle=cv('--accent');g.globalAlpha=0.35;g.fillRect(Math.round(cx)-8*u,gy-10*u,16*u,10*u);g.globalAlpha=1;}
-  Kit.mc.cart(g,cx,gy,u);
+  if(dragging){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.ellipse(Math.round(cx),gy-3*u,13*u,8*u,0,0,7);g.fill();g.globalAlpha=1;}
+  Kit.scene.car(g,cx,gy,u);
   /* asas: dos flechas moradas a los lados dicen que se puede arrastrar */
-  if(v.v!==0)for(const d of[-1,1]){const bx=Math.round(cx)+d*(6*u+5*u),by=gy-5*u;g.fillStyle=cv('--accent');g.beginPath();g.arc(bx,by,3.2*u,0,7);g.fill();g.fillStyle=cv('--on-accent');g.beginPath();g.moveTo(bx+d*1.6*u,by);g.lineTo(bx-d*0.9*u,by-1.5*u);g.lineTo(bx-d*0.9*u,by+1.5*u);g.closePath();g.fill();}
+  if(v.v!==0)for(const d of[-1,1]){const bx=Math.round(cx)+d*(9*u+5*u),by=gy-4*u;g.fillStyle=cv('--accent');g.beginPath();g.arc(bx,by,3.2*u,0,7);g.fill();g.fillStyle=cv('--on-accent');g.beginPath();g.moveTo(bx+d*1.6*u,by);g.lineTo(bx-d*0.9*u,by-1.5*u);g.lineTo(bx-d*0.9*u,by+1.5*u);g.closePath();g.fill();}
   g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';
   const tx=Math.min(w-M,Math.max(M+30*s,cx)),txt='x = '+n(x)+' m',tw=g.measureText(txt).width;
-  g.fillStyle=cv('--card');g.globalAlpha=0.9;g.fillRect(tx-tw/2-6*s,gy-8*u-26*s,tw+12*s,22*s);g.globalAlpha=1;
-  g.fillStyle=cv('--ink');g.fillText(txt,tx,gy-8*u-10*s);
+  g.fillStyle=cv('--card');g.globalAlpha=0.9;g.fillRect(tx-tw/2-6*s,gy-12*u-26*s,tw+12*s,22*s);g.globalAlpha=1;
+  g.fillStyle=cv('--ink');g.fillText(txt,tx,gy-12*u-10*s);
 }
 
 function draw(){
@@ -142,7 +142,7 @@ function draw(){
 
 const ctl=controls($('#ctl'),[
   {id:'x0',label:'Posición inicial (x₀)',min:-20,max:40,step:5,val:10,fmt:a=>a+' m',hint:'Desde dónde sale. Sube o baja toda la recta.'},
-  {id:'v',label:'Velocidad (v)',min:-8,max:8,step:1,val:3,fmt:a=>a+' m/s',hint:'Más velocidad, recta más empinada. Negativa: va hacia atrás. (En Minecraft, 8 m/s es lo máximo de una vagoneta.)'},
+  {id:'v',label:'Velocidad (v)',min:-10,max:20,step:1,val:3,fmt:a=>a+' m/s',hint:'Más velocidad, recta más empinada. Negativa: va hacia atrás. (20 m/s son 72 km/h.)'},
   {id:'t',label:'Tiempo (t)',min:0,max:TMAX,step:0.1,val:4,fmt:a=>nf(a,1)+' s',hint:'Arrástralo para ver dónde está en cada momento.'}
 ],vv=>{v=vv;T=vv.t;if(playing)stop();draw();});
 v=ctl;T=ctl.t;
@@ -161,12 +161,12 @@ btn.addEventListener('click',()=>{
 btn.innerHTML=icon('play')+'Reproducir';
 if(reduce)$('.play').hidden=true;
 
-/* arrastrar la vagoneta (mouse, dedo o lápiz): la posición elegida decide el tiempo, porque en MRU x = x₀ + v·t */
+/* arrastrar el auto (mouse, dedo o lápiz): la posición elegida decide el tiempo, porque en MRU x = x₀ + v·t */
 const tr=$('#tr');
 function setTime(t,exact){T=Math.max(0,Math.min(TMAX,t));const r=Math.round(T*10)/10;if(!exact)T=r;v.t=r;tIn.value=r;tOut.textContent=nf(r,1)+' s';tr.setAttribute('aria-valuenow',r);tr.setAttribute('aria-valuetext','t = '+nf(r,1)+' s, x = '+n(v.x0+v.v*r)+' m');draw();}
 function tFrom(e){const r=tr.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*map.w,pos=map.A+(px-map.M)/(map.w-2*map.M)*(map.B-map.A);return (pos-v.x0)/v.v;}
 tr.addEventListener('pointerdown',e=>{
-  if(!v.v){$('#ro').innerHTML='Con <b>v = 0</b> la vagoneta no se mueve, así que no hay tiempo que recorrer. Sube o baja la velocidad primero.';return;}
+  if(!v.v){$('#ro').innerHTML='Con <b>v = 0</b> el auto no se mueve, así que no hay tiempo que recorrer. Sube o baja la velocidad primero.';return;}
   if(playing)stop();dragging=true;tr.classList.add('drag');tr.setPointerCapture(e.pointerId);setTime(tFrom(e),true);e.preventDefault();});
 tr.addEventListener('pointermove',e=>{if(dragging)setTime(tFrom(e),true);});
 for(const k of['pointerup','pointercancel','lostpointercapture'])tr.addEventListener(k,()=>{if(!dragging)return;dragging=false;tr.classList.remove('drag');setTime(T);});

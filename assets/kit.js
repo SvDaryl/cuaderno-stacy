@@ -36,7 +36,7 @@ const icon=(n,cls='')=>'<svg class="ico '+cls+'" viewBox="0 0 24 24" aria-hidden
 /* ---------- barra superior y pie ---------- */
 function chrome(){
   const nav=document.body.dataset.nav||'';
-  const links=[['inicio','Inicio','index.html'],['matematica','Matemática','matematica/index.html'],['fisica','Física','fisica/index.html'],['ejemplos','Ejemplos','ejemplos/index.html'],['problemas','Problemas','problemas/index.html'],['examenes','Exámenes','examenes/index.html']];
+  const links=[['inicio','Inicio','index.html'],['matematica','Matemática','matematica/index.html'],['fisica','Física','fisica/index.html'],['quimica','Química','quimica/index.html'],['ejemplos','Ejemplos','ejemplos/index.html'],['problemas','Problemas','problemas/index.html'],['examenes','Exámenes','examenes/index.html']];
   const ready=TEMAS.filter(t=>t.estado==='lista'),done=ready.filter(t=>progress.isDone(t.id)).length,p=ready.length?Math.round(done/ready.length*100):0;
   const h=document.createElement('header');h.className='top';
   h.innerHTML='<nav aria-label="Secciones"><a class="brand" href="'+BASE+'index.html"><i>'+icon('book')+'</i>'+SITE.nombre+'</a>'+
@@ -128,13 +128,13 @@ const PANELS={
     draw(v,c,r){const end=100/v.r;
       plot(c,{xr:[0,20],yr:[0,110],xs:2,ys:20,xl:'horas',yl:'%',xb:[[0,end,cv('--c1')]],yb:[[0,100,cv('--c2')]],fns:[{f:x=>100-v.r*x,color:cv('--c3'),from:0,to:end}],pts:[{x:end,y:0,color:cv('--c2'),label:'se apaga'}]});
       r.innerHTML='Dominio: <b>[0 ; '+nf(end,1)+'] horas</b>. Rango: <b>[0 ; 100] %</b>. Pasadas las '+nf(end,1)+' h la fórmula daría negativo, pero eso ya no tiene sentido: está fuera del dominio.';}},
-  mru:{title:'MRU: la vagoneta de Minecraft',uses:['Vagonetas en minas','Rieles potenciados','Granjas automáticas'],
-    intro:'En Minecraft, una vagoneta sobre un riel potenciado va a velocidad constante (como máximo 8 bloques por segundo). Cada segundo avanza lo mismo, así que la gráfica de distancia contra tiempo es una recta.',
-    ctl:[{id:'v',label:'Velocidad',min:1,max:8,step:1,val:6,fmt:v=>v+' bloques/s',hint:'Más velocidad, recta más empinada.'},
-         {id:'t',label:'Tiempo',min:0,max:30,step:1,val:12,fmt:v=>v+' s'}],
-    draw(v,c,r){const d=v.v*v.t;
-      plot(c,{xr:[0,30],yr:[0,240],xs:5,ys:40,xl:'segundos',yl:'bloques',fns:[{f:x=>v.v*x,color:cv('--c1')}],pts:[{x:v.t,y:d,color:cv('--c2'),label:d+' bloques'}]});
-      r.innerHTML='A <b>'+v.v+' bloques/s</b>, en <b>'+v.t+' s</b> recorre '+v.v+' × '+v.t+' = <b>'+d+' bloques</b> (1 bloque = 1 m).';}},
+  mru:{title:'MRU: un viaje en bus por la carretera',uses:['Buses interprovinciales','Fajas transportadoras','Control de velocidad del auto'],
+    intro:'En un tramo recto y libre, el chofer mantiene la misma velocidad. Eso es un MRU: en cada minuto avanzas lo mismo, así que la gráfica de distancia contra tiempo es una recta.',
+    ctl:[{id:'v',label:'Velocidad',min:20,max:100,step:5,val:60,fmt:v=>v+' km/h',hint:'Más velocidad, recta más empinada.'},
+         {id:'t',label:'Tiempo',min:0,max:120,step:5,val:30,fmt:v=>v+' min'}],
+    draw(v,c,r){const d=v.v*v.t/60;
+      plot(c,{xr:[0,120],yr:[0,200],xs:20,ys:40,xl:'minutos',yl:'km',fns:[{f:x=>v.v*x/60,color:cv('--c1')}],pts:[{x:v.t,y:d,color:cv('--c2'),label:nf(d,1)+' km'}]});
+      r.innerHTML='A <b>'+v.v+' km/h</b> recorres '+nf(v.v/60,2)+' km cada minuto. En <b>'+v.t+' min</b>: '+nf(v.v/60,2)+' × '+v.t+' = <b>'+nf(d,1)+' km</b>.';}},
   lineal:{title:'Función lineal: el precio de un taxi',uses:['Taxis y apps de viaje','Planes de celular','Recibo de luz'],
     intro:'Un taxi cobra un monto fijo al subir (la b) y un precio por cada kilómetro (la m, o pendiente). El total es y = m·x + b. Cada kilómetro suma lo mismo, por eso la gráfica es una recta.',
     ctl:[{id:'b',label:'Al subir (b)',min:0,max:10,step:0.5,val:4,fmt:v=>'S/ '+nf(v),hint:'Sube o baja la recta.'},
@@ -236,10 +236,14 @@ function lessonNav(id){
       let n=0;
       side.innerHTML='<h2><a href="'+mapUrl+'" style="color:inherit;text-decoration:none">'+mat.nombre+'</a></h2><p class="sub">'+d+' de '+ready.length+' lecciones entendidas</p>'+
         '<span class="bar"><span style="--p:'+(ready.length?d/ready.length*100:0)+'%"></span></span>'+
-        bloques.map(b=>'<h3>'+b+'</h3>'+all.filter(x=>x.bloque===b).map(x=>{n++;
+        [t.bloque,...bloques.filter(x=>x!==t.bloque)].map(b=>{
+          /* solo el bloque de esta lección se abre; los demás son una fila que lleva al mapa */
+          if(b!==t.bloque){const r=all.filter(x=>x.bloque===b),l=r.filter(x=>x.estado==='lista').length;
+            return '<a class="lk blk" href="'+mapUrl+'#b-'+b.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-')+'"><span class="dot">'+icon('right')+'</span><span>'+b+'<small>'+(l?l+' de '+r.length+' listas':r.length+' temas · muy pronto')+'</small></span></a>';}
+          n=0;return '<h3>'+b+'</h3>'+all.filter(x=>x.bloque===b).map(x=>{n++;
           if(x.estado!=='lista')return '<div class="lk soon"><span class="dot">'+n+'</span><span>'+x.titulo+'<small>Muy pronto</small></span></div>';
           const ok=progress.isDone(x.id);
-          return '<a class="lk'+(ok?' done':'')+'" href="'+BASE+x.url+'"'+(x.id===id?' aria-current="page"':'')+'><span class="dot">'+(ok?icon('check'):n)+'</span><span>'+x.titulo+'</span></a>';}).join('')).join('');
+          return '<a class="lk'+(ok?' done':'')+'" href="'+BASE+x.url+'"'+(x.id===id?' aria-current="page"':'')+'><span class="dot">'+(ok?icon('check'):n)+'</span><span>'+x.titulo+'</span></a>';}).join('')+'<h3>Otros bloques</h3>';}).join('').replace(/<h3>Otros bloques<\/h3>$/,'');
       const ub=list.filter(x=>progress.isDone(x.id)).length;
       const key=$('main .key[data-idea]')||$('main .key'); /* data-idea marca cuál es la idea clave de la lección */
       const end=t.materia==='matematica'?['examenes/index.html','Ir a exámenes']:['problemas/index.html','Ir a problemas'];
@@ -262,38 +266,53 @@ function lessonNav(id){
 }
 const paintSides=[];
 
-/* ---------- escena estilo Minecraft (dibujada con cuadrados, sin imágenes) ---------- */
-/* scene(g,w,h,s,{rails}) pinta cielo, nubes y suelo y devuelve {gy,B,u}: gy = altura del suelo, B = lado de un bloque, u = "pixel" de los dibujos.
-   cart(g,cx,gy,u) dibuja la vagoneta con las ruedas sobre el riel. */
-const mc={
-  hash:(i,j)=>{const n=Math.sin(i*127.1+j*311.7)*43758.5453;return n-Math.floor(n);},
-  scene(g,w,h,s,o={}){
-    const B=Math.max(10,Math.round(12*s)),u=Math.max(3,Math.round(4.5*s)),gy=Math.round(h*0.62/B)*B;
-    g.fillStyle=cv('--mc-sky');g.fillRect(0,0,w,gy);
-    g.fillStyle=cv('--mc-cloud');g.globalAlpha=0.9;
-    for(const[fx,fy,n]of[[0.08,0.16,4],[0.5,0.06,5],[0.8,0.24,3]]){const x=Math.round(fx*w/B)*B,y=Math.max(B,Math.round(fy*gy/B)*B);g.fillRect(x,y,n*B,B);g.fillRect(x+B,y-B,(n-2)*B,B);}
-    g.globalAlpha=1;
-    const g1=cv('--mc-grass'),g2=cv('--mc-grass2'),d1=cv('--mc-dirt'),d2=cv('--mc-dirt2'),q=Math.round(B/4);
-    for(let j=0;gy+j*B<h;j++)for(let i=0;i*B<w;i++){
-      const x=i*B,y=gy+j*B;
-      g.fillStyle=d1;g.fillRect(x,y,B,B);
-      if(j===0){g.fillStyle=g1;g.fillRect(x,y,B,Math.round(B*0.4));}
-      for(let k=0;k<4;k++){const r=mc.hash(i*4+k,j);if(r>0.55){g.fillStyle=(j===0&&k<2)?g2:d2;g.fillRect(x+q*(k%4),y+Math.round(q*(1+((r*10)|0)%3)),q,q);}}
-    }
-    if(o.rails){ /* riel: barra gris + durmientes de madera */
-      g.fillStyle=cv('--mc-wood');for(let x=Math.round(B*0.4);x<w;x+=Math.round(B*1.4))g.fillRect(x,gy-u,Math.round(u*1.6),u);
-      g.fillStyle=cv('--mc-iron');g.fillRect(0,gy-u,w,Math.max(1,Math.round(u/2)));}
-    return{gy,B,u};
+/* ---------- mapa de una materia ---------- */
+/* drawMap(host, 'matematica'): accesos a cada bloque y, por bloque, sus temas en filas (paso). Todo sale de TEMAS. */
+function drawMap(host,mat){
+  const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||id;
+  const temas=TEMAS.filter(t=>t.materia===mat),bloques=[...new Set(temas.map(t=>t.bloque))];
+  const slug=b=>'b-'+b.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-');
+  const count=b=>{const r=temas.filter(t=>t.bloque===b),l=r.filter(t=>t.estado==='lista');return [l.length,r.length,l.filter(t=>progress.isDone(t.id)).length];};
+  host.innerHTML='<nav class="blocks" aria-label="Bloques">'+bloques.map(b=>{const[c,n]=count(b);return '<a href="#'+slug(b)+'">'+b+'<small>'+c+' de '+n+'</small></a>';}).join('')+'</nav>'+
+  bloques.map(b=>{const tb=temas.filter(t=>t.bloque===b),pasos=[...new Set(tb.map(t=>t.paso))].sort((a,c)=>a-c),[c,n,d]=count(b);
+    return '<section class="bloque" id="'+slug(b)+'"><h2>'+b+'<small>'+(c?d+' de '+c+' entendidas · ':'')+n+' temas</small></h2><div class="map">'+pasos.map(p=>{
+      const row=tb.filter(t=>t.paso===p),has=row.some(t=>t.estado==='lista'),all=has&&row.every(t=>t.estado!=='lista'||progress.isDone(t.id));
+      return '<div class="lvl'+(has?' has':'')+(all?' all':'')+'"><div class="n"><span>'+(all?icon('check'):(p===0?'Base':p))+'</span></div><div class="row2">'+row.map(t=>{
+        const pre=t.antes.length?'<span class="pre">Antes: '+t.antes.map(name).join(', ')+'</span>':'';
+        if(t.estado!=='lista')return '<div class="tile off"><b>'+t.titulo+'</b><span>'+t.resumen+'</span>'+pre+'<em class="tag">Muy pronto</em></div>';
+        const dn=progress.isDone(t.id);
+        return '<a class="tile'+(dn?' ok':'')+'" href="'+BASE+t.url+'">'+(dn?'<em class="chk">'+icon('check')+'Entendido</em>':'')+'<b>'+t.titulo+'</b><span>'+t.resumen+'</span>'+pre+'</a>';
+      }).join('')+'</div></div>';}).join('')+'</div></section>';}).join('');
+}
+
+/* ---------- escenas de Física (dibujadas en canvas, colores --sc-*) ---------- */
+/* road(g,w,h,s) pinta cielo, lomas, pasto y una pista con línea discontinua; devuelve {gy,u}: gy = borde de arriba de la pista, u = unidad de dibujo.
+   car(g,cx,gy,u) dibuja un auto visto de lado con las ruedas sobre la pista. */
+const scene={
+  road(g,w,h,s){
+    const u=Math.max(3,Math.round(4.5*s)),gy=Math.round(h*0.6),rh=Math.round(h*0.22);
+    g.fillStyle=cv('--sc-sky');g.fillRect(0,0,w,gy);
+    g.fillStyle=cv('--sc-hill');g.beginPath();g.moveTo(0,gy);
+    for(let x=0;x<=w;x+=8)g.lineTo(x,gy-h*0.12-Math.sin(x/w*Math.PI*2.2+0.6)*h*0.07);
+    g.lineTo(w,gy);g.closePath();g.fill();
+    g.fillStyle=cv('--sc-grass');g.fillRect(0,gy-2*u,w,2*u);g.fillRect(0,gy+rh,w,h-gy-rh);
+    g.fillStyle=cv('--sc-road');g.fillRect(0,gy,w,rh);
+    g.fillStyle=cv('--sc-lane');const ly=gy+Math.round(rh/2)-Math.round(u/3);
+    for(let x=0;x<w;x+=10*u)g.fillRect(x,ly,5*u,Math.max(2,Math.round(u*0.6)));
+    return{gy,u};
   },
-  cart(g,cx,gy,u){
-    cx=Math.round(cx);const x=cx-6*u,y=gy-8*u;
-    g.fillStyle=cv('--mc-iron');g.fillRect(x,y,12*u,5*u);
-    g.fillStyle=cv('--mc-iron-d');g.fillRect(x+u,y,10*u,3*u);
-    g.fillRect(cx-4*u,gy-3*u,2*u,2*u);g.fillRect(cx+2*u,gy-3*u,2*u,2*u);
+  car(g,cx,gy,u){
+    cx=Math.round(cx);const y=gy+u;
+    g.fillStyle=cv('--sc-car');
+    g.beginPath();g.roundRect?g.roundRect(cx-9*u,y-6*u,18*u,4.5*u,1.2*u):g.rect(cx-9*u,y-6*u,18*u,4.5*u);g.fill();
+    g.beginPath();g.roundRect?g.roundRect(cx-5*u,y-9.5*u,10*u,4*u,[2*u,2*u,0,0]):g.rect(cx-5*u,y-9.5*u,10*u,4*u);g.fill();
+    g.fillStyle=cv('--sc-glass');g.fillRect(cx-4*u,y-8.6*u,3.6*u,2.8*u);g.fillRect(cx+0.4*u,y-8.6*u,3.6*u,2.8*u);
+    g.fillStyle=cv('--sc-tire');for(const d of[-5,5]){g.beginPath();g.arc(cx+d*u,y-1.6*u,2*u,0,7);g.fill();}
+    g.fillStyle=cv('--sc-glass');for(const d of[-5,5]){g.beginPath();g.arc(cx+d*u,y-1.6*u,0.8*u,0,7);g.fill();}
   }
 };
 
-window.Kit={$,$$,cv,nf,m,mc,icon,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
+window.Kit={$,$$,cv,nf,m,scene,icon,drawMap,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
 
 chrome();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{bindTerms();quiz();});
