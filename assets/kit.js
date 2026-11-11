@@ -4,6 +4,8 @@ const BASE = document.body.dataset.base || '';
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const cv = n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+/* m(): pega con espacio duro las operaciones (x − 1, 2 · 3) para que una fórmula no se parta a mitad de línea */
+const m = s=>String(s).replace(/ ([+−·×\/]) /g,'\u00A0$1\u00A0');
 const nf = (v,d=2)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
 const redraws = [];
 const onRedraw = fn=>{redraws.push(fn);fn();};
@@ -99,9 +101,9 @@ function stopTone(){if(audio){try{audio.osc.stop();audio.ctx.close();}catch(e){}
 const PANELS={
   funcion:{title:'Función: de Celsius a Fahrenheit',uses:['App del clima','Termómetros','Recetas en inglés'],
     intro:'Tu celular recibe la temperatura en °C y, si lo tienes en inglés, te la muestra en °F. Por dentro usa una función: entra C y sale F = 1,8·C + 32.',
-    ctl:[{id:'c',label:'Temperatura',min:-20,max:45,step:1,val:18,fmt:v=>v+' °C'}],
+    ctl:[{id:'c',label:'Temperatura',min:-20,max:45,step:1,val:18,fmt:v=>v+'\u202F°C'}],
     draw(v,c,r){const F=1.8*v.c+32;
-      plot(c,{xr:[-20,45],yr:[-10,120],xl:'°C',yl:'°F',fns:[{f:x=>1.8*x+32,color:cv('--c1')}],pts:[{x:v.c,y:F,color:cv('--c2'),label:v.c+' °C → '+nf(F,1)+' °F'}]});
+      plot(c,{xr:[-20,45],yr:[-10,120],xl:'°C',yl:'°F',fns:[{f:x=>1.8*x+32,color:cv('--c1')}],pts:[{x:v.c,y:F,color:cv('--c2'),label:v.c+'\u202F°C → '+nf(F,1)+' °F'}]});
       r.innerHTML='Entra <b>'+v.c+' °C</b> → la máquina hace × 1,8 + 32 → sale <b>'+nf(F,1)+' °F</b>.'+(v.c>=30?' ¡Hace calor!':v.c<=0?' Está helando.':'');}},
   dominio:{title:'Dominio y rango: la batería de tu celular',uses:['Batería','Datos móviles','Tanque de gasolina'],
     intro:'Si la batería baja un poco cada hora, la carga es una función del tiempo. El dominio son las horas que tiene sentido usar (desde 0 hasta que se apaga) y el rango son los porcentajes posibles (de 0 % a 100 %).',
@@ -202,7 +204,7 @@ function lessonNav(id){
   b.addEventListener('click',()=>{progress.set(id,!progress.isDone(id));paint();});paint();
 }
 
-window.Kit={$,$$,cv,nf,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
+window.Kit={$,$$,cv,nf,m,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
 
 chrome();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{bindTerms();quiz();});

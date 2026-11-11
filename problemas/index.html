@@ -54,7 +54,7 @@ const PROBLEMAS=[
   {id:'p11',tema:'trascendentes',nivel:1,en:'Calcula log₃ 81.',pista:'¿3 elevado a qué da 81?',sol:'3⁴ = 81<br>log₃ 81 = 4'},
   {id:'p12',tema:'trascendentes',nivel:3,en:'Hay 500 bacterias y se duplican cada hora. Escribe la función y calcula cuántas habrá en 5 horas.',pista:'Cada hora se multiplica por 2: es exponencial con base 2.',sol:'N(t) = 500 · 2ᵗ<br>N(5) = 500 · 32<br>= 16 000 bacterias'}
 ];
-const {$,$$,store}=Kit;
+const {$,$$,store,m}=Kit;
 const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||id;
 const temas=[...new Set(PROBLEMAS.map(p=>p.tema))];
 $('#fT').innerHTML='<button data-k="" aria-pressed="true">Todos los temas</button>'+temas.map(t=>'<button data-k="'+t+'" aria-pressed="false">'+name(t)+'</button>').join('');
@@ -63,8 +63,8 @@ function render(){const solved=store.get('resueltos',{});
   const list=PROBLEMAS.filter(p=>(!ft||p.tema===ft)&&(!fl||p.nivel===fl));
   $('#count').textContent=list.length+' problemas · resueltos: '+list.filter(p=>solved[p.id]).length;
   $('#list').innerHTML=list.map((p,i)=>'<article class="pb'+(solved[p.id]?' solved':'')+'"><div class="meta"><span>'+name(p.tema)+'</span><span class="lv">'+'★'.repeat(p.nivel)+'</span></div>'+
-    '<p class="en"><b>'+(i+1)+'.</b> '+p.en+'</p><details><summary>Ver pista</summary><p style="margin:6px 0">'+p.pista+'</p></details>'+
-    '<details><summary>Ver solución</summary><p class="sol">'+p.sol+'</p></details>'+
+    '<p class="en"><b>'+(i+1)+'.</b> '+m(p.en)+'</p><details><summary>Ver pista</summary><p style="margin:6px 0">'+m(p.pista)+'</p></details>'+
+    '<details><summary>Ver solución</summary><p class="sol">'+m(p.sol)+'</p></details>'+
     '<button class="btn '+(solved[p.id]?'':'ghost ')+'solvebtn" type="button" data-id="'+p.id+'">'+(solved[p.id]?'✓ Resuelto':'Lo resolví')+'</button></article>').join('');
   $$('.solvebtn').forEach(b=>b.addEventListener('click',()=>{const s=store.get('resueltos',{});if(s[b.dataset.id])delete s[b.dataset.id];else s[b.dataset.id]=1;store.set('resueltos',s);render();}));}
 function pick(host,cb){$$('button',host).forEach(b=>b.addEventListener('click',()=>{$$('button',host).forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset.k);render();}));}
