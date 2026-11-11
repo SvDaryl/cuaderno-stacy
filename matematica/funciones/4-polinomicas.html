@@ -6,7 +6,7 @@
 <title>Funciones polinómicas · El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/estilo.css">
 </head>
 <body data-base="../../" data-nav="matematica">
@@ -14,12 +14,6 @@
 <div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 4</span></div>
 <h1>Funciones polinómicas</h1>
 <p class="lede">Constante, lineal, cuadrática y cúbica: la misma idea, con una potencia de x más cada vez.</p>
-
-<h2>El grado lo dice todo</h2>
-<p>Un polinomio es una suma de potencias de x con números delante, como <code>4x³ − x + 7</code>. El <b>grado</b> es la potencia más alta, y casi decide sola la forma de la gráfica:</p>
-<div class="key"><b>Grado 0</b>: constante, recta horizontal · <b>Grado 1</b>: <button class="term" data-p="lineal">lineal</button>, recta inclinada · <b>Grado 2</b>: <button class="term" data-p="cuadratica">cuadrática</button>, parábola · <b>Grado 3</b>: <button class="term" data-p="cubica">cúbica</button>, forma de S<br><br>Un polinomio de grado n corta al eje x <b>como máximo n veces</b>.</div>
-
-<h2>Explora cada una</h2>
 <div class="card">
   <div class="seg" id="pSeg" role="group" aria-label="Elige el grado">
     <button data-k="c" aria-pressed="false">Constante</button><button data-k="l" aria-pressed="false">Lineal</button><button data-k="q" aria-pressed="true">Cuadrática</button><button data-k="k" aria-pressed="false">Cúbica</button>
@@ -28,6 +22,12 @@
   <canvas id="pC" data-w="660" data-h="340" aria-label="Gráfica del polinomio"></canvas>
   <div id="pCtl"></div>
   <div class="readout" id="pR" aria-live="polite"></div>
+
+
+<h2>El grado lo dice todo</h2>
+<p>Un polinomio es una suma de potencias de x con números delante, como <code>4x³ − x + 7</code>. El <b>grado</b> es la potencia más alta, y casi decide sola la forma de la gráfica:</p>
+<div class="key"><b>Grado 0</b>: constante, recta horizontal · <b>Grado 1</b>: <button class="term" data-p="lineal">lineal</button>, recta inclinada · <b>Grado 2</b>: <button class="term" data-p="cuadratica">cuadrática</button>, parábola · <b>Grado 3</b>: <button class="term" data-p="cubica">cúbica</button>, forma de S<br><br>Un polinomio de grado n corta al eje x <b>como máximo n veces</b>.</div>
+
 </div>
 
 <h2>La cuadrática por dentro</h2>

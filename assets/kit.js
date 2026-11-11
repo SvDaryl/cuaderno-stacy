@@ -22,16 +22,29 @@ const progress = {
   set(id,on){const a=this.all();if(on)a[id]=Date.now();else delete a[id];store.set('vistos',a);}
 };
 
+/* ---------- iconos (SVG de trazo, estilo Lucide) ---------- */
+const ICONS={
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  left:'<path d="m15 18-6-6 6-6"/>',right:'<path d="m9 18 6-6-6-6"/>',
+  play:'<path d="M7 4v16l13-8z"/>',pause:'<path d="M8 4v16M16 4v16"/>',again:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',book:'<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
+  map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',flag:'<path d="M4 22V4s1.5-1 5-1 5 2 8 2 3-1 3-1v11s-1 1-3 1-5-2-8-2-5 1-5 1"/>',
+  sound:'<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="1"/>'
+};
+const icon=(n,cls='')=>'<svg class="ico '+cls+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';
+
 /* ---------- barra superior y pie ---------- */
 function chrome(){
   const nav=document.body.dataset.nav||'';
-  const links=[['inicio','Inicio','index.html'],['matematica','Matemática','matematica/index.html'],['ejemplos','Ejemplos','ejemplos/index.html'],['problemas','Problemas','problemas/index.html'],['examenes','Exámenes','examenes/index.html']];
+  const links=[['inicio','Inicio','index.html'],['matematica','Matemática','matematica/index.html'],['fisica','Física','fisica/index.html'],['ejemplos','Ejemplos','ejemplos/index.html'],['problemas','Problemas','problemas/index.html'],['examenes','Exámenes','examenes/index.html']];
+  const ready=TEMAS.filter(t=>t.estado==='lista'),done=ready.filter(t=>progress.isDone(t.id)).length,p=ready.length?Math.round(done/ready.length*100):0;
   const h=document.createElement('header');h.className='top';
-  h.innerHTML='<nav aria-label="Secciones"><a class="brand" href="'+BASE+'index.html">'+SITE.nombre+'</a>'+
-    links.map(l=>'<a class="l" href="'+BASE+l[2]+'"'+(nav===l[0]?' aria-current="page"':'')+'>'+l[1]+'</a>').join('')+'</nav>';
+  h.innerHTML='<nav aria-label="Secciones"><a class="brand" href="'+BASE+'index.html"><i>'+icon('book')+'</i>'+SITE.nombre+'</a>'+
+    links.map(l=>'<a class="l" href="'+BASE+l[2]+'"'+(nav===l[0]?' aria-current="page"':'')+'>'+l[1]+'</a>').join('')+
+    '<a class="gp" href="'+BASE+'index.html" aria-label="Tu avance: '+done+' de '+ready.length+' lecciones entendidas"><span><b>'+done+'</b> de '+ready.length+' lecciones</span><span class="bar"><span style="--p:'+p+'%"></span></span></a></nav>';
   document.body.prepend(h);
   const f=document.createElement('footer');f.className='site';
-  f.textContent='Hecho con cariño para '+SITE.apodo+'. Tu avance se guarda en este celular.';
+  f.textContent='Hecho con cariño para '+SITE.apodo+'. Tu avance se guarda en esta laptop.';
   document.body.append(f);
 }
 
@@ -44,9 +57,9 @@ function prep(c){const dpr=Math.min(2,window.devicePixelRatio||1),w=+c.dataset.w
   if(c.width!==bw)c.width=bw; if(c.height!==bh)c.height=bh;
   const x=c.getContext('2d');x.setTransform(bw/w,0,0,bh/h,0,0);return{x,w,h,s};}
 function niceStep(r){const raw=r/6,p=Math.pow(10,Math.floor(Math.log10(raw))),m=raw/p;return(m<1.5?1:m<3.5?2:m<7.5?5:10)*p;}
-function fmtTick(v){const a=Math.abs(v);if(a>=1e6)return(v/1e6).toLocaleString('es-ES',{maximumFractionDigits:1})+' M';if(a>=1e4)return(v/1e3).toLocaleString('es-ES',{maximumFractionDigits:0})+' mil';return(Math.round(v*100)/100).toLocaleString('es-ES');}
+function fmtTick(v){const a=Math.abs(v);if(a>=1e6)return(v/1e6).toLocaleString('es-ES',{maximumFractionDigits:1})+' M';if(a>=1e4)return(v/1e3).toLocaleString('es-ES',{maximumFractionDigits:0})+' mil';return((Math.round(v*100)/100)||0).toLocaleString('es-ES');}
 /* opciones: xr,yr, xs,ys, xl,yl, fns[{f,color,width,dash,from,to}], pts[{x,y,color,label,hollow}],
-   xb:[[a,b,color]] franja en el eje x, yb:[[a,b,color]] franja en el eje y, vx:[{x,color}] rectas verticales */
+   xb:[[a,b,color]] franja en el eje x, fills:[{f,from,to,color,alpha}] área bajo la curva, yb:[[a,b,color]] franja en el eje y, vx:[{x,color}] rectas verticales */
 function plot(c,o){
   const{x:g,w,h,s}=prep(c),L=Math.round(52*s),R=Math.round(14*s),T=Math.round(14*s),B=Math.round(34*s);
   const[x0,x1]=o.xr,[y0,y1]=o.yr,X=v=>L+(v-x0)/(x1-x0)*(w-L-R),Y=v=>h-B-(v-y0)/(y1-y0)*(h-T-B);
@@ -66,6 +79,10 @@ function plot(c,o){
   for(const b of o.xb||[]){const a=Math.max(b[0],x0),e=Math.min(b[1],x1);if(e<=a)continue;g.fillStyle=b[2];g.globalAlpha=0.12;g.fillRect(X(a),T,X(e)-X(a),h-T-B);g.globalAlpha=1;g.fillRect(X(a),ax-4*s,X(e)-X(a),8*s);}
   for(const b of o.yb||[]){const a=Math.max(b[0],y0),e=Math.min(b[1],y1);if(e<=a)continue;g.fillStyle=b[2];g.globalAlpha=0.12;g.fillRect(L,Y(e),w-L-R,Y(a)-Y(e));g.globalAlpha=1;g.fillRect(ay-4*s,Y(e),8*s,Y(a)-Y(e));}
   for(const v of o.vx||[]){g.strokeStyle=v.color;g.lineWidth=2*s;g.setLineDash([6*s,5*s]);g.beginPath();g.moveTo(X(v.x),T);g.lineTo(X(v.x),h-B);g.stroke();g.setLineDash([]);}
+  for(const a of o.fills||[]){ /* área entre la curva y el eje x: {f, from, to, color, alpha} */
+    g.fillStyle=a.color;g.globalAlpha=a.alpha||0.2;g.beginPath();g.moveTo(X(a.from),Y(0));const N=a.n||120;
+    for(let i=0;i<=N;i++){const xv=a.from+(a.to-a.from)*i/N;g.lineTo(X(xv),Y(a.f(xv)));}
+    g.lineTo(X(a.to),Y(0));g.closePath();g.fill();g.globalAlpha=1;}
   for(const f of o.fns||[]){g.strokeStyle=f.color;g.lineWidth=(f.width||3)*s;g.setLineDash((f.dash||[]).map(d=>d*s));g.lineCap='round';g.lineJoin='round';g.beginPath();let pen=false,py=null;
     const a=f.from??x0,b=f.to??x1,N=f.n||500;
     for(let i=0;i<=N;i++){const xv=a+(b-a)*i/N,yv=f.f(xv),span=y1-y0;
@@ -111,6 +128,13 @@ const PANELS={
     draw(v,c,r){const end=100/v.r;
       plot(c,{xr:[0,20],yr:[0,110],xs:2,ys:20,xl:'horas',yl:'%',xb:[[0,end,cv('--c1')]],yb:[[0,100,cv('--c2')]],fns:[{f:x=>100-v.r*x,color:cv('--c3'),from:0,to:end}],pts:[{x:end,y:0,color:cv('--c2'),label:'se apaga'}]});
       r.innerHTML='Dominio: <b>[0 ; '+nf(end,1)+'] horas</b>. Rango: <b>[0 ; 100] %</b>. Pasadas las '+nf(end,1)+' h la fórmula daría negativo, pero eso ya no tiene sentido: está fuera del dominio.';}},
+  mru:{title:'MRU: la vagoneta de Minecraft',uses:['Vagonetas en minas','Rieles potenciados','Granjas automáticas'],
+    intro:'En Minecraft, una vagoneta sobre un riel potenciado va a velocidad constante (como máximo 8 bloques por segundo). Cada segundo avanza lo mismo, así que la gráfica de distancia contra tiempo es una recta.',
+    ctl:[{id:'v',label:'Velocidad',min:1,max:8,step:1,val:6,fmt:v=>v+' bloques/s',hint:'Más velocidad, recta más empinada.'},
+         {id:'t',label:'Tiempo',min:0,max:30,step:1,val:12,fmt:v=>v+' s'}],
+    draw(v,c,r){const d=v.v*v.t;
+      plot(c,{xr:[0,30],yr:[0,240],xs:5,ys:40,xl:'segundos',yl:'bloques',fns:[{f:x=>v.v*x,color:cv('--c1')}],pts:[{x:v.t,y:d,color:cv('--c2'),label:d+' bloques'}]});
+      r.innerHTML='A <b>'+v.v+' bloques/s</b>, en <b>'+v.t+' s</b> recorre '+v.v+' × '+v.t+' = <b>'+d+' bloques</b> (1 bloque = 1 m).';}},
   lineal:{title:'Función lineal: el precio de un taxi',uses:['Taxis y apps de viaje','Planes de celular','Recibo de luz'],
     intro:'Un taxi cobra un monto fijo al subir (la b) y un precio por cada kilómetro (la m, o pendiente). El total es y = m·x + b. Cada kilómetro suma lo mismo, por eso la gráfica es una recta.',
     ctl:[{id:'b',label:'Al subir (b)',min:0,max:10,step:0.5,val:4,fmt:v=>'S/ '+nf(v),hint:'Sube o baja la recta.'},
@@ -148,22 +172,22 @@ const PANELS={
   seno:{title:'Función seno: el sonido de una nota',uses:['Música','Audífonos y parlantes','Señal de radio y wifi'],
     intro:'Un sonido puro es una onda seno: y = A·sen(2π·f·t). La amplitud A es el volumen y la frecuencia f es el tono: más vueltas por segundo, más agudo. La nota La de un afinador vibra 440 veces por segundo.',
     ctl:[{id:'A',label:'Volumen (A)',min:0.1,max:1,step:0.05,val:0.6,fmt:v=>nf(v,2)},{id:'f',label:'Tono (f)',min:220,max:880,step:1,val:440,fmt:v=>v+' Hz'}],
-    extra:'<div class="row"><button class="btn" type="button" id="toneBtn">▶ Escuchar</button><span class="muted" style="font-size:14px">Baja el volumen del celular primero.</span></div>',
+    extra:'<div class="row"><button class="btn" type="button" id="toneBtn">'+icon('sound')+'Escuchar</button><span class="muted" style="font-size:14px">Baja el volumen de la laptop primero.</span></div>',
     draw(v,c,r){plot(c,{xr:[0,10],yr:[-1.1,1.1],xs:1,ys:0.5,xl:'milisegundos',fns:[{f:t=>v.A*Math.sin(2*Math.PI*v.f*t/1000),color:cv('--c1'),width:2.5,n:900}]});
       const notes=[[220,'La grave'],[262,'Do'],[330,'Mi'],[392,'Sol'],[440,'La'],[523,'Do agudo'],[659,'Mi agudo'],[880,'La agudo']];let near=notes.reduce((a,b)=>Math.abs(b[0]-v.f)<Math.abs(a[0]-v.f)?b:a);
       r.innerHTML='En 10 milisegundos la onda da <b>'+nf(v.f/100,1)+'</b> vueltas. Suena parecido a <b>'+near[1]+'</b>.';
       if(audio){audio.osc.frequency.setTargetAtTime(v.f,audio.ctx.currentTime,0.02);audio.gain.gain.setTargetAtTime(v.A*0.25,audio.ctx.currentTime,0.02);}},
     mount(vals){const b=$('#toneBtn');b.addEventListener('click',()=>{
-      if(audio){stopTone();b.textContent='▶ Escuchar';return;}
+      if(audio){stopTone();b.innerHTML=icon('sound')+'Escuchar';return;}
       try{const AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),osc=ctx.createOscillator(),gain=ctx.createGain();
-        osc.type='sine';osc.frequency.value=vals.f;gain.gain.value=vals.A*0.25;osc.connect(gain).connect(ctx.destination);osc.start();audio={ctx,osc,gain};b.textContent='■ Parar';}
+        osc.type='sine';osc.frequency.value=vals.f;gain.gain.value=vals.A*0.25;osc.connect(gain).connect(ctx.destination);osc.start();audio={ctx,osc,gain};b.innerHTML=icon('stop')+'Parar';}
       catch(e){b.textContent='Tu navegador no dejó reproducir el sonido';}});}}
 };
 let dlg=null,cur=null,curVals=null;
 function ensureDialog(){
   if(dlg)return;
   dlg=document.createElement('dialog');dlg.setAttribute('aria-labelledby','pT');
-  dlg.innerHTML='<div class="sheet"><header><div><p class="kick">¿Dónde se usa?</p><h3 id="pT"></h3></div><button class="close" type="button" aria-label="Cerrar">×</button></header><div class="uses" id="pU"></div><p id="pI"></p><div class="canvaswrap"><canvas id="pC" data-w="640" data-h="300"></canvas></div><div id="pCtl"></div><div id="pX"></div><div class="readout" id="pR" aria-live="polite"></div></div>';
+  dlg.innerHTML='<div class="sheet"><header><h3 id="pT"></h3><button class="close" type="button" aria-label="Cerrar">'+icon('x')+'</button></header><div class="uses" id="pU"></div><p id="pI"></p><div class="canvaswrap"><canvas id="pC" data-w="640" data-h="300"></canvas></div><div id="pCtl"></div><div id="pX"></div><div class="readout" id="pR" aria-live="polite"></div></div>';
   document.body.append(dlg);
   $('.close',dlg).addEventListener('click',()=>dlg.close());
   dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close();});
@@ -171,7 +195,7 @@ function ensureDialog(){
 }
 function openPanel(k){
   const p=PANELS[k];if(!p)return;ensureDialog();cur=p;
-  $('#pT').textContent=p.title;$('#pI').textContent=p.intro;$('#pU').innerHTML=p.uses.map(u=>'<span>'+u+'</span>').join('');
+  $('#pT').textContent=p.title;$('#pI').textContent=p.intro;$('#pU').innerHTML='Se usa en '+p.uses.map(u=>'<span>'+u+'</span>').join('');
   $('#pX').innerHTML=p.extra||'';
   curVals=controls($('#pCtl'),p.ctl,vv=>{curVals=vv;p.draw(vv,$('#pC'),$('#pR'));});
   dlg.showModal();p.draw(curVals,$('#pC'),$('#pR'));if(p.mount)p.mount(curVals);
@@ -193,18 +217,83 @@ function quiz(root=document){
 }
 
 /* ---------- navegación entre lecciones ---------- */
+/* lessonNav('id'): arma el curso alrededor de la lección (barra lateral con las unidades de la materia,
+   columna derecha con el avance y "Siguiente") y pone anterior / entendido / siguiente al final. */
 function lessonNav(id){
-  const host=$('#lessonnav');if(!host)return;
-  const t=TEMAS.find(x=>x.id===id),list=TEMAS.filter(x=>x.bloque===t.bloque&&x.estado==='lista'),i=list.indexOf(t);
-  const prev=list[i-1],next=list[i+1];
-  host.innerHTML=(prev?'<a class="btn ghost" href="'+BASE+prev.url+'">← '+prev.titulo+'</a>':'<a class="btn ghost" href="'+BASE+'matematica/index.html">← Mapa de temas</a>')+
-    '<button class="btn done-btn" type="button" aria-pressed="false"></button>'+
-    (next?'<a class="btn ghost" href="'+BASE+next.url+'">'+next.titulo+' →</a>':'<a class="btn ghost" href="'+BASE+'examenes/index.html">Ir a los exámenes →</a>');
-  const b=$('.done-btn',host),paint=()=>{const d=progress.isDone(id);b.setAttribute('aria-pressed',d);b.textContent=d?'✓ Ya lo entendí':'Marcar como entendido';};
-  b.addEventListener('click',()=>{progress.set(id,!progress.isDone(id));paint();});paint();
+  const t=TEMAS.find(x=>x.id===id);if(!t)return;
+  const mat=MATERIAS.find(x=>x.id===t.materia)||{nombre:''};
+  const all=TEMAS.filter(x=>x.materia===t.materia),bloques=[...new Set(all.map(x=>x.bloque))];
+  const list=TEMAS.filter(x=>x.bloque===t.bloque&&x.estado==='lista'),i=list.indexOf(t),prev=list[i-1],next=list[i+1];
+  const mapUrl=BASE+t.materia+'/index.html';
+  const main=$('main');
+  if(main&&!main.parentElement.classList.contains('shell')){
+    const shell=document.createElement('div');shell.className='shell';main.before(shell);
+    const side=document.createElement('aside');side.className='side';side.setAttribute('aria-label','Lecciones de '+mat.nombre);
+    const rail=document.createElement('aside');rail.className='rail';rail.setAttribute('aria-label','Tu avance');
+    shell.append(side,main,rail);
+    const paintSide=()=>{
+      const ready=all.filter(x=>x.estado==='lista'),d=ready.filter(x=>progress.isDone(x.id)).length;
+      let n=0;
+      side.innerHTML='<h2><a href="'+mapUrl+'" style="color:inherit;text-decoration:none">'+mat.nombre+'</a></h2><p class="sub">'+d+' de '+ready.length+' lecciones entendidas</p>'+
+        '<span class="bar"><span style="--p:'+(ready.length?d/ready.length*100:0)+'%"></span></span>'+
+        bloques.map(b=>'<h3>'+b+'</h3>'+all.filter(x=>x.bloque===b).map(x=>{n++;
+          if(x.estado!=='lista')return '<div class="lk soon"><span class="dot">'+n+'</span><span>'+x.titulo+'<small>Muy pronto</small></span></div>';
+          const ok=progress.isDone(x.id);
+          return '<a class="lk'+(ok?' done':'')+'" href="'+BASE+x.url+'"'+(x.id===id?' aria-current="page"':'')+'><span class="dot">'+(ok?icon('check'):n)+'</span><span>'+x.titulo+'</span></a>';}).join('')).join('');
+      const ub=list.filter(x=>progress.isDone(x.id)).length;
+      const key=$('main .key[data-idea]')||$('main .key'); /* data-idea marca cuál es la idea clave de la lección */
+      const end=t.materia==='matematica'?['examenes/index.html','Ir a exámenes']:['problemas/index.html','Ir a problemas'];
+      rail.innerHTML='<div class="box"><button class="btn done-btn" type="button" aria-pressed="false"></button>'+
+        (next?'<a class="btn ghost" href="'+BASE+next.url+'">Siguiente'+icon('right')+'</a><p>Sigue: '+next.titulo+'</p>':'<a class="btn ghost" href="'+BASE+end[0]+'">'+end[1]+icon('right')+'</a><p>Terminaste lo que hay de '+t.bloque+' por ahora.</p>')+'</div>'+(key?'<div class="box idea"><h2>Idea clave</h2>'+key.innerHTML+'</div>':'')+'<div class="box"><h2>'+t.bloque+'</h2><span class="bar"><span style="--p:'+(list.length?ub/list.length*100:0)+'%"></span></span><p>'+ub+' de '+list.length+' lecciones listas de esta unidad.</p></div>';
+      wireDone();
+    };
+    paintSides.push(paintSide);paintSide();
+  }
+  const host=$('#lessonnav');
+  if(host){
+    host.innerHTML=(prev?'<a class="btn ghost" href="'+BASE+prev.url+'">'+icon('left')+prev.titulo+'</a>':'<a class="btn ghost" href="'+mapUrl+'">'+icon('map')+'Mapa de '+mat.nombre+'</a>')+
+      '<button class="btn done-btn" type="button" aria-pressed="false"></button>'+
+      (next?'<a class="btn ghost" href="'+BASE+next.url+'">'+next.titulo+icon('right')+'</a>':(t.materia==='matematica'?'<a class="btn ghost" href="'+BASE+'examenes/index.html">Ir a los exámenes'+icon('right')+'</a>':'<a class="btn ghost" href="'+BASE+'problemas/index.html">Practica con problemas'+icon('right')+'</a>'));
+  }
+  function wireDone(){$$('.done-btn').forEach(b=>{if(b.dataset.w)return;b.dataset.w=1;b.addEventListener('click',()=>{progress.set(id,!progress.isDone(id));paintSides.forEach(f=>f());paintDone();});});paintDone();}
+  function paintDone(){const d=progress.isDone(id);$$('.done-btn').forEach(b=>{b.setAttribute('aria-pressed',d);b.innerHTML=d?icon('check')+'Entendido':'Lo entendí';b.setAttribute('aria-label',d?'Lección marcada como entendida. Toca para desmarcar':'Marcar la lección como entendida');});
+    const top=$('.top .gp');if(top){const r=TEMAS.filter(x=>x.estado==='lista'),dn=r.filter(x=>progress.isDone(x.id)).length;top.querySelector('b').textContent=dn;top.querySelector('.bar>span').style.setProperty('--p',(r.length?dn/r.length*100:0)+'%');}}
+  wireDone();
 }
+const paintSides=[];
 
-window.Kit={$,$$,cv,nf,m,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
+/* ---------- escena estilo Minecraft (dibujada con cuadrados, sin imágenes) ---------- */
+/* scene(g,w,h,s,{rails}) pinta cielo, nubes y suelo y devuelve {gy,B,u}: gy = altura del suelo, B = lado de un bloque, u = "pixel" de los dibujos.
+   cart(g,cx,gy,u) dibuja la vagoneta con las ruedas sobre el riel. */
+const mc={
+  hash:(i,j)=>{const n=Math.sin(i*127.1+j*311.7)*43758.5453;return n-Math.floor(n);},
+  scene(g,w,h,s,o={}){
+    const B=Math.max(10,Math.round(12*s)),u=Math.max(3,Math.round(4.5*s)),gy=Math.round(h*0.62/B)*B;
+    g.fillStyle=cv('--mc-sky');g.fillRect(0,0,w,gy);
+    g.fillStyle=cv('--mc-cloud');g.globalAlpha=0.9;
+    for(const[fx,fy,n]of[[0.08,0.16,4],[0.5,0.06,5],[0.8,0.24,3]]){const x=Math.round(fx*w/B)*B,y=Math.max(B,Math.round(fy*gy/B)*B);g.fillRect(x,y,n*B,B);g.fillRect(x+B,y-B,(n-2)*B,B);}
+    g.globalAlpha=1;
+    const g1=cv('--mc-grass'),g2=cv('--mc-grass2'),d1=cv('--mc-dirt'),d2=cv('--mc-dirt2'),q=Math.round(B/4);
+    for(let j=0;gy+j*B<h;j++)for(let i=0;i*B<w;i++){
+      const x=i*B,y=gy+j*B;
+      g.fillStyle=d1;g.fillRect(x,y,B,B);
+      if(j===0){g.fillStyle=g1;g.fillRect(x,y,B,Math.round(B*0.4));}
+      for(let k=0;k<4;k++){const r=mc.hash(i*4+k,j);if(r>0.55){g.fillStyle=(j===0&&k<2)?g2:d2;g.fillRect(x+q*(k%4),y+Math.round(q*(1+((r*10)|0)%3)),q,q);}}
+    }
+    if(o.rails){ /* riel: barra gris + durmientes de madera */
+      g.fillStyle=cv('--mc-wood');for(let x=Math.round(B*0.4);x<w;x+=Math.round(B*1.4))g.fillRect(x,gy-u,Math.round(u*1.6),u);
+      g.fillStyle=cv('--mc-iron');g.fillRect(0,gy-u,w,Math.max(1,Math.round(u/2)));}
+    return{gy,B,u};
+  },
+  cart(g,cx,gy,u){
+    cx=Math.round(cx);const x=cx-6*u,y=gy-8*u;
+    g.fillStyle=cv('--mc-iron');g.fillRect(x,y,12*u,5*u);
+    g.fillStyle=cv('--mc-iron-d');g.fillRect(x+u,y,10*u,3*u);
+    g.fillRect(cx-4*u,gy-3*u,2*u,2*u);g.fillRect(cx+2*u,gy-3*u,2*u,2*u);
+  }
+};
+
+window.Kit={$,$$,cv,nf,m,mc,icon,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
 
 chrome();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{bindTerms();quiz();});
@@ -212,7 +301,7 @@ else{bindTerms();quiz();}
 document.fonts&&document.fonts.ready.then(redrawAll);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{redrawAll();if(dlg&&dlg.open&&cur)cur.draw(curVals,$('#pC'),$('#pR'));});
 new MutationObserver(redrawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-/* al girar el celular o cambiar el ancho, se redibuja una sola vez (no en cada píxel) */
+/* al cambiar el tamaño de la ventana, se redibuja una sola vez (no en cada píxel) */
 let lastW=window.innerWidth,rz=0;
 window.addEventListener('resize',()=>{if(window.innerWidth===lastW)return;lastW=window.innerWidth;cancelAnimationFrame(rz);
   rz=requestAnimationFrame(()=>{redrawAll();if(dlg&&dlg.open&&cur)cur.draw(curVals,$('#pC'),$('#pR'));});});

@@ -12,7 +12,7 @@ window.SITE = {
 
 window.MATERIAS = [
   { id:'matematica', nombre:'Matemática', desc:'Funciones, y después límites y derivadas.', url:'matematica/index.html', activa:true },
-  { id:'fisica',     nombre:'Física',     desc:'Movimiento, fuerzas y energía.',            url:'',  activa:false },
+  { id:'fisica',     nombre:'Física',     desc:'Movimiento, fuerzas y energía.',            url:'fisica/index.html',  activa:true },
   { id:'quimica',    nombre:'Química',    desc:'Átomos, tabla periódica y reacciones.',     url:'',  activa:false }
 ];
 
@@ -32,11 +32,19 @@ window.TEMAS = [
   { id:'derivadas',    materia:'matematica', bloque:'Funciones', paso:7, titulo:'Derivadas',                 resumen:'La pendiente en cada punto: qué tan rápido cambia.', antes:['limites'], estado:'pronto' }
 ];
 
+/* Física · Cinemática (materia:'fisica'). Mismo formato que Matemática. */
+TEMAS.push(
+  { id:'mru',  materia:'fisica', bloque:'Cinemática', paso:1, titulo:'MRU: velocidad constante',        resumen:'La vagoneta de Minecraft: avanzar recto sin acelerar ni frenar.', antes:['funcion'], estado:'lista', url:'fisica/cinematica/1-mru.html', fecha:'2026-11-11' },
+  { id:'mruv', materia:'fisica', bloque:'Cinemática', paso:2, titulo:'MRUV: la velocidad cambia',       resumen:'Acelerar y frenar de forma pareja.', antes:['mru'], estado:'pronto' },
+  { id:'caida',materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Caída libre',                     resumen:'El MRUV de todo lo que cae.', antes:['mruv'], estado:'pronto' }
+);
+
 /* Ejemplos de uso: los que tienen "panel" se abren en la misma página. */
 window.EJEMPLOS = [
   { panel:'funcion',     titulo:'De °C a °F',            tema:'funcion' },
   { panel:'dominio',     titulo:'La batería del celular', tema:'dominio' },
   { panel:'lineal',      titulo:'El precio de un taxi',   tema:'polinomicas' },
+  { panel:'mru',         titulo:'La vagoneta de Minecraft',        tema:'mru' },
   { panel:'cuadratica',  titulo:'El camino de un balón',  tema:'polinomicas' },
   { panel:'cubica',      titulo:'La caja más grande',     tema:'polinomicas' },
   { panel:'exponencial', titulo:'Un chisme en WhatsApp',  tema:'trascendentes' },

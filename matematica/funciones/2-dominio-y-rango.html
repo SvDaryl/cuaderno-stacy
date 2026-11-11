@@ -6,7 +6,7 @@
 <title>Dominio y rango · El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/estilo.css">
 <style>
 .lg{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin:8px 4px 0}
@@ -22,11 +22,6 @@
 <div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 2</span></div>
 <h1>Dominio y rango</h1>
 <p class="lede">Qué números pueden entrar a la máquina y cuáles pueden salir.</p>
-
-<h2>Dos preguntas</h2>
-<p>El <button class="term" data-p="dominio">dominio</button> es el conjunto de todas las <b>entradas</b> permitidas, los valores de x que la función acepta. El <b>rango</b> es el conjunto de todas las <b>salidas</b> que la función puede dar, los valores de y.</p>
-<p>En una gráfica es fácil verlos: el dominio es la “sombra” de la gráfica sobre el eje x, y el rango es su sombra sobre el eje y.</p>
-
 <div class="card">
   <div class="seg" id="dSeg" role="group" aria-label="Elige la función">
     <button data-k="par" aria-pressed="true">x² en un tramo</button><button data-k="raiz" aria-pressed="false">√(x − h)</button><button data-k="frac" aria-pressed="false">1 / (x − h)</button><button data-k="lin" aria-pressed="false">2x + 1 en un tramo</button>
@@ -37,6 +32,12 @@
   <div id="dCtl"></div>
   <div class="readout" id="dR" aria-live="polite"></div>
 </div>
+
+
+<h2>Dos preguntas</h2>
+<p>El <button class="term" data-p="dominio">dominio</button> es el conjunto de todas las <b>entradas</b> permitidas, los valores de x que la función acepta. El <b>rango</b> es el conjunto de todas las <b>salidas</b> que la función puede dar, los valores de y.</p>
+<p>En una gráfica es fácil verlos: el dominio es la “sombra” de la gráfica sobre el eje x, y el rango es su sombra sobre el eje y.</p>
+
 
 <h2>Cómo encontrarlo sin gráfica</h2>
 <p>Casi siempre el dominio son <b>todos los reales</b> (ℝ), salvo que haya algo prohibido. En el colegio vas a ver sobre todo dos prohibiciones:</p>

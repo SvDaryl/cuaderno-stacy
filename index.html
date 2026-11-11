@@ -6,67 +6,88 @@
 <title>El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/estilo.css">
 <style>
-.hello{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin:18px 0 8px}
-.ring{width:96px;height:96px}
-@media (max-width:520px){.hello{grid-template-columns:1fr 72px;gap:12px;align-items:start}.ring{width:72px;height:72px}.hello .lede{font-size:17px}}
-.next{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--accent);color:var(--on-accent);border-radius:20px;padding:18px 20px;margin:22px 0;text-decoration:none}
-.next small{display:block;opacity:.85;font-size:14px}
-.next b{font-family:var(--display);font-size:24px;font-weight:700;line-height:1.15}
-.next .go{background:var(--card);color:var(--accent);border-radius:999px;padding:6px 16px;font-size:15px}
-.news li{margin:6px 0}
+.home{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:40px;align-items:start}
+.hello h1{font-size:44px}
+.hello p{margin:6px 0 0;color:var(--muted);font-size:17px}
+.cont{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;margin:28px 0 8px;padding:28px 30px;border-radius:24px;text-decoration:none;color:var(--on-accent);
+  background:var(--accent);box-shadow:var(--shadow-lg);transition:transform .2s var(--ease)}
+.cont:hover{transform:translateY(-2px)}
+.cont:active{transform:translateY(1px)}
+.cont b{display:block;font-size:30px;font-weight:700;line-height:1.15;letter-spacing:-.02em}
+.cont span.m{display:block;margin-top:8px;font-size:15px;opacity:.88}
+.cont .go{display:inline-flex;align-items:center;gap:8px;background:var(--card);color:var(--accent-ink);font-weight:600;border-radius:14px;padding:0 22px;min-height:52px;box-shadow:inset 0 -4px 0 var(--line-2)}
+.mats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:16px 0}
+.mat .bar{margin-top:16px}
+.mat .n{display:block;margin-top:8px;font-size:14px;color:var(--muted)}
+.mat .n b{color:var(--ink);font-weight:600;font-size:14px;display:inline}
+.prac{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:16px 0}
+.news{list-style:none;padding:0;margin:0}
+.news li{border-top:1px solid var(--line)}
+.news li:first-child{border-top:0}
+.news a{display:flex;flex-direction:column;gap:2px;padding:14px 4px;text-decoration:none;color:var(--ink);font-weight:500;font-size:15px;line-height:1.4;min-height:48px}
+.news a:hover{color:var(--accent-ink)}
+.news small{color:var(--muted);font-weight:400;font-size:13px}
+.aside .box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 22px 12px;box-shadow:var(--shadow);margin-top:6px}
+.aside h2{font-size:18px;margin:0 0 6px}
+.stat{display:flex;align-items:baseline;gap:8px;margin:4px 0 14px}
+.stat b{font-size:36px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:15px}
 </style>
 </head>
 <body data-base="" data-nav="inicio">
 <main class="wide">
-  <div class="hello">
+  <div class="home">
     <div>
-      <p class="muted" style="margin:0" id="fecha"></p>
-      <h1 id="hola">Hola</h1>
-      <p class="lede" style="margin-top:6px">Aquí vas a encontrar lecciones que se pueden tocar y mover, ejemplos de la vida real, problemas y exámenes. Voy agregando cosas nuevas seguido.</p>
+      <div class="hello"><h1 id="hola">Hola</h1><p id="fecha"></p></div>
+      <a class="cont" id="next" href="#"><span><b id="nextT"></b><span class="m" id="nextM"></span></span><span class="go" id="nextGo">Continuar</span></a>
+
+      <h2>Tus materias</h2>
+      <div class="mats" id="materias"></div>
+
+      <h2>Para practicar</h2>
+      <div class="prac">
+        <a class="tile" href="ejemplos/index.html"><b>Ejemplos de uso</b><span>Dónde se usa lo que aprendes: taxis, sismos, música y Minecraft.</span></a>
+        <a class="tile" href="problemas/index.html"><b>Problemas</b><span>Ejercicios con pista y solución paso a paso.</span></a>
+        <a class="tile" href="examenes/index.html"><b>Exámenes</b><span>Ponte a prueba y mándame tu nota por WhatsApp.</span></a>
+      </div>
     </div>
-    <svg class="ring" viewBox="0 0 100 100" role="img" aria-labelledby="ringT"><title id="ringT">Tu avance</title>
-      <circle cx="50" cy="50" r="42" fill="none" stroke="var(--line)" stroke-width="10"/>
-      <circle id="arc" cx="50" cy="50" r="42" fill="none" stroke="var(--c3)" stroke-width="10" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="0 264"/>
-      <text id="pct" x="50" y="56" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="700" font-size="22" fill="var(--ink)">0%</text>
-    </svg>
+    <aside class="aside">
+      <div class="box">
+        <h2>Tu avance</h2>
+        <div class="stat"><b id="dn">0</b><span id="dt">de 0 lecciones entendidas</span></div>
+        <span class="bar"><span id="dbar"></span></span>
+        <h2 style="margin-top:26px">Lo nuevo</h2>
+        <ul class="news" id="news"></ul>
+      </div>
+    </aside>
   </div>
-
-  <a class="next" id="next" href="#"><span><small>Sigue con</small><b id="nextT"></b></span><span class="go">Empezar →</span></a>
-
-  <h2>Materias</h2>
-  <div class="grid" id="materias"></div>
-
-  <h2>Para practicar</h2>
-  <div class="grid">
-    <a class="tile" href="ejemplos/index.html"><b>Ejemplos de uso</b><span>Dónde se usa lo que aprendes: taxis, balones, sismos, música…</span></a>
-    <a class="tile" href="problemas/index.html"><b>Problemas</b><span>Ejercicios con pistas y soluciones paso a paso.</span></a>
-    <a class="tile" href="examenes/index.html"><b>Exámenes</b><span>Ponte a prueba y mándame tu nota por WhatsApp.</span></a>
-  </div>
-
-  <h2>Lo nuevo</h2>
-  <ul class="news" id="news"></ul>
 </main>
 <script src="assets/datos.js"></script>
 <script src="assets/kit.js"></script>
 <script>
 (function(){
-const {$,progress}=Kit;
+const {$,progress,icon}=Kit;
 $('#hola').textContent='Hola, '+SITE.apodo;
-$('#fecha').textContent=new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
-const ready=TEMAS.filter(t=>t.estado==='lista'),done=ready.filter(t=>progress.isDone(t.id)).length,p=ready.length?done/ready.length:0;
-$('#arc').setAttribute('stroke-dasharray',(264*p).toFixed(1)+' 264');$('#pct').textContent=Math.round(p*100)+'%';
+const hoy=new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'});
+$('#fecha').textContent=hoy.charAt(0).toUpperCase()+hoy.slice(1)+'. ¿Qué aprendemos hoy?';
+const ready=TEMAS.filter(t=>t.estado==='lista'),done=ready.filter(t=>progress.isDone(t.id)).length;
+$('#dn').textContent=done;$('#dt').textContent='de '+ready.length+' lecciones entendidas';
+$('#dbar').style.setProperty('--p',(ready.length?done/ready.length*100:0)+'%');
+const mname=id=>(MATERIAS.find(m=>m.id===id)||{}).nombre||'';
 const nxt=ready.find(t=>!progress.isDone(t.id));
-if(nxt){$('#nextT').textContent=nxt.titulo;$('#next').href=nxt.url;}
-else{$('#nextT').textContent='¡Terminaste todo! Prueba un examen';$('#next').href='examenes/index.html';}
+$('#nextGo').innerHTML=(done?'Continuar':'Empezar')+icon('right');
+if(nxt){$('#nextT').textContent=nxt.titulo;$('#nextM').textContent=mname(nxt.materia)+' · '+nxt.bloque+' · '+nxt.resumen;$('#next').href=nxt.url;}
+else{$('#nextT').textContent='Terminaste todas las lecciones';$('#nextM').textContent='Ahora prueba un examen y mándame tu nota.';$('#next').href='examenes/index.html';}
 $('#materias').innerHTML=MATERIAS.map(m=>{
-  const n=TEMAS.filter(t=>t.materia===m.id&&t.estado==='lista').length;
-  return m.activa?'<a class="tile" href="'+m.url+'"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">'+n+' lecciones</em></a>'
-                 :'<div class="tile off"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">Muy pronto</em></div>';}).join('');
+  const r=TEMAS.filter(t=>t.materia===m.id&&t.estado==='lista'),d=r.filter(t=>progress.isDone(t.id)).length;
+  return m.activa?'<a class="tile mat" href="'+m.url+'"><b>'+m.nombre+'</b><span>'+m.desc+'</span><span class="bar"><span style="--p:'+(r.length?d/r.length*100:0)+'%"></span></span><span class="n"><b>'+d+' de '+r.length+'</b> lecciones entendidas</span></a>'
+                 :'<div class="tile mat off"><b>'+m.nombre+'</b><span>'+m.desc+'</span><em class="tag">Muy pronto</em></div>';}).join('');
+const fmt=f=>f?new Date(f+'T12:00').toLocaleDateString('es-PE',{day:'numeric',month:'short'}):'';
 $('#news').innerHTML=ready.slice().sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||'')).slice(0,5)
-  .map(t=>'<li><a href="'+t.url+'">'+t.titulo+'</a> <span class="muted">· '+t.bloque+'</span></li>').join('');
+  .map(t=>'<li><a href="'+t.url+'">'+t.titulo+'<small>'+mname(t.materia)+' · '+t.bloque+' · '+fmt(t.fecha)+'</small></a></li>').join('');
 })();
 </script>
 </body>

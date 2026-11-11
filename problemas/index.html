@@ -6,7 +6,7 @@
 <title>Problemas · El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/estilo.css">
 <style>
 .filters{display:flex;flex-direction:column;gap:6px;margin:18px 0}
@@ -52,7 +52,11 @@ const PROBLEMAS=[
   {id:'p9',tema:'polinomicas',nivel:3,en:'Un taxi cobró S/ 7 por 2 km y S/ 13 por 5 km. Si la tarifa es lineal, ¿cuánto cobra por 10 km?',pista:'Halla la pendiente con los dos puntos: (2 ; 7) y (5 ; 13).',sol:'m = (13 − 7) / (5 − 2) = 2<br>7 = 2·2 + b → b = 3<br>f(x) = 2x + 3<br>f(10) = 23 → S/ 23'},
   {id:'p10',tema:'trascendentes',nivel:2,en:'Resuelve 2ˣ⁺¹ = 16.',pista:'Escribe 16 como una potencia de 2.',sol:'16 = 2⁴<br>2ˣ⁺¹ = 2⁴ → x + 1 = 4<br>x = 3'},
   {id:'p11',tema:'trascendentes',nivel:1,en:'Calcula log₃ 81.',pista:'¿3 elevado a qué da 81?',sol:'3⁴ = 81<br>log₃ 81 = 4'},
-  {id:'p12',tema:'trascendentes',nivel:3,en:'Hay 500 bacterias y se duplican cada hora. Escribe la función y calcula cuántas habrá en 5 horas.',pista:'Cada hora se multiplica por 2: es exponencial con base 2.',sol:'N(t) = 500 · 2ᵗ<br>N(5) = 500 · 32<br>= 16 000 bacterias'}
+  {id:'p12',tema:'trascendentes',nivel:3,en:'Hay 500 bacterias y se duplican cada hora. Escribe la función y calcula cuántas habrá en 5 horas.',pista:'Cada hora se multiplica por 2: es exponencial con base 2.',sol:'N(t) = 500 · 2ᵗ<br>N(5) = 500 · 32<br>= 16 000 bacterias'},
+  {id:'p13',tema:'mru',nivel:1,en:'Una vagoneta de Minecraft va a 8 m/s con MRU. ¿Qué distancia recorre en 2 minutos?',pista:'Pasa los minutos a segundos y usa d = v · t.',sol:'2 min = 120 s<br>d = v · t = 8 · 120<br>d = 960 m = 960 bloques'},
+  {id:'p14',tema:'mru',nivel:1,en:'Una vagoneta va a 8 m/s. ¿A cuántos km/h equivale?',pista:'De m/s a km/h se multiplica por 3,6.',sol:'8 · 3,6 = 28,8<br>8 m/s = 28,8 km/h'},
+  {id:'p15',tema:'mru',nivel:2,en:'Una vagoneta con MRU estaba en x = 30 m cuando t = 2 s, y en x = 70 m cuando t = 6 s. Halla su velocidad y su posición inicial x₀.',pista:'La velocidad es la pendiente: (cambio de x) / (cambio de t). Luego usa x = x₀ + v · t.',sol:'v = (70 − 30) / (6 − 2) = 40 / 4 = 10 m/s<br>30 = x₀ + 10 · 2 → x₀ = 10 m<br>x = 10 + 10t'},
+  {id:'p16',tema:'mru',nivel:3,en:'Steve sale de x = 0 corriendo a 4 m/s. Alex sale al mismo tiempo desde x = 60 m con 1 m/s, en el mismo sentido. ¿En qué instante Steve alcanza a Alex y en qué posición?',pista:'Se encuentran cuando sus posiciones son iguales: escribe x de cada uno e iguálalas.',sol:'Steve: x = 4t<br>Alex: x = 60 + t<br>4t = 60 + t → 3t = 60 → t = 20 s<br>x = 4 · 20 = 80 m'}
 ];
 const {$,$$,store,m}=Kit;
 const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||id;

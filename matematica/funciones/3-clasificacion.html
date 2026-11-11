@@ -6,20 +6,20 @@
 <title>Algebraicas y trascendentes · El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/estilo.css">
 <style>
 .tree{display:grid;gap:12px;margin:18px 0}
-.branch{border-radius:18px;padding:14px;border:1px solid var(--line);background:var(--card)}
+.branch{border-radius:18px;padding:18px 20px;border:1px solid var(--line);background:var(--card)}
 .branch>b{font-family:var(--display);font-size:22px;display:block}
 .branch>span{font-size:14px;color:var(--muted)}
 .sub{margin-top:10px;padding:10px;border-radius:14px;background:var(--paper)}
 .sub>b{font-family:var(--display);font-size:17px}
 .leaves{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.leaf{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:6px 12px;cursor:pointer}
+.leaf{font:inherit;font-size:15px;min-height:44px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:0 16px;cursor:pointer}
 .leaf[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.alg{border-left:6px solid var(--c1)} .tra{border-left:6px solid var(--c3)}
-.alg,.tra{border-radius:0 18px 18px 0}
+.alg>b::before,.tra>b::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:10px;vertical-align:2px;background:var(--c1)}
+.tra>b::before{background:var(--c3)}
 .prev{display:grid;grid-template-columns:1fr;gap:6px}
 .game{text-align:center}
 .game .fx{font-family:var(--mono);font-size:26px;margin:14px 0}
@@ -33,12 +33,7 @@
 <h1>Algebraicas y trascendentes</h1>
 <p class="lede">Todas las funciones del colegio caben en dos grandes familias. Saber a cuál pertenece una te dice cómo se va a comportar.</p>
 
-<h2>La pregunta que las separa</h2>
-<p>Mira qué le hacen a la <i>x</i>:</p>
-<div class="key"><b>Algebraica</b>: a la x solo se le suma, resta, multiplica, divide, se eleva a un número fijo o se le saca raíz. Ejemplos: <code>3x² − 1</code>, <code>1/x</code>, <code>√x</code>.<br><br><b>Trascendente</b>: la x está en un exponente, dentro de un logaritmo o de un seno o coseno. “Trasciende” (va más allá de) esas operaciones básicas. Ejemplos: <code>2ˣ</code>, <code>log x</code>, <code>sen x</code>.</div>
-
-<h2>El árbol de familias</h2>
-<p>Toca cada hoja para ver su gráfica.</p>
+<p><b>Toca cada hoja del árbol</b> para ver su gráfica.</p>
 <div class="tree">
   <div class="branch alg"><b>Algebraicas</b><span>Solo operaciones básicas con x</span>
     <div class="sub"><b>Polinómicas</b> <span class="muted" style="font-size:14px">· suma de potencias de x</span>
@@ -56,6 +51,11 @@
   <canvas id="pC" data-w="660" data-h="260" aria-label="Gráfica de la familia elegida"></canvas>
   <p id="pD" style="margin:4px"></p>
   <div class="row" id="pB"></div>
+
+<h2>La pregunta que las separa</h2>
+<p>Mira qué le hacen a la <i>x</i>:</p>
+<div class="key"><b>Algebraica</b>: a la x solo se le suma, resta, multiplica, divide, se eleva a un número fijo o se le saca raíz. Ejemplos: <code>3x² − 1</code>, <code>1/x</code>, <code>√x</code>.<br><br><b>Trascendente</b>: la x está en un exponente, dentro de un logaritmo o de un seno o coseno. “Trasciende” (va más allá de) esas operaciones básicas. Ejemplos: <code>2ˣ</code>, <code>log x</code>, <code>sen x</code>.</div>
+
 </div>
 
 <h2>Juego: ¿a qué familia pertenece?</h2>

@@ -6,7 +6,7 @@
 <title>Funciones trascendentes · El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/estilo.css">
 </head>
 <body data-base="../../" data-nav="matematica">
@@ -14,13 +14,6 @@
 <div class="crumb"><a href="../index.html">Matemática</a><span>Funciones · Paso 4</span></div>
 <h1>Funciones trascendentes</h1>
 <p class="lede">Las que van más allá de sumar y multiplicar: exponencial, logarítmica y trigonométricas.</p>
-
-<h2>Exponencial: multiplicar una y otra vez</h2>
-<p>En la <button class="term" data-p="exponencial">exponencial</button> <code>f(x) = a · bˣ</code>, cada vez que x aumenta en 1, el resultado se <b>multiplica</b> por b. Una lineal suma lo mismo en cada paso; la exponencial multiplica. Por eso al principio parecen parecidas y después la exponencial se dispara.</p>
-
-<h2>Logarítmica: la pregunta al revés</h2>
-<p>El <button class="term" data-p="log">logaritmo</button> responde: “¿a qué exponente tengo que elevar la base para obtener este número?”. Como <code>2³ = 8</code>, entonces <code>log₂ 8 = 3</code>. La logarítmica es la <b>inversa</b> de la exponencial: su gráfica es la misma, pero reflejada en la recta y = x.</p>
-
 <div class="card">
   <div class="seg" id="tSeg" role="group" aria-label="Elige la función">
     <button data-k="exp" aria-pressed="true">Exponencial</button><button data-k="log" aria-pressed="false">Logarítmica</button><button data-k="trig" aria-pressed="false">Seno</button>
@@ -29,12 +22,21 @@
   <canvas id="tC" data-w="660" data-h="340" aria-label="Gráfica de la función trascendente"></canvas>
   <div id="tCtl"></div>
   <div class="readout" id="tR" aria-live="polite"></div>
+
+
+<h2>Exponencial: multiplicar una y otra vez</h2>
+<p>En la <button class="term" data-p="exponencial">exponencial</button> <code>f(x) = a · bˣ</code>, cada vez que x aumenta en 1, el resultado se <b>multiplica</b> por b. Una lineal suma lo mismo en cada paso; la exponencial multiplica. Por eso al principio parecen parecidas y después la exponencial se dispara.</p>
+
+<h2>Logarítmica: la pregunta al revés</h2>
+<p>El <button class="term" data-p="log">logaritmo</button> responde: “¿a qué exponente tengo que elevar la base para obtener este número?”. Como <code>2³ = 8</code>, entonces <code>log₂ 8 = 3</code>. La logarítmica es la <b>inversa</b> de la exponencial: su gráfica es la misma, pero reflejada en la recta y = x.</p>
+<div class="key" data-idea><b class="fx">2³ = 8  ⇔  log₂ 8 = 3</b>La exponencial multiplica en cada paso; el logaritmo hace la pregunta al revés: ¿a qué exponente hay que elevar la base?</div>
+
 </div>
 
 <h2>Trigonométricas: lo que se repite</h2>
 <p>La <button class="term" data-p="seno">función seno</button> sube, baja y vuelve a empezar, como una ola. Sirve para describir todo lo que oscila. En <code>f(x) = A · sen(B·x + C) + D</code> cada letra cambia algo distinto:</p>
 <div class="key"><b>A</b> amplitud: qué tan alta es la ola · <b>B</b> frecuencia: cuántas olas caben (periodo = 2π / B) · <b>C</b> desfase: la corre a los lados · <b>D</b>: la sube o la baja</div>
-<p>Elige “Seno” en el explorador de arriba y prueba cada letra por separado.</p>
+<p>Elige “Seno” en el explorador del inicio y prueba cada letra por separado.</p>
 
 <div class="key" style="background:var(--card);border:1px solid var(--line)"><b>¿Y después?</b><br>Ya conoces las familias principales. Lo siguiente es aprender a combinarlas (composición e inversa) y luego los <b>límites</b>, que llevan directo a las <b>derivadas</b>: la pendiente de una curva en cada punto. Esas lecciones vienen pronto.</div>
 

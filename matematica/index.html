@@ -6,20 +6,23 @@
 <title>Matemática · El cuaderno de Stacy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Lexend:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/estilo.css">
 <style>
-.map{margin:24px 0}
-.lvl{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:stretch}
+.map{margin:28px 0;position:relative}
+.lvl{display:grid;grid-template-columns:72px 1fr;gap:20px;align-items:stretch}
 .lvl .n{display:flex;flex-direction:column;align-items:center}
-.lvl .n span{font-family:var(--display);font-weight:700;font-size:15px;background:var(--card);border:2px solid var(--line);color:var(--muted);border-radius:999px;width:44px;height:44px;display:grid;place-items:center;flex:none}
-.lvl .n::after{content:"";flex:1;width:2px;background:var(--line);margin:4px 0}
+.lvl .n span{font-weight:700;font-size:15px;background:var(--card);border:2px solid var(--line-2);color:var(--muted);border-radius:50%;width:52px;height:52px;display:grid;place-items:center;flex:none;box-shadow:var(--shadow)}
+.lvl .n::after{content:"";flex:1;width:3px;border-radius:2px;background:var(--line);margin:6px 0}
 .lvl:last-child .n::after{display:none}
-.lvl.has .n span{border-color:var(--accent);color:var(--accent)}
-.lvl .row2{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;padding-bottom:18px}
-.tile .pre{font-size:12px;color:var(--muted);margin-top:8px}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+.lvl.has .n span{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.lvl.all .n span{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.lvl.all .n::after{background:var(--ok)}
+.lvl .row2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding-bottom:28px}
+.tile .pre{font-size:13px;color:var(--muted);margin-top:12px;display:block}
+.tile.ok{border-color:var(--ok)}
+.legend{display:flex;gap:22px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:8px;vertical-align:-2px}
 </style>
 </head>
 <body data-base="../" data-nav="matematica">
@@ -29,7 +32,7 @@
   <p class="lede">Empezamos por funciones, porque son la base de todo lo que viene después, incluidas las derivadas que estás viendo en el colegio.</p>
 
   <h2>Mapa de funciones</h2>
-  <p>Cada fila usa lo que aprendiste en la de arriba. Si algo no te sale, sube un paso y repásalo. Los temas en gris los voy a ir agregando.</p>
+  <p>Cada fila usa lo que aprendiste en la de arriba. Si algo no te sale, sube un paso y repásalo. Los temas con borde punteado los voy a ir agregando.</p>
   <div class="legend"><span><i style="background:var(--accent)"></i>Lista para estudiar</span><span><i style="background:var(--ok)"></i>Ya la entendiste</span><span><i style="background:var(--line)"></i>Muy pronto</span></div>
   <div class="map" id="map"></div>
 </main>
@@ -37,17 +40,17 @@
 <script src="../assets/kit.js"></script>
 <script>
 (function(){
-const {$,progress,BASE}=Kit;
+const {$,progress,BASE,icon}=Kit;
 const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||id;
 const temas=TEMAS.filter(t=>t.materia==='matematica'&&t.bloque==='Funciones');
 const pasos=[...new Set(temas.map(t=>t.paso))].sort((a,b)=>a-b);
 $('#map').innerHTML=pasos.map(p=>{
-  const row=temas.filter(t=>t.paso===p),has=row.some(t=>t.estado==='lista');
-  return '<div class="lvl'+(has?' has':'')+'"><div class="n"><span>'+(p===0?'Base':p)+'</span></div><div class="row2">'+row.map(t=>{
+  const row=temas.filter(t=>t.paso===p),has=row.some(t=>t.estado==='lista'),all=has&&row.every(t=>t.estado!=='lista'||progress.isDone(t.id));
+  return '<div class="lvl'+(has?' has':'')+(all?' all':'')+'"><div class="n"><span>'+(all?icon('check'):(p===0?'Base':p))+'</span></div><div class="row2">'+row.map(t=>{
     const pre=t.antes.length?'<div class="pre">Antes: '+t.antes.map(name).join(', ')+'</div>':'';
     if(t.estado!=='lista')return '<div class="tile off"><b>'+t.titulo+'</b><span>'+t.resumen+'</span>'+pre+'<em class="tag">Muy pronto</em></div>';
     const d=progress.isDone(t.id);
-    return '<a class="tile" href="'+BASE+t.url+'" style="'+(d?'border-color:var(--ok)':'')+'">'+(d?'<em class="chk">✓ entendido</em>':'')+'<b>'+t.titulo+'</b><span>'+t.resumen+'</span>'+pre+'</a>';
+    return '<a class="tile'+(d?' ok':'')+'" href="'+BASE+t.url+'">'+(d?'<em class="chk">'+icon('check')+'Entendido</em>':'')+'<b>'+t.titulo+'</b><span>'+t.resumen+'</span>'+pre+'</a>';
   }).join('')+'</div></div>';}).join('');
 })();
 </script>
