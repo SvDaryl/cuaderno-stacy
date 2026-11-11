@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movimiento circular · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.play{margin:16px 2px 4px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+#cc{touch-action:none;cursor:grab;border-radius:12px}
+#cc.drag{cursor:grabbing}
+.lg{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:8px 2px 0}
+.lg i{display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:3px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Cinemática · Paso 3</span></div>
+<h1>Movimiento circular</h1>
+<p class="lede">Una rueda que gira, un ventilador, la Tierra: dar vueltas con rapidez constante también es acelerar.</p>
+
+<div class="card stage">
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="cc" data-w="400" data-h="400" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0.5" aria-label="Circunferencia con un punto que gira; se puede arrastrar"></canvas>
+    <canvas id="gr" data-w="400" data-h="400" role="img" aria-label="Gráfica del ángulo girado contra el tiempo"></canvas>
+  </div>
+  <div class="lg"><span><i style="background:var(--c1)"></i>velocidad (tangente)</span><span><i style="background:var(--c2)"></i>aceleración centrípeta (hacia el centro)</span></div>
+  <p class="cap"><b>Arrastra el punto</b> alrededor de la circunferencia: el tiempo se ajusta según el ángulo que gira.</p>
+  <div class="row play"><button class="btn ghost" type="button" id="play">Reproducir</button></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Vueltas, período y frecuencia</h2>
+<p>En el <b>Movimiento Circular Uniforme</b> (MCU) el punto recorre arcos iguales en tiempos iguales. Dos números lo describen:</p>
+<p>El <b>período T</b> es lo que tarda una vuelta (en segundos). La <b>frecuencia f</b> es cuántas vueltas da por segundo: f = 1 / T, en hertz (Hz) o vueltas por segundo. Si un ventilador da 3 vueltas por segundo, su período es ⅓ s.</p>
+
+<h2>Velocidad angular y velocidad lineal</h2>
+<p>La <b>velocidad angular ω</b> dice qué ángulo gira por segundo, en radianes por segundo. Una vuelta completa son 2π rad, así que ω = 2π · f. La <b>velocidad lineal v</b> es lo que avanza el punto sobre la circunferencia: mientras más lejos del centro, más rápido va, aunque gire igual. Lo notas en la <button class="term" data-p="circular">rueda de una bicicleta</button>.</p>
+<div class="key" data-idea><b class="fx">v = ω · r · a<sub>cp</sub> = v² / r</b>ω = 2π · f. La velocidad cambia de dirección todo el tiempo; por eso hay una aceleración que apunta al centro (centrípeta), aunque la rapidez no cambie.</div>
+
+<h2>Si además acelera</h2>
+<p>Si la rapidez también cambia (como una rueda que arranca), aparece una aceleración <b>tangencial</b> a<sub>t</sub>, a lo largo de la trayectoria. La aceleración total junta las dos, que son perpendiculares: a = √(a<sub>t</sub>² + a<sub>cp</sub>²). Es la misma idea de sumar <a href="../bases/3-vectores.html">vectores</a> perpendiculares.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="ω = 2π · f, y v = ω · r.">
+  <p>Una rueda de 0,5 m de radio da 2 vueltas por segundo. ¿Qué rapidez tiene un punto de su borde?</p>
+  <label><input type="radio" name="q1" value="a"> ≈ 6,3 m/s</label>
+  <label><input type="radio" name="q1" value="b"> 1 m/s</label>
+  <label><input type="radio" name="q1" value="c"> ≈ 12,6 m/s</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! ω = 2π · 2 = 4π rad/s ≈ 12,6 rad/s, y v = 4π · 0,5 = 2π ≈ 6,3 m/s.</template>
+</div>
+<div class="q" data-ans="b" data-hint="La aceleración centrípeta es v² / r.">
+  <p>Un auto toma una curva de 20 m de radio a 10 m/s. ¿Cuánto vale su aceleración centrípeta?</p>
+  <label><input type="radio" name="q2" value="a"> 0,5 m/s²</label>
+  <label><input type="radio" name="q2" value="b"> 5 m/s²</label>
+  <label><input type="radio" name="q2" value="c"> 200 m/s²</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: a<sub>cp</sub> = 10² / 20 = 100 / 20 = 5 m/s², apuntando al centro de la curva.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,$$,cv,nf,plot,prep,controls,onRedraw,lessonNav,icon}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TM=10;
+let playing=false,T=0.5,v={r:2,f:0.5,t:0.5},geo=null,dragging=false;
+const W=()=>2*Math.PI*v.f;
+function arrow(g,x0,y0,x1,y1,col,w,s){g.strokeStyle=col;g.fillStyle=col;g.lineWidth=w*s;g.lineCap='round';g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();
+  const a=Math.atan2(y1-y0,x1-x0),L=12*s;if(Math.hypot(x1-x0,y1-y0)<L)return;g.beginPath();g.moveTo(x1,y1);g.lineTo(x1-L*Math.cos(a-0.4),y1-L*Math.sin(a-0.4));g.lineTo(x1-L*Math.cos(a+0.4),y1-L*Math.sin(a+0.4));g.closePath();g.fill();}
+function draw(){
+  const w0=W(),th=w0*T,vel=w0*v.r,ac=vel*vel/v.r,Tr=Math.round(T*10)/10;
+  $('#fm').textContent='ω = '+n(w0,2)+' rad/s  ·  v = ω·r = '+n(vel,2)+' m/s  ·  a = v²/r = '+n(ac,2)+' m/s²';
+  const c=$('#cc'),{x:g,w,h,s}=prep(c),cx=w/2,cy=h/2,Rmax=Math.min(w,h)/2-40*s,R=Rmax*v.r/5;geo={cx,cy,w,h};
+  g.clearRect(0,0,w,h);
+  g.strokeStyle=cv('--line');g.lineWidth=1*s;g.beginPath();g.moveTo(cx-Rmax-20*s,cy);g.lineTo(cx+Rmax+20*s,cy);g.moveTo(cx,cy-Rmax-20*s);g.lineTo(cx,cy+Rmax+20*s);g.stroke();
+  g.strokeStyle=cv('--line-2');g.lineWidth=3*s;g.beginPath();g.arc(cx,cy,R,0,7);g.stroke();
+  /* arco recorrido en esta vuelta */
+  const frac=th%(2*Math.PI);g.strokeStyle=cv('--c3');g.lineWidth=5*s;g.beginPath();g.arc(cx,cy,R,0,-frac,true);g.stroke();
+  const px=cx+R*Math.cos(th),py=cy-R*Math.sin(th);
+  g.strokeStyle=cv('--muted');g.lineWidth=1.5*s;g.setLineDash([5*s,4*s]);g.beginPath();g.moveTo(cx,cy);g.lineTo(px,py);g.stroke();g.setLineDash([]);
+  /* vectores: largo proporcional (con tope) */
+  const lv=Math.min(110*s,18*s*vel),la=Math.min(R*0.9,8*s*ac);
+  arrow(g,px,py,px-lv*Math.sin(th),py-lv*Math.cos(th),cv('--c1'),4,s);
+  arrow(g,px,py,px-la*Math.cos(th),py+la*Math.sin(th),cv('--c2'),4,s);
+  if(dragging){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.arc(px,py,22*s,0,7);g.fill();g.globalAlpha=1;}
+  g.fillStyle=cv('--accent');g.beginPath();g.arc(px,py,10*s,0,7);g.fill();g.fillStyle=cv('--on-accent');g.beginPath();g.arc(px,py,3.5*s,0,7);g.fill();
+  g.fillStyle=cv('--ink');g.beginPath();g.arc(cx,cy,3*s,0,7);g.fill();
+  g.font=(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.textAlign='center';g.fillText('r = '+n(v.r)+' m',cx,cy+R+22*s);
+  /* gráfica θ–t */
+  const tht=t=>w0*t,top=Math.max(2*Math.PI,w0*TM);
+  const ys=[1,2,5,10,20,50,100].find(q=>top/q<=7)||100;
+  plot($('#gr'),{xr:[0,TM],yr:[0,Math.ceil(top/ys)*ys],xs:2,ys,xl:'t (s)',yl:'θ (rad)',fns:[{f:tht,color:cv('--muted'),dash:[6,5],width:2},{f:tht,from:0,to:T,color:cv('--c1'),width:4}],pts:[{x:T,y:th,color:cv('--c2')}]});
+  const vueltas=th/(2*Math.PI);
+  $('#ro').innerHTML='Período <b>T = '+n(1/v.f,2)+' s</b> (una vuelta). En <b>t = '+n(Tr)+' s</b> giró <b>'+n(th,2)+' rad</b>, o sea <b>'+n(vueltas,2)+' vueltas</b>. '+
+    'Su rapidez es siempre '+n(vel,2)+' m/s, pero la dirección cambia: por eso tiene aceleración centrípeta de '+n(ac,2)+' m/s² hacia el centro. La pendiente de la gráfica es ω.';
+}
+const ctl=controls($('#ctl'),[
+  {id:'r',label:'Radio (r)',min:0.5,max:5,step:0.5,val:2,fmt:a=>nf(a,1)+' m',hint:'Más lejos del centro: más rapidez lineal con las mismas vueltas.'},
+  {id:'f',label:'Frecuencia (f)',min:0.1,max:2,step:0.1,val:0.5,fmt:a=>nf(a,1)+' vueltas/s',hint:'Cuántas vueltas por segundo. El período es 1 / f.'},
+  {id:'t',label:'Tiempo (t)',min:0,max:TM,step:0.1,val:0.5,fmt:a=>nf(a,1)+' s',hint:'Mueve el tiempo y mira cuánto ha girado.'}
+],vv=>{v=vv;T=vv.t;if(playing)stop();draw();});
+v=ctl;T=ctl.t;
+const tIn=$$('#ctl input')[2],tOut=$$('#ctl output')[2],btn=$('#play');
+let raf=0,last=0;
+function stop(){cancelAnimationFrame(raf);raf=0;playing=false;$('#ro').setAttribute('aria-live','polite');
+  T=Math.round(T*10)/10;v.t=T;tIn.value=T;tOut.textContent=nf(T,1)+' s';btn.innerHTML=T>=TM?icon('again')+'Otra vez':icon('play')+'Reproducir';draw();}
+function step(now){const dt=Math.min(0.1,(now-last)/1000);last=now;T=Math.min(TM,T+dt);v.t=T;tIn.value=T;tOut.textContent=nf(T,1)+' s';draw();
+  if(T>=TM){stop();return;}raf=requestAnimationFrame(step);}
+btn.addEventListener('click',()=>{if(playing){stop();return;}if(T>=TM)T=0;
+  playing=true;$('#ro').setAttribute('aria-live','off');btn.innerHTML=icon('pause')+'Pausa';last=performance.now();raf=requestAnimationFrame(step);});
+btn.innerHTML=icon('play')+'Reproducir';
+if(reduce)$('.play').hidden=true;
+/* arrastrar el punto: el ángulo elegido decide el tiempo, dentro de la vuelta en curso */
+const cc=$('#cc');
+function setTime(t,exact){T=Math.max(0,Math.min(TM,t));const r=Math.round(T*10)/10;if(!exact)T=r;v.t=r;tIn.value=r;tOut.textContent=nf(r,1)+' s';cc.setAttribute('aria-valuenow',r);cc.setAttribute('aria-valuetext','t = '+nf(r,1)+' s');draw();}
+function tFrom(e){const r=cc.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w,py=(e.clientY-r.top)/r.height*geo.h;
+  let a=Math.atan2(geo.cy-py,px-geo.cx);if(a<0)a+=2*Math.PI;const w0=W(),k=Math.floor(w0*T/(2*Math.PI));
+  let best=null;for(const kk of[k-1,k,k+1]){const t=(kk*2*Math.PI+a)/w0;if(t<0||t>TM)continue;if(best===null||Math.abs(t-T)<Math.abs(best-T))best=t;}return best===null?T:best;}
+cc.addEventListener('pointerdown',e=>{if(playing)stop();dragging=true;cc.classList.add('drag');cc.setPointerCapture(e.pointerId);setTime(tFrom(e),true);e.preventDefault();});
+cc.addEventListener('pointermove',e=>{if(dragging)setTime(tFrom(e),true);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])cc.addEventListener(k,()=>{if(!dragging)return;dragging=false;cc.classList.remove('drag');setTime(T);});
+cc.addEventListener('keydown',e=>{const st=e.shiftKey?1:0.1,m={ArrowRight:st,ArrowUp:st,ArrowLeft:-st,ArrowDown:-st}[e.key];
+  if(m===undefined)return;e.preventDefault();if(playing)stop();setTime(Math.round((T+m)*10)/10);});
+onRedraw(draw);
+lessonNav('circular');
+})();
+</script>
+</body>
+</html>

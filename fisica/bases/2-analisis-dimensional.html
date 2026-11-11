@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análisis dimensional · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.dims{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:4px 0 8px}
+.dim{background:var(--sunk);border-radius:14px;padding:14px 16px;text-align:center}
+.dim b{display:block;font-family:var(--mono);font-size:26px;font-weight:500}
+.dim span{font-size:14px;color:var(--muted)}
+.dim.ok{background:var(--ok-soft)} .dim.ok b{color:var(--ok-deep)}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Bases · Paso 2</span></div>
+<h1>Análisis dimensional</h1>
+<p class="lede">Antes de hacer cuentas, revisa que la fórmula tenga sentido: no se pueden sumar metros con segundos.</p>
+
+<div class="card">
+  <div class="seg" id="tSeg" role="group" aria-label="Elige qué magnitud quieres armar">
+    <button data-k="v" aria-pressed="true">Velocidad</button><button data-k="a" aria-pressed="false">Aceleración</button><button data-k="F" aria-pressed="false">Fuerza</button><button data-k="E" aria-pressed="false">Energía</button><button data-k="P" aria-pressed="false">Potencia</button><button data-k="p" aria-pressed="false">Presión</button><button data-k="d" aria-pressed="false">Densidad</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="dims" id="dims"></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+<p class="tip"><b>El reto:</b> mueve los exponentes de M, L y T hasta que tu combinación sea igual a la de la magnitud elegida. Las tres casillas se ponen verdes cuando aciertas.</p>
+
+<h2>Las dimensiones</h2>
+<p>Toda magnitud de la mecánica se puede escribir con tres letras: <b>M</b> (masa), <b>L</b> (longitud) y <b>T</b> (tiempo). Se escribe entre corchetes: [<button class="term" data-p="mru">velocidad</button>] = L T⁻¹, porque es una longitud dividida entre un tiempo. Lo viste en <a href="1-magnitudes.html">Magnitudes y unidades</a>.</p>
+<p>Las dimensiones se multiplican y dividen como potencias: [fuerza] = [masa] · [aceleración] = M · L T⁻² = M L T⁻².</p>
+
+<h2>El principio de homogeneidad</h2>
+<p>En una fórmula correcta, <b>todos los términos que se suman o restan tienen la misma dimensión</b>, y los dos lados del “=” también. Los números puros (½, 2, π) y los ángulos no tienen dimensión: valen [1].</p>
+<div class="key" data-idea><b class="fx">[A + B] → [A] = [B]</b>Lo que se suma debe tener la misma dimensión. Los números y los ángulos son adimensionales.</div>
+<p>Esto sirve para dos cosas: detectar fórmulas mal escritas y encontrar qué es una constante desconocida.</p>
+
+<h2>Ejemplo: la fuerza del aire</h2>
+<p>Cuando algo cae, el aire lo frena con una fuerza F = k · A · v², donde A es el área que choca con el aire y v la rapidez. ¿Qué dimensión tiene k?</p>
+<div class="steps">[F] = [k] · [A] · [v]²<br>M L T⁻² = [k] · L² · (L T⁻¹)²<br>M L T⁻² = [k] · L⁴ T⁻²<br>[k] = M L T⁻² / (L⁴ T⁻²) = <b>M L⁻³</b></div>
+<p>M L⁻³ es masa entre volumen: <b>k tiene dimensión de densidad</b>. Tiene sentido: el aire más denso frena más.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="Energía cinética = ½ · m · v². Reemplaza [m] = M y [v] = L T⁻¹, y el ½ no cuenta.">
+  <p>¿Cuál es la dimensión de la energía?</p>
+  <label><input type="radio" name="q1" value="a"> M L T⁻²</label>
+  <label><input type="radio" name="q1" value="b"> M L² T⁻¹</label>
+  <label><input type="radio" name="q1" value="c"> M L² T⁻²</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Exacto! [E] = M · (L T⁻¹)² = M L² T⁻².</template>
+</div>
+<div class="q" data-ans="a" data-hint="Por homogeneidad, B · t² debe tener la misma dimensión que x, que es L.">
+  <p>En la fórmula x = A · t + B · t², x es una posición (en metros) y t un tiempo. ¿Qué dimensión tiene B?</p>
+  <label><input type="radio" name="q2" value="a"> L T⁻²</label>
+  <label><input type="radio" name="q2" value="b"> L T⁻¹</label>
+  <label><input type="radio" name="q2" value="c"> L T²</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: [B] · T² = L, así que [B] = L T⁻². Es una aceleración.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,controls,seg,lessonNav}=Kit;
+const SUP={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³'};
+const sup=e=>e===1?'':String(e).split('').map(c=>SUP[c]).join('');
+const T={
+  v:{n:'velocidad',f:'v = d / t',u:'m/s',d:[0,1,-1]},
+  a:{n:'aceleración',f:'a = Δv / t',u:'m/s²',d:[0,1,-2]},
+  F:{n:'fuerza',f:'F = m · a',u:'N (newton)',d:[1,1,-2]},
+  E:{n:'energía',f:'E = ½ · m · v²',u:'J (joule)',d:[1,2,-2]},
+  P:{n:'potencia',f:'P = E / t',u:'W (watt)',d:[1,2,-3]},
+  p:{n:'presión',f:'p = F / área',u:'Pa (pascal)',d:[1,-1,-2]},
+  d:{n:'densidad',f:'ρ = m / volumen',u:'kg/m³',d:[1,-3,0]}
+};
+const L=['M','L','T'],U=['kg','m','s'];
+const dimTxt=d=>{const s=d.map((e,i)=>e?L[i]+sup(e):'').filter(Boolean).join(' ');return s||'1 (adimensional)';};
+const uniTxt=d=>{const s=d.map((e,i)=>e?U[i]+sup(e):'').filter(Boolean).join(' · ');return s||'sin unidad';};
+let k='v',v={M:0,L:0,T:0};
+function draw(){
+  const t=T[k],mine=[v.M,v.L,v.T],ok=mine.every((e,i)=>e===t.d[i]);
+  $('#fm').textContent='['+t.n+'] = '+dimTxt(t.d)+'      tú: '+dimTxt(mine);
+  $('#dims').innerHTML=L.map((l,i)=>'<div class="dim'+(mine[i]===t.d[i]?' ok':'')+'"><b>'+l+sup(mine[i])+'</b><span>'+(mine[i]===t.d[i]?'¡bien!':(mine[i]<t.d[i]?'súbelo':'bájalo'))+'</span></div>').join('');
+  $('#ro').innerHTML=ok?'¡Lo armaste! <b>['+t.n+'] = '+dimTxt(t.d)+'</b>, que en el Sistema Internacional es <b>'+uniTxt(t.d)+'</b> = '+t.u+'. Sale de '+t.f+'.'
+    :'Tu combinación es <b>'+dimTxt(mine)+'</b>, o sea <b>'+uniTxt(mine)+'</b>. Pista: la '+t.n+' sale de <b>'+t.f+'</b>.';
+}
+const ctl=controls($('#ctl'),[
+  {id:'M',label:'Exponente de M',min:-3,max:3,step:1,val:0,fmt:a=>'M'+(a===0?'⁰':sup(a)),hint:'Cuántas veces aparece la masa (negativo: divide).'},
+  {id:'L',label:'Exponente de L',min:-3,max:3,step:1,val:0,fmt:a=>'L'+(a===0?'⁰':sup(a)),hint:'Cuántas veces aparece la longitud.'},
+  {id:'T',label:'Exponente de T',min:-3,max:3,step:1,val:0,fmt:a=>'T'+(a===0?'⁰':sup(a)),hint:'Cuántas veces aparece el tiempo. En casi todo va negativo: se divide entre segundos.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+seg($('#tSeg'),kk=>{k=kk;draw();});
+draw();
+lessonNav('dimensional');
+})();
+</script>
+</body>
+</html>

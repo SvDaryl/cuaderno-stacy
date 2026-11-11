@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caída libre · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.play{margin:16px 2px 4px}
+.duo{display:grid;grid-template-columns:5fr 7fr;gap:18px;align-items:start}
+#sc{touch-action:none;cursor:grab;border-radius:12px}
+#sc.drag{cursor:grabbing}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Cinemática · Paso 3</span></div>
+<h1>Caída libre</h1>
+<p class="lede">Todo lo que sueltas o lanzas hacia arriba cae con la misma aceleración: la de la gravedad.</p>
+
+<div class="card stage">
+  <div class="seg" id="gSeg" role="group" aria-label="Elige la gráfica">
+    <button data-k="y" aria-pressed="true">Altura (y–t)</button><button data-k="v" aria-pressed="false">Velocidad (v–t)</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="sc" data-w="300" data-h="420" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="10" aria-valuenow="1" aria-label="Edificio con una pelota que sube y cae; se puede arrastrar"></canvas>
+    <canvas id="gr" data-w="420" data-h="420" role="img" aria-label="Gráfica del movimiento vertical"></canvas>
+  </div>
+  <p class="cap"><b>Arrastra la pelota</b> hacia arriba o hacia abajo: el tiempo se ajusta solo. Los puntos morados marcan dónde estaba cada medio segundo.</p>
+  <div class="row play"><button class="btn ghost" type="button" id="play">Reproducir</button></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>La aceleración de la gravedad</h2>
+<p>Si no hubiera aire, una pluma y una piedra caerían juntas. Cerca de la superficie de la Tierra, todo cae con <b>g = 9,8 m/s²</b>: cada segundo de caída, la velocidad aumenta 9,8 m/s. En muchos problemas del colegio se redondea a <b>g = 10 m/s²</b>; el enunciado te lo dice.</p>
+<p>La caída libre es un <a href="2-mruv.html">MRUV</a> vertical con a = −g (tomando hacia arriba como positivo). Así que las fórmulas son las mismas:</p>
+<p style="font-family:var(--mono);font-size:18px">y = h₀ + v₀·t − ½·g·t² &nbsp;&nbsp;·&nbsp;&nbsp; v = v₀ − g·t</p>
+
+<h2>Subida y bajada</h2>
+<p>Si lanzas algo hacia arriba, sube cada vez más lento hasta que, en la <b>altura máxima, su velocidad es cero</b>. Luego baja. Tarda lo mismo en subir que en volver a la altura de donde salió, y pasa por cada altura con la misma rapidez al subir y al bajar. La trayectoria en el tiempo es una <button class="term" data-p="cuadratica">parábola</button>.</p>
+<div class="key" data-idea><b class="fx">h_máx = v₀² / (2g)</b>Tiempo de subida: t = v₀ / g. Tiempo para volver al punto de partida: 2·v₀ / g.</div>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="Usa h_máx = v₀² / (2g) con g = 10.">
+  <p>Lanzas una pelota hacia arriba a 20 m/s (usa g = 10 m/s²). ¿Qué altura máxima alcanza sobre tu mano?</p>
+  <label><input type="radio" name="q1" value="a"> 20 m</label>
+  <label><input type="radio" name="q1" value="b"> 40 m</label>
+  <label><input type="radio" name="q1" value="c"> 2 m</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! h = 20² / (2 · 10) = 400 / 20 = 20 m. Tarda 2 s en subir.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Se suelta: v₀ = 0. La distancia que cae es ½·g·t².">
+  <p>Sueltas una piedra desde un puente y llega al agua en 3 s (g = 10 m/s²). ¿A qué altura está el puente?</p>
+  <label><input type="radio" name="q2" value="a"> 30 m</label>
+  <label><input type="radio" name="q2" value="b"> 90 m</label>
+  <label><input type="radio" name="q2" value="c"> 45 m</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: h = ½ · 10 · 3² = 5 · 9 = 45 m. Llega al agua a 10 · 3 = 30 m/s.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,$$,cv,nf,plot,prep,controls,seg,onRedraw,lessonNav,icon}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const G=9.8,TM=10;
+let mode='y',playing=false,T=1,v={h0:30,v0:10,t:1},geo=null,dragging=false;
+const Y_=t=>v.h0+v.v0*t-0.5*G*t*t,V_=t=>v.v0-G*t;
+const tLand=()=>Math.min(TM,(v.v0+Math.sqrt(v.v0*v.v0+2*G*v.h0))/G);
+const yMax=()=>v.v0>0?v.h0+v.v0*v.v0/(2*G):v.h0;
+const nice=sp=>[2,5,10,20,25,50].find(q=>sp/q<=7)||50;
+function scene(Tc){
+  const c=$('#sc'),{x:g,w,h,s}=prep(c),top=Math.max(10,Math.ceil(yMax()*1.12/10)*10),gy=h-34*s,Ypx=y=>gy-(y/top)*(gy-24*s);geo={top,gy,h,w,s,Ypx};
+  g.clearRect(0,0,w,h);
+  g.fillStyle=cv('--sc-sky');g.fillRect(0,0,w,gy);
+  g.fillStyle=cv('--sc-grass');g.fillRect(0,gy,w,h-gy);
+  /* edificio de altura h₀ con ventanas */
+  const bw=w*0.34,bx=w*0.06,by=Ypx(v.h0);
+  if(v.h0>0){g.fillStyle=cv('--sc-road');g.fillRect(bx,by,bw,gy-by);g.fillStyle=cv('--sc-glass');
+    const fl=Math.max(1,Math.round(v.h0/3));const fh=(gy-by)/fl;
+    for(let i=0;i<fl;i++)for(let j=0;j<3;j++){const wy=by+i*fh+fh*0.25;if(fh>6*s)g.fillRect(bx+bw*(0.12+j*0.3),wy,bw*0.16,fh*0.45);}}
+  /* regla de altura */
+  const st=nice(top);g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--ink');g.textAlign='right';g.strokeStyle=cv('--ink');g.globalAlpha=0.55;
+  for(let y=0;y<=top;y+=st){g.fillRect(w-14*s,Ypx(y),10*s,1.5*s);g.fillText(y+' m',w-18*s,Ypx(y)+4*s);}g.globalAlpha=1;
+  /* rastro cada 0,5 s */
+  const bxc=bx+bw+w*0.16,tl=tLand();g.fillStyle=cv('--sc-mark');
+  for(let t=0;t<=Math.min(Tc,tl)+1e-9;t+=0.5){g.beginPath();g.arc(bxc,Ypx(Y_(t)),3*s,0,7);g.globalAlpha=0.5;g.fill();}g.globalAlpha=1;
+  /* altura máxima */
+  if(v.v0>0){const ym=Ypx(yMax());g.strokeStyle=cv('--c4');g.setLineDash([5*s,4*s]);g.lineWidth=1.5*s;g.beginPath();g.moveTo(bxc-30*s,ym);g.lineTo(bxc+30*s,ym);g.stroke();g.setLineDash([]);}
+  /* pelota */
+  const yb=Math.max(0,Y_(Math.min(Tc,tl))),py=Ypx(yb)-9*s;
+  if(dragging){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.arc(bxc,py,22*s,0,7);g.fill();g.globalAlpha=1;}
+  g.fillStyle=cv('--sc-car');g.beginPath();g.arc(bxc,py,9*s,0,7);g.fill();
+  g.fillStyle=cv('--accent');for(const d of[-1,1]){const ay=py+d*24*s;g.beginPath();g.arc(bxc,ay,8*s,0,7);g.fill();g.fillStyle=cv('--on-accent');g.beginPath();g.moveTo(bxc,ay+d*4*s);g.lineTo(bxc-4*s,ay-d*2.5*s);g.lineTo(bxc+4*s,ay-d*2.5*s);g.closePath();g.fill();g.fillStyle=cv('--accent');}
+  geo.bxc=bxc;
+}
+function draw(){
+  const tl=tLand(),Tc=Math.min(T,tl),Tr=Math.round(Tc*10)/10,yr=Math.max(0,Y_(Tr)),vr=V_(Tr);
+  const p=x=>x<0?'('+n(x)+')':n(x);
+  $('#fm').textContent=mode==='y'?'y = '+n(v.h0)+' + '+p(v.v0)+' · '+n(Tr)+' − ½ · 9,8 · '+n(Tr)+'² = '+n(yr)+' m':'v = '+p(v.v0)+' − 9,8 · '+n(Tr)+' = '+n(vr)+' m/s';
+  scene(Tc);
+  if(mode==='y'){const top=Math.max(10,Math.ceil(yMax()*1.12/10)*10),ys=nice(top);
+    plot($('#gr'),{xr:[0,Math.ceil(tl)],yr:[0,top],xs:Math.ceil(tl)>6?1:0.5,ys,xl:'t (s)',yl:'y (m)',fns:[{f:t=>Math.max(0,Y_(t)),color:cv('--muted'),dash:[6,5],width:2,to:tl},{f:Y_,from:0,to:Tc,color:cv('--c1'),width:4}],
+      pts:[{x:Tc,y:yr,color:cv('--c2')}].concat(v.v0>0?[{x:v.v0/G,y:yMax(),color:cv('--c4'),label:'máx '+n(yMax())+' m'}]:[])});}
+  else{const lo=V_(tl),hi=Math.max(1,v.v0),ys=nice(hi-lo);
+    plot($('#gr'),{xr:[0,Math.ceil(tl)],yr:[Math.floor(lo/ys)*ys,Math.ceil(hi/ys)*ys+ys],xs:Math.ceil(tl)>6?1:0.5,ys,xl:'t (s)',yl:'v (m/s)',fns:[{f:V_,color:cv('--c1'),width:4,to:tl}],pts:[{x:Tc,y:vr,color:cv('--c2'),label:n(vr)+' m/s'}]});}
+  const sube=vr>0.05,suelo=T>=tl-1e-6;
+  $('#ro').innerHTML=(suelo?'Llegó al suelo en <b>t = '+n(tl,2)+' s</b> con una rapidez de <b>'+n(Math.abs(V_(tl)))+' m/s</b>. ':
+    'En <b>t = '+n(Tr)+' s</b> está a <b>'+n(yr)+' m</b> del suelo y '+(sube?'<b>sube</b> a '+n(vr)+' m/s.':Math.abs(vr)<=0.05?'está <b>quieta un instante</b>: es la altura máxima.':'<b>baja</b> a '+n(-vr)+' m/s.')+' ')+
+    (v.v0>0?'Sube durante '+n(v.v0/G,2)+' s hasta '+n(yMax())+' m. ':'')+'Tiempo total de vuelo: '+n(tl,2)+' s.';
+}
+const ctl=controls($('#ctl'),[
+  {id:'h0',label:'Altura inicial (h₀)',min:0,max:60,step:1,val:30,fmt:a=>a+' m',hint:'Desde qué altura sale la pelota (la azotea del edificio).'},
+  {id:'v0',label:'Velocidad inicial (v₀)',min:-20,max:30,step:1,val:10,fmt:a=>a+' m/s',hint:'Positiva: la lanzas hacia arriba. Negativa: hacia abajo. Cero: solo la sueltas.'},
+  {id:'t',label:'Tiempo (t)',min:0,max:TM,step:0.1,val:1,fmt:a=>nf(a,1)+' s',hint:'Si pasa del tiempo de vuelo, la pelota ya está en el suelo.'}
+],vv=>{v=vv;T=vv.t;if(playing)stop();draw();});
+v=ctl;T=ctl.t;
+const tIn=$$('#ctl input')[2],tOut=$$('#ctl output')[2],btn=$('#play');
+let raf=0,last=0;
+function stop(){cancelAnimationFrame(raf);raf=0;playing=false;$('#ro').setAttribute('aria-live','polite');
+  T=Math.round(T*10)/10;v.t=T;tIn.value=T;tOut.textContent=nf(T,1)+' s';btn.innerHTML=T>=tLand()?icon('again')+'Otra vez':icon('play')+'Reproducir';draw();}
+function step(now){const dt=Math.min(0.1,(now-last)/1000);last=now;T=Math.min(tLand(),T+dt);v.t=T;tIn.value=T;tOut.textContent=nf(T,1)+' s';draw();
+  if(T>=tLand()){stop();return;}raf=requestAnimationFrame(step);}
+btn.addEventListener('click',()=>{if(playing){stop();return;}if(T>=tLand()-0.01)T=0;
+  playing=true;$('#ro').setAttribute('aria-live','off');btn.innerHTML=icon('pause')+'Pausa';last=performance.now();raf=requestAnimationFrame(step);});
+btn.innerHTML=icon('play')+'Reproducir';
+if(reduce)$('.play').hidden=true;
+/* arrastrar la pelota: busca el instante en que estuvo a esa altura (el más cercano al tiempo actual) */
+const sc=$('#sc');
+function setTime(t,exact){T=Math.max(0,Math.min(tLand(),t));const r=Math.round(T*10)/10;if(!exact)T=r;v.t=r;tIn.value=r;tOut.textContent=nf(r,1)+' s';sc.setAttribute('aria-valuenow',r);sc.setAttribute('aria-valuetext','t = '+nf(r,1)+' s, altura '+n(Math.max(0,Y_(r)))+' m');draw();}
+function tFrom(e){const r=sc.getBoundingClientRect(),py=(e.clientY-r.top)/r.height*geo.h,y=(geo.gy-9*geo.s-py)/(geo.gy-24*geo.s)*geo.top;
+  const tl=tLand();let best=T,bd=1e9;for(let i=0;i<=1000;i++){const t=i/1000*tl,d=Math.abs(Math.max(0,Y_(t))-y)+Math.abs(t-T)*0.3;if(d<bd){bd=d;best=t;}}return best;}
+sc.addEventListener('pointerdown',e=>{if(playing)stop();dragging=true;sc.classList.add('drag');sc.setPointerCapture(e.pointerId);setTime(tFrom(e),true);e.preventDefault();});
+sc.addEventListener('pointermove',e=>{if(dragging)setTime(tFrom(e),true);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])sc.addEventListener(k,()=>{if(!dragging)return;dragging=false;sc.classList.remove('drag');setTime(T);});
+sc.addEventListener('keydown',e=>{const st=e.shiftKey?1:0.1,m={ArrowRight:st,ArrowDown:st,ArrowLeft:-st,ArrowUp:-st}[e.key];
+  if(m===undefined)return;e.preventDefault();if(playing)stop();setTime(Math.round((T+m)*10)/10);});
+seg($('#gSeg'),k=>{mode=k;draw();});
+onRedraw(draw);
+lessonNav('caida');
+})();
+</script>
+</body>
+</html>

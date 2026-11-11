@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MRUV: la velocidad cambia · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.play{margin:16px 2px 4px}
+.cap.grab{margin:10px 2px 18px}
+#tr{touch-action:none;cursor:grab;border-radius:12px}
+#tr.drag{cursor:grabbing}
+.eqs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 24px;font-family:var(--mono);font-size:18px;margin:8px 0 4px}
+.rail .eqs{grid-template-columns:1fr;gap:2px;font-size:14px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Cinemática · Paso 2</span></div>
+<h1>MRUV: la velocidad cambia</h1>
+<p class="lede">Un auto que sale del semáforo: cada segundo va un poco más rápido, siempre lo mismo más rápido.</p>
+
+<div class="card stage">
+  <div class="seg" id="gSeg" role="group" aria-label="Elige la gráfica">
+    <button data-k="x" aria-pressed="true">Posición (x–t)</button><button data-k="v" aria-pressed="false">Velocidad (v–t)</button><button data-k="a" aria-pressed="false">Aceleración (a–t)</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="tr" data-w="660" data-h="200" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="10" aria-valuenow="3" aria-label="Auto sobre una pista, con marcas que señalan dónde estaba cada segundo"></canvas>
+  <p class="cap grab"><b>Arrastra el auto por la pista</b>: el tiempo se ajusta solo. Mira cómo las marcas de cada segundo se separan cuando acelera.</p>
+  <canvas id="gr" data-w="660" data-h="320" role="img" aria-label="Gráfica del movimiento"></canvas>
+  <div class="row play"><button class="btn ghost" type="button" id="play">Reproducir</button></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Qué es la aceleración</h2>
+<p>En el <a href="1-mru.html">MRU</a> la velocidad no cambiaba. En el MRUV (Movimiento Rectilíneo Uniformemente Variado) la velocidad cambia, pero <b>siempre lo mismo en cada segundo</b>. Ese cambio por segundo es la <b>aceleración</b>:</p>
+<p style="font-family:var(--mono);font-size:19px">a = (v − v₀) / t &nbsp;&nbsp; en m/s²</p>
+<p>a = 2 m/s² quiere decir: cada segundo, la velocidad sube 2 m/s. Si la aceleración va en contra de la velocidad, el auto <b>frena</b>.</p>
+
+<h2>Las cuatro fórmulas</h2>
+<div class="key" data-idea><b class="fx">v = v₀ + a·t</b>
+<div class="eqs"><span>x = v₀·t + ½·a·t²</span><span>v² = v₀² + 2·a·d</span><span>d = (v₀ + v)/2 · t</span></div>
+Elige la que tenga los datos que te dan y la incógnita que buscas.</div>
+<p>La posición crece como una <button class="term" data-p="cuadratica">parábola</button>: por eso la gráfica x–t se curva. En la gráfica v–t, la pendiente es la aceleración y el área bajo la recta es lo que avanzó. Ojo con frenar: el <button class="term" data-p="mruv">tiempo de reacción</button> también cuenta.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Usa v = v₀ + a·t con v₀ = 0, y luego x = ½·a·t².">
+  <p>Un auto parte del reposo con a = 2 m/s². ¿Qué velocidad tiene y cuánto avanzó a los 5 s?</p>
+  <label><input type="radio" name="q1" value="a"> 10 m/s y 50 m</label>
+  <label><input type="radio" name="q1" value="b"> 10 m/s y 25 m</label>
+  <label><input type="radio" name="q1" value="c"> 7 m/s y 25 m</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! v = 0 + 2 · 5 = 10 m/s, y x = ½ · 2 · 5² = 25 m.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Al detenerse, v = 0. Usa v² = v₀² + 2·a·d con a = −4.">
+  <p>Un bus va a 20 m/s y frena con una desaceleración de 4 m/s². ¿Cuánto recorre hasta detenerse?</p>
+  <label><input type="radio" name="q2" value="a"> 80 m</label>
+  <label><input type="radio" name="q2" value="b"> 5 m</label>
+  <label><input type="radio" name="q2" value="c"> 50 m</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 0 = 20² − 2 · 4 · d, así que d = 400 / 8 = 50 m (y tarda 20 / 4 = 5 s).</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,$$,cv,nf,plot,prep,controls,seg,onRedraw,lessonNav,icon}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TMAX=10;
+let mode='x',playing=false,T=3,v={v0:2,a:2,t:3},map=null,dragging=false;
+const X_=t=>v.v0*t+0.5*v.a*t*t,V_=t=>v.v0+v.a*t;
+function range(){let lo=0,hi=0;for(let i=0;i<=100;i++){const x=X_(i/10);lo=Math.min(lo,x);hi=Math.max(hi,x);}return[lo,hi];}
+
+function drawTrack(T,x){
+  const[lo0,hi0]=range(),span=Math.max(hi0-lo0,20),A=lo0-span*0.08,B=lo0+span*1.08;
+  const c=$('#tr'),{x:g,w,h,s}=prep(c),M=Math.round(26*s),X=u=>M+(u-A)/(B-A)*(w-2*M);
+  map={A,B,M,w};
+  const st=[1,2,5,10,20,50,100,200].find(q=>(B-A)/q<=6)||200;
+  g.clearRect(0,0,w,h);
+  const{gy,u}=Kit.scene.road(g,w,h,s);
+  g.font=(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--sc-label');g.textAlign='center';
+  const ly=Math.round(h*0.82)+Math.round(14*s);
+  for(let q=Math.ceil(A/st)*st;q<=B;q+=st)g.fillText(q,X(q),ly);
+  g.textAlign='right';g.fillText('m',w-4*s,ly);
+  const k=Math.floor(T+1e-9);g.fillStyle=cv('--sc-mark');
+  for(let i=0;i<=k;i++){g.beginPath();g.arc(Math.round(X(X_(i))),gy+Math.round(h*0.11),1.4*u,0,7);g.fill();}
+  const cx=X(x);
+  if(dragging){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.ellipse(Math.round(cx),gy-3*u,13*u,8*u,0,0,7);g.fill();g.globalAlpha=1;}
+  Kit.scene.car(g,cx,gy,u);
+  for(const d of[-1,1]){const bx=Math.round(cx)+d*(9*u+5*u),by=gy-4*u;g.fillStyle=cv('--accent');g.beginPath();g.arc(bx,by,3.2*u,0,7);g.fill();g.fillStyle=cv('--on-accent');g.beginPath();g.moveTo(bx+d*1.6*u,by);g.lineTo(bx-d*0.9*u,by-1.5*u);g.lineTo(bx-d*0.9*u,by+1.5*u);g.closePath();g.fill();}
+  g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';
+  const tx=Math.min(w-M,Math.max(M+40*s,cx)),txt='x = '+n(x)+' m · v = '+n(V_(T))+' m/s',tw=g.measureText(txt).width;
+  g.fillStyle=cv('--card');g.globalAlpha=0.9;g.fillRect(tx-tw/2-6*s,gy-12*u-26*s,tw+12*s,22*s);g.globalAlpha=1;
+  g.fillStyle=cv('--ink');g.fillText(txt,tx,gy-12*u-10*s);
+}
+const nice=sp=>[1,2,5,10,20,25,50,100].find(q=>sp/q<=7)||100;
+function draw(){
+  const Tr=Math.round(T*10)/10,x=X_(T),xr=X_(Tr),vr=V_(Tr);
+  const p=x=>x<0?'('+n(x)+')':n(x);
+  $('#fm').textContent=mode==='v'?'v = '+n(v.v0)+' + '+p(v.a)+' · '+n(Tr)+' = '+n(vr)+' m/s':'x = '+n(v.v0)+' · '+n(Tr)+' + ½ · '+p(v.a)+' · '+n(Tr)+'² = '+n(xr)+' m';
+  drawTrack(T,x);
+  if(mode==='x'){const[lo,hi]=range(),ys=nice(Math.max(hi-lo,10));
+    plot($('#gr'),{xr:[0,TMAX],yr:[Math.floor(lo/ys)*ys-(lo<0?ys:0),Math.ceil(hi/ys)*ys+ys],xs:1,ys,xl:'t (s)',yl:'x (m)',
+      fns:[{f:X_,color:cv('--muted'),dash:[6,5],width:2},{f:X_,from:0,to:T,color:cv('--c1'),width:4}],pts:[{x:T,y:x,color:cv('--c2')}]});}
+  else if(mode==='v'){const lo=Math.min(0,v.v0,V_(TMAX)),hi=Math.max(1,v.v0,V_(TMAX)),ys=nice(hi-lo);
+    plot($('#gr'),{xr:[0,TMAX],yr:[Math.floor(lo/ys)*ys-(lo<0?ys:0),Math.ceil(hi/ys)*ys+ys],xs:1,ys,xl:'t (s)',yl:'v (m/s)',
+      fills:[{f:V_,from:0,to:T,color:cv('--c2'),alpha:0.25}],fns:[{f:V_,color:cv('--c1'),width:4}],pts:[{x:T,y:vr,color:cv('--c2'),label:n(vr)+' m/s'}]});}
+  else plot($('#gr'),{xr:[0,TMAX],yr:[-6,6],xs:1,ys:2,xl:'t (s)',yl:'a (m/s²)',fills:[{f:()=>v.a,from:0,to:T,color:cv('--c4'),alpha:0.25}],fns:[{f:()=>v.a,color:cv('--c4'),width:4}],pts:[{x:T,y:v.a,color:cv('--c2'),label:n(v.a)+' m/s²'}]});
+  const frena=v.a!==0&&vr!==0&&Math.sign(v.a)!==Math.sign(vr),tStop=v.a?-v.v0/v.a:null;
+  $('#ro').innerHTML=(mode==='x'?'En <b>t = '+n(Tr)+' s</b> está en <b>x = '+n(xr)+' m</b> y va a <b>'+n(vr)+' m/s</b>. ':
+    mode==='v'?'La recta sube <b>'+n(v.a)+' m/s</b> por segundo: esa pendiente es la aceleración. El área sombreada = lo que avanzó = <b>'+n(xr)+' m</b>. ':
+    'La aceleración no cambia: <b>'+n(v.a)+' m/s²</b>. El área sombreada, a · t = '+n(v.a*Tr)+' m/s, es cuánto cambió la velocidad. ')+
+    (v.a===0?'Con a = 0 es un MRU.':frena?'Está <b>frenando</b>: la aceleración va contra la velocidad.'+(tStop>0&&tStop<=TMAX?' Se detiene en t = '+n(tStop)+' s.':''):'Está <b>acelerando</b>.');
+}
+const ctl=controls($('#ctl'),[
+  {id:'v0',label:'Velocidad inicial (v₀)',min:-10,max:20,step:1,val:2,fmt:a=>a+' m/s',hint:'Con qué velocidad empieza. Es la pendiente de la parábola en t = 0.'},
+  {id:'a',label:'Aceleración (a)',min:-5,max:5,step:0.5,val:2,fmt:a=>nf(a,1)+' m/s²',hint:'Cuánto cambia la velocidad cada segundo. Contra la velocidad: frena.'},
+  {id:'t',label:'Tiempo (t)',min:0,max:TMAX,step:0.1,val:3,fmt:a=>nf(a,1)+' s',hint:'Arrástralo para ver dónde está en cada momento.'}
+],vv=>{v=vv;T=vv.t;if(playing)stop();draw();});
+v=ctl;T=ctl.t;
+const tIn=$$('#ctl input')[2],tOut=$$('#ctl output')[2],btn=$('#play');
+let raf=0,last=0;
+function stop(){cancelAnimationFrame(raf);raf=0;playing=false;$('#ro').setAttribute('aria-live','polite');
+  T=Math.round(T*10)/10;v.t=T;tIn.value=T;tOut.textContent=nf(T,1)+' s';btn.innerHTML=T>=TMAX?icon('again')+'Otra vez':icon('play')+'Reproducir';draw();}
+function step(now){const dt=Math.min(0.1,(now-last)/1000);last=now;T=Math.min(TMAX,T+dt);v.t=T;tIn.value=T;tOut.textContent=nf(T,1)+' s';draw();
+  if(T>=TMAX){stop();return;}raf=requestAnimationFrame(step);}
+btn.addEventListener('click',()=>{if(playing){stop();return;}if(T>=TMAX)T=0;
+  playing=true;$('#ro').setAttribute('aria-live','off');btn.innerHTML=icon('pause')+'Pausa';last=performance.now();raf=requestAnimationFrame(step);});
+btn.innerHTML=icon('play')+'Reproducir';
+if(reduce)$('.play').hidden=true;
+/* arrastrar: busca el instante en que el auto estuvo más cerca de donde lo dejas (si pasa dos veces, el más cercano al tiempo actual) */
+const tr=$('#tr');
+function setTime(t,exact){T=Math.max(0,Math.min(TMAX,t));const r=Math.round(T*10)/10;if(!exact)T=r;v.t=r;tIn.value=r;tOut.textContent=nf(r,1)+' s';tr.setAttribute('aria-valuenow',r);tr.setAttribute('aria-valuetext','t = '+nf(r,1)+' s, x = '+n(X_(r))+' m');draw();}
+function tFrom(e){const r=tr.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*map.w,pos=map.A+(px-map.M)/(map.w-2*map.M)*(map.B-map.A);
+  let best=T,bd=1e9;for(let i=0;i<=1000;i++){const t=i/100,d=Math.abs(X_(t)-pos)+Math.abs(t-T)*0.02;if(d<bd){bd=d;best=t;}}return best;}
+tr.addEventListener('pointerdown',e=>{if(playing)stop();dragging=true;tr.classList.add('drag');tr.setPointerCapture(e.pointerId);setTime(tFrom(e),true);e.preventDefault();});
+tr.addEventListener('pointermove',e=>{if(dragging)setTime(tFrom(e),true);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])tr.addEventListener(k,()=>{if(!dragging)return;dragging=false;tr.classList.remove('drag');setTime(T);});
+tr.addEventListener('keydown',e=>{const st=e.shiftKey?1:0.1,m={ArrowRight:st,ArrowUp:st,ArrowLeft:-st,ArrowDown:-st}[e.key];
+  if(m===undefined)return;e.preventDefault();if(playing)stop();setTime(Math.round((T+m)*10)/10);});
+seg($('#gSeg'),k=>{mode=k;draw();});
+onRedraw(draw);
+lessonNav('mruv');
+})();
+</script>
+</body>
+</html>

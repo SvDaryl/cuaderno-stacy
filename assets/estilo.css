@@ -101,7 +101,7 @@ a.lk:hover{background:var(--sunk)}
 .rail h2{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:0}
 .rail p{font-size:14px;color:var(--muted);margin:8px 0 0;line-height:1.5}
 .rail .idea{font-size:14px;line-height:1.55;color:var(--ink)}
-.rail .idea .fx{font-size:15px;margin:2px 0 8px;white-space:nowrap;overflow-x:auto}
+.rail .idea .fx{font-size:15px;line-height:1.5;margin:2px 0 8px;overflow-wrap:anywhere}
 .rail .idea dl{display:none}
 .rail .btn{width:100%;justify-content:center;text-align:center;font-size:15px;padding:0 14px;line-height:1.25}
 .rail .btn+.btn{margin-top:10px}

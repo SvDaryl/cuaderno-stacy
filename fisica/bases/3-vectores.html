@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vectores · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#vc{touch-action:none;cursor:grab}
+#vc.drag{cursor:grabbing}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.cases div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px}
+.cases b{display:block;font-family:var(--mono);font-weight:500;font-size:17px;margin-bottom:4px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Bases · Paso 2</span></div>
+<h1>Vectores</h1>
+<p class="lede">Hay cantidades que necesitan una dirección para tener sentido: no basta decir “5 km”, hay que decir “5 km hacia el norte”.</p>
+
+<div class="card">
+  <div class="seg" id="mSeg" role="group" aria-label="Elige qué ver">
+    <button data-k="sum" aria-pressed="true">Suma A + B</button><button data-k="comp" aria-pressed="false">Componentes</button><button data-k="res" aria-pressed="false">Resta A − B</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="vc" data-w="660" data-h="400" tabindex="0" aria-label="Plano con dos vectores A y B que se pueden arrastrar desde sus puntas, y su resultante"></canvas>
+  <p class="cap"><b>Arrastra las puntas</b> de A (morado) y B (naranja) con el dedo o el mouse. La flecha verde es el resultado.</p>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Qué es un vector</h2>
+<p>Un <b>vector</b> es una flecha: su largo es la <b>magnitud</b> (o módulo) y hacia dónde apunta es su <b>dirección</b>. La velocidad, la fuerza y el desplazamiento son vectores. La masa, la temperatura y el tiempo no: con un número basta, son <b>escalares</b>.</p>
+
+<h2>Sumar vectores</h2>
+<p>Para sumar, pon la cola de B en la punta de A: la <b>resultante</b> va desde el inicio de A hasta la punta de B. Es lo que pasa con un <button class="term" data-p="vectores">avión con viento de costado</button>: su velocidad real es la suma de la suya y la del viento.</p>
+<div class="cases">
+  <div><b>R = A + B</b>Mismo sentido: los largos se suman.</div>
+  <div><b>R = A − B</b>Sentidos opuestos: se restan (el más largo gana).</div>
+  <div><b>R = √(A² + B²)</b>Perpendiculares: Pitágoras.</div>
+</div>
+<p>Para cualquier ángulo θ entre A y B se usa la fórmula general, que sale de la ley de cosenos:</p>
+<div class="key" data-idea><b class="fx">R = √(A² + B² + 2·A·B·cos θ)</b>θ es el ángulo entre A y B (cola con cola). Con θ = 0° sale A + B; con 90°, Pitágoras; con 180°, A − B.</div>
+
+<h2>Componentes</h2>
+<p>Todo vector se puede partir en un pedazo horizontal y uno vertical. Si A forma un ángulo α con el eje x:</p>
+<p style="font-family:var(--mono);font-size:18px">Aₓ = A · cos α &nbsp;&nbsp;·&nbsp;&nbsp; Aᵧ = A · sen α</p>
+<p>Para sumar muchos vectores, suma todas las componentes x por un lado y todas las y por otro, y al final usa Pitágoras. En el colegio se usa mucho el triángulo de <b>37° y 53°</b>: sus lados están en proporción 3, 4 y 5, así que cos 37° ≈ 0,8 y sen 37° ≈ 0,6.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Son perpendiculares: usa Pitágoras.">
+  <p>Caminas 3 km al este y luego 4 km al norte. ¿A qué distancia quedas del punto de partida?</p>
+  <label><input type="radio" name="q1" value="a"> 7 km</label>
+  <label><input type="radio" name="q1" value="b"> 5 km</label>
+  <label><input type="radio" name="q1" value="c"> 1 km</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! R = √(3² + 4²) = √25 = 5 km. Caminaste 7 km, pero quedaste a 5 km.</template>
+</div>
+<div class="q" data-ans="a" data-hint="Aₓ = A · cos 37°, y cos 37° ≈ 0,8.">
+  <p>Un vector de 10 u forma 37° con el eje x. ¿Cuánto mide su componente x?</p>
+  <label><input type="radio" name="q2" value="a"> 8 u</label>
+  <label><input type="radio" name="q2" value="b"> 6 u</label>
+  <label><input type="radio" name="q2" value="c"> 10 u</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: Aₓ = 10 · cos 37° ≈ 10 · 0,8 = 8 u (y Aᵧ ≈ 6 u).</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+let mode='sum',A={x:4,y:3},B={x:-1,y:4},drag=null,geo=null;
+const mag=p=>Math.hypot(p.x,p.y),ang=p=>(Math.atan2(p.y,p.x)*180/Math.PI+360)%360;
+function arrow(g,x0,y0,x1,y1,col,w,s,dash){
+  g.strokeStyle=col;g.fillStyle=col;g.lineWidth=w*s;g.lineCap='round';g.setLineDash(dash?dash.map(d=>d*s):[]);
+  g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();g.setLineDash([]);
+  const a=Math.atan2(y1-y0,x1-x0),L=14*s;if(Math.hypot(x1-x0,y1-y0)<L)return;
+  g.beginPath();g.moveTo(x1,y1);g.lineTo(x1-L*Math.cos(a-0.4),y1-L*Math.sin(a-0.4));g.lineTo(x1-L*Math.cos(a+0.4),y1-L*Math.sin(a+0.4));g.closePath();g.fill();
+}
+function draw(){
+  const c=$('#vc'),{x:g,w,h,s}=prep(c),U=Math.min(w,h)/14,ox=w/2,oy=Math.round(h*0.7),X=x=>ox+x*U,Y=y=>oy-y*U;geo={U,ox,oy,w,h};
+  g.clearRect(0,0,w,h);
+  /* cuadrícula de 1 u */
+  g.lineWidth=1*s;g.strokeStyle=cv('--line');
+  for(let i=-Math.ceil(w/2/U);i<=w/2/U;i++){g.beginPath();g.moveTo(X(i),0);g.lineTo(X(i),h);g.stroke();}
+  for(let j=-Math.ceil((h-oy)/U);j<=oy/U;j++){g.beginPath();g.moveTo(0,Y(j));g.lineTo(w,Y(j));g.stroke();}
+  g.strokeStyle=cv('--muted');g.lineWidth=1.4*s;g.beginPath();g.moveTo(0,oy);g.lineTo(w,oy);g.moveTo(ox,0);g.lineTo(ox,h);g.stroke();
+  g.font=(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.fillText('x',w-14*s,oy-8*s);g.fillText('y',ox+8*s,14*s);
+  const cA=cv('--c1'),cB=cv('--c2'),cR=cv('--c3');
+  let R;
+  if(mode==='sum'){R={x:A.x+B.x,y:A.y+B.y};
+    arrow(g,X(A.x),Y(A.y),X(R.x),Y(R.y),cB,2.5,s,[6,5]);arrow(g,X(B.x),Y(B.y),X(R.x),Y(R.y),cA,2.5,s,[6,5]);
+    arrow(g,ox,oy,X(R.x),Y(R.y),cR,5,s);}
+  else if(mode==='res'){R={x:A.x-B.x,y:A.y-B.y};
+    arrow(g,X(B.x),Y(B.y),X(A.x),Y(A.y),cR,5,s);arrow(g,ox,oy,X(R.x),Y(R.y),cR,2.5,s,[6,5]);}
+  else{R=null;
+    g.strokeStyle=cA;g.setLineDash([5*s,5*s]);g.lineWidth=2*s;g.beginPath();g.moveTo(X(A.x),Y(A.y));g.lineTo(X(A.x),oy);g.moveTo(X(A.x),Y(A.y));g.lineTo(ox,Y(A.y));g.stroke();g.setLineDash([]);
+    arrow(g,ox,oy,X(A.x),oy,cA,4,s);arrow(g,ox,oy,ox,Y(A.y),cA,4,s);
+    g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.fillStyle=cA;g.fillText('Aₓ = '+n(A.x),X(A.x/2)-24*s,oy+(A.y>=0?20:-10)*s);g.fillText('Aᵧ = '+n(A.y),ox+(A.x>=0?-70:10)*s,Y(A.y/2));}
+  arrow(g,ox,oy,X(A.x),Y(A.y),cA,4,s);
+  if(mode!=='comp')arrow(g,ox,oy,X(B.x),Y(B.y),cB,4,s);
+  /* asas para arrastrar */
+  for(const [p,col,l] of [[A,cA,'A'],...(mode!=='comp'?[[B,cB,'B']]:[])]){
+    g.fillStyle=col;g.globalAlpha=drag===l?0.35:0.18;g.beginPath();g.arc(X(p.x),Y(p.y),16*s,0,7);g.fill();g.globalAlpha=1;
+    g.beginPath();g.arc(X(p.x),Y(p.y),7*s,0,7);g.fill();
+    g.font='600 '+(15*s).toFixed(1)+'px Lexend, sans-serif';g.fillText(l,X(p.x)+12*s,Y(p.y)-12*s);}
+  if(R){g.fillStyle=cR;g.font='600 '+(15*s).toFixed(1)+'px Lexend, sans-serif';g.fillText('R',X(R.x)+12*s,Y(R.y)+18*s);}
+  /* textos */
+  const th=Math.acos(Math.max(-1,Math.min(1,(A.x*B.x+A.y*B.y)/(mag(A)*mag(B)||1))))*180/Math.PI;
+  if(mode==='comp'){
+    $('#fm').textContent='Aₓ = A · cos α = '+n(mag(A),2)+' · cos '+n(ang(A),0)+'° = '+n(A.x);
+    $('#ro').innerHTML='A mide <b>'+n(mag(A),2)+' u</b> y forma <b>'+n(ang(A),0)+'°</b> con el eje x. Sus componentes son <b>Aₓ = '+n(A.x)+'</b> y <b>Aᵧ = '+n(A.y)+'</b>. Comprueba: √('+n(A.x)+'² + '+n(A.y)+'²) = '+n(mag(A),2)+'.';
+  }else{
+    const sign=mode==='sum'?'+':'−',RR=mag(R);
+    $('#fm').textContent='R = A '+sign+' B = ('+n(R.x)+' ; '+n(R.y)+')   |R| = '+n(RR,2);
+    $('#ro').innerHTML='|A| = <b>'+n(mag(A),2)+'</b>, |B| = <b>'+n(mag(B),2)+'</b>, ángulo entre ellos θ = <b>'+n(th,0)+'°</b>. '+
+      (mode==='sum'?'Con la fórmula: √('+n(mag(A),2)+'² + '+n(mag(B),2)+'² + 2·'+n(mag(A),2)+'·'+n(mag(B),2)+'·cos '+n(th,0)+'°) = <b>'+n(RR,2)+'</b>. '
+      :'Restar es sumar A con B al revés: la flecha verde va de la punta de B a la punta de A. |A − B| = <b>'+n(RR,2)+'</b>. ')+
+      (Math.abs(th)<3?'Casi el mismo sentido: los largos se suman.':Math.abs(th-90)<3?'Son perpendiculares: Pitágoras.':Math.abs(th-180)<3?'Sentidos opuestos: los largos se restan.':'');
+  }
+}
+/* arrastre: la punta más cercana se mueve, en pasos de 0,5 u */
+const c=$('#vc');
+function toU(e){const r=c.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w,py=(e.clientY-r.top)/r.height*geo.h;
+  const lim=(geo.w/2/geo.U)-0.5,up=geo.oy/geo.U-0.5,dn=(geo.h-geo.oy)/geo.U-0.5;
+  return{x:Math.max(-lim,Math.min(lim,Math.round((px-geo.ox)/geo.U*2)/2)),y:Math.max(-dn,Math.min(up,Math.round((geo.oy-py)/geo.U*2)/2))};}
+c.addEventListener('pointerdown',e=>{const p=toU(e),dA=Math.hypot(p.x-A.x,p.y-A.y),dB=mode==='comp'?1e9:Math.hypot(p.x-B.x,p.y-B.y);
+  drag=dA<=dB?'A':'B';c.classList.add('drag');c.setPointerCapture(e.pointerId);Object.assign(drag==='A'?A:B,p);draw();e.preventDefault();});
+c.addEventListener('pointermove',e=>{if(!drag)return;const p=toU(e);Object.assign(drag==='A'?A:B,p);draw();});
+for(const k of['pointerup','pointercancel','lostpointercapture'])c.addEventListener(k,()=>{if(!drag)return;drag=null;c.classList.remove('drag');draw();});
+/* teclado: flechas mueven A; con Shift mueven B */
+c.addEventListener('keydown',e=>{const d={ArrowRight:[0.5,0],ArrowLeft:[-0.5,0],ArrowUp:[0,0.5],ArrowDown:[0,-0.5]}[e.key];if(!d)return;e.preventDefault();
+  const p=e.shiftKey&&mode!=='comp'?B:A;p.x+=d[0];p.y+=d[1];draw();});
+seg($('#mSeg'),k=>{mode=k;draw();});
+onRedraw(draw);
+lessonNav('vectores');
+})();
+</script>
+</body>
+</html>

@@ -79,14 +79,14 @@ window.TEMAS = [
 
   /* ===================== FÍSICA ===================== */
   /* --- Bases --- */
-  { id:'magnitudes',   materia:'fisica', bloque:'Bases', paso:1, titulo:'Magnitudes y unidades',  resumen:'El Sistema Internacional, prefijos y conversiones.', antes:[], estado:'pronto' },
-  { id:'dimensional',  materia:'fisica', bloque:'Bases', paso:2, titulo:'Análisis dimensional',   resumen:'Revisar si una fórmula tiene sentido con sus unidades.', antes:['magnitudes'], estado:'pronto' },
-  { id:'vectores',     materia:'fisica', bloque:'Bases', paso:2, titulo:'Vectores',               resumen:'Magnitud, dirección y cómo se suman.', antes:['magnitudes','razones'], estado:'pronto' },
+  { id:'magnitudes',   materia:'fisica', bloque:'Bases', paso:1, titulo:'Magnitudes y unidades',  resumen:'El Sistema Internacional, prefijos y conversiones.', antes:[], estado:'lista', url:'fisica/bases/1-magnitudes.html', fecha:'2026-11-11' },
+  { id:'dimensional',  materia:'fisica', bloque:'Bases', paso:2, titulo:'Análisis dimensional',   resumen:'Revisar si una fórmula tiene sentido con sus unidades.', antes:['magnitudes'], estado:'lista', url:'fisica/bases/2-analisis-dimensional.html', fecha:'2026-11-11' },
+  { id:'vectores',     materia:'fisica', bloque:'Bases', paso:2, titulo:'Vectores',               resumen:'Magnitud, dirección y cómo se suman.', antes:['magnitudes','razones'], estado:'lista', url:'fisica/bases/3-vectores.html', fecha:'2026-11-11' },
   /* --- Cinemática --- */
   { id:'mru',          materia:'fisica', bloque:'Cinemática', paso:1, titulo:'MRU: velocidad constante', resumen:'Avanzar en línea recta sin acelerar ni frenar.', antes:['magnitudes','funcion'], estado:'lista', url:'fisica/cinematica/1-mru.html', fecha:'2026-11-11' },
-  { id:'mruv',         materia:'fisica', bloque:'Cinemática', paso:2, titulo:'MRUV: la velocidad cambia', resumen:'Acelerar y frenar de forma pareja.', antes:['mru'], estado:'pronto' },
-  { id:'caida',        materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Caída libre',              resumen:'El MRUV de todo lo que cae.', antes:['mruv'], estado:'pronto' },
-  { id:'circular',     materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Movimiento circular',      resumen:'Velocidad angular y aceleración centrípeta.', antes:['mruv','vectores'], estado:'pronto' },
+  { id:'mruv',         materia:'fisica', bloque:'Cinemática', paso:2, titulo:'MRUV: la velocidad cambia', resumen:'Acelerar y frenar de forma pareja.', antes:['mru'], estado:'lista', url:'fisica/cinematica/2-mruv.html', fecha:'2026-11-11' },
+  { id:'caida',        materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Caída libre',              resumen:'El MRUV de todo lo que cae.', antes:['mruv'], estado:'lista', url:'fisica/cinematica/3-caida-libre.html', fecha:'2026-11-11' },
+  { id:'circular',     materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Movimiento circular',      resumen:'Velocidad angular y aceleración centrípeta.', antes:['mruv','vectores'], estado:'lista', url:'fisica/cinematica/4-movimiento-circular.html', fecha:'2026-11-11' },
   /* --- Dinámica --- */
   { id:'newton',       materia:'fisica', bloque:'Dinámica', paso:1, titulo:'Leyes de Newton',          resumen:'Fuerza, masa y aceleración: F = m · a.', antes:['mruv','vectores'], estado:'pronto' },
   { id:'rozamiento',   materia:'fisica', bloque:'Dinámica', paso:2, titulo:'Rozamiento',               resumen:'La fuerza que se opone a deslizar.', antes:['newton'], estado:'pronto' },
@@ -145,6 +145,10 @@ window.EJEMPLOS = [
   { panel:'dominio',     titulo:'La batería del celular', tema:'dominio' },
   { panel:'lineal',      titulo:'El precio de un taxi',   tema:'polinomicas' },
   { panel:'mru',         titulo:'Un viaje en bus',        tema:'mru' },
+  { panel:'prefijos',    titulo:'Los megas de tu internet', tema:'magnitudes' },
+  { panel:'vectores',    titulo:'Un avión con viento de costado', tema:'vectores' },
+  { panel:'mruv',        titulo:'Frenar a tiempo',        tema:'mruv' },
+  { panel:'circular',    titulo:'La rueda de tu bicicleta', tema:'circular' },
   { panel:'cuadratica',  titulo:'El camino de un balón',  tema:'polinomicas' },
   { panel:'cubica',      titulo:'La caja más grande',     tema:'polinomicas' },
   { panel:'exponencial', titulo:'Un chisme en WhatsApp',  tema:'trascendentes' },
@@ -154,5 +158,6 @@ window.EJEMPLOS = [
 ];
 
 window.EXAMENES = [
-  { id:'funciones-1', titulo:'Funciones · Examen 1', desc:'Función, dominio y rango, clasificación. 8 preguntas.', url:'examenes/funciones-1.html' }
+  { id:'funciones-1', titulo:'Funciones · Examen 1', desc:'Función, dominio y rango, clasificación. 8 preguntas.', url:'examenes/funciones-1.html' },
+  { id:'fisica-1',    titulo:'Física · Examen 1',    desc:'Bases y cinemática: unidades, vectores, MRU, MRUV, caída libre y circular. 8 preguntas.', url:'examenes/fisica-1.html' }
 ];

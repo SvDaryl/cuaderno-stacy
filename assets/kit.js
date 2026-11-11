@@ -6,7 +6,7 @@ const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const cv = n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 /* m(): pega con espacio duro las operaciones (x − 1, 2 · 3) para que una fórmula no se parta a mitad de línea */
 const m = s=>String(s).replace(/ ([+−·×\/]) /g,'\u00A0$1\u00A0');
-const nf = (v,d=2)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
+const nf = (v,d=2)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:false}); /* sin punto de miles: 16000, no 16.000 */
 const redraws = [];
 const onRedraw = fn=>{redraws.push(fn);fn();};
 const redrawAll = ()=>redraws.forEach(f=>{try{f();}catch(e){console.error(e);}});
@@ -135,6 +135,36 @@ const PANELS={
     draw(v,c,r){const d=v.v*v.t/60;
       plot(c,{xr:[0,120],yr:[0,200],xs:20,ys:40,xl:'minutos',yl:'km',fns:[{f:x=>v.v*x/60,color:cv('--c1')}],pts:[{x:v.t,y:d,color:cv('--c2'),label:nf(d,1)+' km'}]});
       r.innerHTML='A <b>'+v.v+' km/h</b> recorres '+nf(v.v/60,2)+' km cada minuto. En <b>'+v.t+' min</b>: '+nf(v.v/60,2)+' × '+v.t+' = <b>'+nf(d,1)+' km</b>.';}},
+  prefijos:{title:'Prefijos: los megas de tu internet',uses:['Planes de internet','Descargas','Memoria del celular'],
+    intro:'Tu plan dice “100 Mbps”: megabits por segundo. Los archivos se miden en megabytes (MB) o gigabytes (GB). Un byte son 8 bits, y giga es mil veces mega. Con esos dos datos puedes calcular cuánto tarda una descarga.',
+    ctl:[{id:'p',label:'Tu plan',min:10,max:300,step:10,val:100,fmt:v=>v+' Mbps',hint:'Megabits por segundo que promete tu plan.'},
+         {id:'g',label:'Archivo',min:0.5,max:10,step:0.5,val:2,fmt:v=>nf(v,1)+' GB',hint:'1 GB = 1000 MB = 8000 megabits.'}],
+    draw(v,c,r){const t=x=>x*8000/v.p/60,s=v.g*8000/v.p;
+      plot(c,{xr:[0,10],yr:[0,Math.max(5,Math.ceil(t(10)/5)*5)],xs:1,xl:'GB',yl:'minutos',fns:[{f:t,color:cv('--c1')}],pts:[{x:v.g,y:t(v.g),color:cv('--c2'),label:nf(t(v.g),1)+' min'}]});
+      r.innerHTML=nf(v.g,1)+' GB = '+nf(v.g*1000,0)+' MB = <b>'+nf(v.g*8000,0)+' megabits</b>. A '+v.p+' Mbps tarda '+nf(v.g*8000,0)+' / '+v.p+' = <b>'+nf(s,0)+' s ≈ '+nf(s/60,1)+' min</b>, si el internet va a toda su velocidad.';}},
+  vectores:{title:'Vectores: un avión con viento de costado',uses:['Aviones y drones','Barcos que cruzan un río','Pases en el fútbol'],
+    intro:'El avión apunta al norte, pero el viento lo empuja hacia el este. Su velocidad real respecto al suelo es la suma de los dos vectores: más rápida y desviada.',
+    ctl:[{id:'p',label:'Velocidad del avión',min:150,max:300,step:10,val:200,fmt:v=>v+' km/h',hint:'Hacia el norte.'},
+         {id:'w',label:'Viento',min:0,max:120,step:10,val:60,fmt:v=>v+' km/h',hint:'Hacia el este, perpendicular al avión.'}],
+    draw(v,c,r){const{x:g,w,h,s}=prep(c),R=Math.hypot(v.p,v.w),a=Math.atan2(v.w,v.p)*180/Math.PI,k=(h-60*s)/320,ox=w*0.35,oy=h-30*s;
+      g.clearRect(0,0,w,h);const ar=(x1,y1,col)=>{g.strokeStyle=col;g.fillStyle=col;g.lineWidth=4*s;g.beginPath();g.moveTo(ox,oy);g.lineTo(x1,y1);g.stroke();const an=Math.atan2(y1-oy,x1-ox);g.beginPath();g.moveTo(x1,y1);g.lineTo(x1-12*s*Math.cos(an-0.4),y1-12*s*Math.sin(an-0.4));g.lineTo(x1-12*s*Math.cos(an+0.4),y1-12*s*Math.sin(an+0.4));g.closePath();g.fill();};
+      g.strokeStyle=cv('--line-2');g.setLineDash([5*s,4*s]);g.lineWidth=2*s;g.beginPath();g.moveTo(ox,oy-v.p*k);g.lineTo(ox+v.w*k,oy-v.p*k);g.lineTo(ox+v.w*k,oy);g.stroke();g.setLineDash([]);
+      ar(ox,oy-v.p*k,cv('--c1'));if(v.w)ar(ox+v.w*k,oy,cv('--c2'));ar(ox+v.w*k,oy-v.p*k,cv('--c3'));
+      g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.fillStyle=cv('--c1');g.fillText('avión '+v.p,ox-90*s,oy-v.p*k/2);g.fillStyle=cv('--c2');g.fillText('viento '+v.w,ox+v.w*k/2-20*s,oy+20*s);g.fillStyle=cv('--c3');g.fillText('real '+nf(R,0),ox+v.w*k/2+14*s,oy-v.p*k/2-10*s);
+      r.innerHTML='Son perpendiculares, así que va Pitágoras: √('+v.p+'² + '+v.w+'²) = <b>'+nf(R,0)+' km/h</b>. Se desvía <b>'+nf(a,1)+'°</b> hacia el este; el piloto tiene que corregir el rumbo.';}},
+  mruv:{title:'MRUV: frenar a tiempo',uses:['Seguridad vial','Distancia entre autos','Frenos de bicicletas'],
+    intro:'Antes de frenar pasa un tiempo de reacción: ahí el auto sigue a la misma velocidad (MRU). Luego frena (MRUV). En pista seca un auto frena con unos 7 m/s². La distancia de frenado crece con el cuadrado de la velocidad.',
+    ctl:[{id:'v',label:'Velocidad',min:30,max:120,step:5,val:60,fmt:v=>v+' km/h',hint:'El doble de velocidad: casi cuatro veces la distancia de frenado.'},
+         {id:'tr',label:'Tiempo de reacción',min:0.5,max:2,step:0.1,val:1,fmt:v=>nf(v,1)+' s',hint:'Distraído con el celular: más de 1,5 s.'}],
+    draw(v,c,r){const a=7,ms=x=>x/3.6,re=x=>ms(x)*v.tr,fr=x=>ms(x)*ms(x)/(2*a),tot=x=>re(x)+fr(x);
+      plot(c,{xr:[0,130],yr:[0,Math.max(60,Math.ceil(tot(130)/20)*20)],xs:10,xl:'km/h',yl:'m',fns:[{f:re,color:cv('--muted'),dash:[6,5],width:2},{f:tot,color:cv('--c2')}],pts:[{x:v.v,y:tot(v.v),color:cv('--c2'),label:nf(tot(v.v),1)+' m'}]});
+      r.innerHTML='A '+v.v+' km/h = '+nf(ms(v.v),1)+' m/s: reaccionando recorre '+nf(re(v.v),1)+' m, y frenando v²/(2a) = '+nf(fr(v.v),1)+' m. <b>En total, '+nf(tot(v.v),1)+' m</b> para detenerse. La línea punteada es solo la reacción.';}},
+  circular:{title:'Movimiento circular: la rueda de tu bicicleta',uses:['Bicicletas y autos','Ventiladores y licuadoras','Tocadiscos y discos duros'],
+    intro:'Una rueda de bicicleta mide unos 35 cm de radio. Si sabes qué tan rápido vas, sabes cuántas vueltas por minuto da la rueda: v = ω · r.',
+    ctl:[{id:'v',label:'Tu velocidad',min:5,max:40,step:1,val:18,fmt:v=>v+' km/h',hint:'Una bici de paseo va a unos 15–20 km/h.'}],
+    draw(v,c,r){const R=0.35,rpm=x=>x/3.6/R*60/(2*Math.PI),w=v.v/3.6/R;
+      plot(c,{xr:[0,40],yr:[0,350],xs:5,ys:50,xl:'km/h',yl:'rpm',fns:[{f:rpm,color:cv('--c1')}],pts:[{x:v.v,y:rpm(v.v),color:cv('--c2'),label:nf(rpm(v.v),0)+' rpm'}]});
+      r.innerHTML=v.v+' km/h = '+nf(v.v/3.6,2)+' m/s. ω = v / r = '+nf(w,1)+' rad/s, o sea <b>'+nf(w/(2*Math.PI),2)+' vueltas por segundo = '+nf(rpm(v.v),0)+' rpm</b>.';}},
   lineal:{title:'Función lineal: el precio de un taxi',uses:['Taxis y apps de viaje','Planes de celular','Recibo de luz'],
     intro:'Un taxi cobra un monto fijo al subir (la b) y un precio por cada kilómetro (la m, o pendiente). El total es y = m·x + b. Cada kilómetro suma lo mismo, por eso la gráfica es una recta.',
     ctl:[{id:'b',label:'Al subir (b)',min:0,max:10,step:0.5,val:4,fmt:v=>'S/ '+nf(v),hint:'Sube o baja la recta.'},
@@ -223,7 +253,8 @@ function lessonNav(id){
   const t=TEMAS.find(x=>x.id===id);if(!t)return;
   const mat=MATERIAS.find(x=>x.id===t.materia)||{nombre:''};
   const all=TEMAS.filter(x=>x.materia===t.materia),bloques=[...new Set(all.map(x=>x.bloque))];
-  const list=TEMAS.filter(x=>x.bloque===t.bloque&&x.estado==='lista'),i=list.indexOf(t),prev=list[i-1],next=list[i+1];
+  const list=TEMAS.filter(x=>x.bloque===t.bloque&&x.estado==='lista');
+  const mlist=TEMAS.filter(x=>x.materia===t.materia&&x.estado==='lista'),i=mlist.indexOf(t),prev=mlist[i-1],next=mlist[i+1];
   const mapUrl=BASE+t.materia+'/index.html';
   const main=$('main');
   if(main&&!main.parentElement.classList.contains('shell')){
@@ -248,7 +279,7 @@ function lessonNav(id){
       const key=$('main .key[data-idea]')||$('main .key'); /* data-idea marca cuál es la idea clave de la lección */
       const end=t.materia==='matematica'?['examenes/index.html','Ir a exámenes']:['problemas/index.html','Ir a problemas'];
       rail.innerHTML='<div class="box"><button class="btn done-btn" type="button" aria-pressed="false"></button>'+
-        (next?'<a class="btn ghost" href="'+BASE+next.url+'">Siguiente'+icon('right')+'</a><p>Sigue: '+next.titulo+'</p>':'<a class="btn ghost" href="'+BASE+end[0]+'">'+end[1]+icon('right')+'</a><p>Terminaste lo que hay de '+t.bloque+' por ahora.</p>')+'</div>'+(key?'<div class="box idea"><h2>Idea clave</h2>'+key.innerHTML+'</div>':'')+'<div class="box"><h2>'+t.bloque+'</h2><span class="bar"><span style="--p:'+(list.length?ub/list.length*100:0)+'%"></span></span><p>'+ub+' de '+list.length+' lecciones listas de esta unidad.</p></div>';
+        (next?'<a class="btn ghost" href="'+BASE+next.url+'">Siguiente'+icon('right')+'</a><p>Sigue: '+next.titulo+'</p>':'<a class="btn ghost" href="'+BASE+end[0]+'">'+end[1]+icon('right')+'</a><p>Terminaste lo que hay de '+mat.nombre+' por ahora.</p>')+'</div>'+(key?'<div class="box idea"><h2>Idea clave</h2>'+key.innerHTML+'</div>':'')+'<div class="box"><h2>'+t.bloque+'</h2><span class="bar"><span style="--p:'+(list.length?ub/list.length*100:0)+'%"></span></span><p>'+ub+' de '+list.length+' lecciones listas de esta unidad.</p></div>';
       wireDone();
     };
     paintSides.push(paintSide);paintSide();
