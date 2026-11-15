@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Áreas de regiones planas · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.duo{display:grid;grid-template-columns:420px 1fr;gap:22px;align-items:start}
+#sq{touch-action:none;cursor:grab;border-radius:12px}
+#sq.drag{cursor:grabbing}
+.bars div{margin:10px 0}
+.bars span{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
+.bars span b{font-family:var(--mono);font-weight:500}
+.bars i{display:block;height:12px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.bars i em{display:block;height:100%;border-radius:99px}
+.forms{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.forms div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px}
+.forms b{display:block;font-family:var(--mono);font-weight:500;font-size:17px;margin-bottom:4px}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Geometría plana · Paso 5</span></div>
+<h1>Áreas de regiones planas</h1>
+<p class="lede">Casi todas las regiones sombreadas se resuelven con dos ideas: el área de un triángulo es base por altura entre dos, y lo que no sale directo se saca restando.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige la figura">
+    <button data-k="tri" aria-pressed="true">Tres triángulos</button><button data-k="rom" aria-pressed="false">Región central</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="sq" data-w="420" data-h="420" tabindex="0" aria-label="Cuadrado con puntos que se arrastran sobre sus lados"></canvas>
+    <div><div class="bars" id="bars"></div><div class="readout" id="ro" aria-live="polite"></div></div>
+  </div>
+  <p class="cap"><b>Arrastra los puntos morados</b> por los lados del cuadrado. El cuadrado mide 1 de lado (área 1).</p>
+</div>
+
+<h2>Las fórmulas que más se usan</h2>
+<div class="forms">
+  <div><b>b · h / 2</b>Triángulo: base por altura (perpendicular a la base) entre 2.</div>
+  <div><b>D · d / 2</b>Rombo: diagonal mayor por diagonal menor entre 2.</div>
+  <div><b>(B + b) · h / 2</b>Trapecio: la suma de las bases por la altura entre 2.</div>
+</div>
+<p>Las áreas también sirven para fabricar cosas: recortar las esquinas de una cartulina para armar la <button class="term" data-p="cubica">caja más grande</button>.</p>
+<p>Y el <b>teorema de Pitágoras</b> para hallar lados que faltan: en un triángulo rectángulo, hipotenusa² = cateto² + cateto². Lo usarás también en <a href="../espacio/prisma-piramide-cilindro.html">pirámides y prismas</a>.</p>
+<div class="key" data-idea><b class="fx">Área sombreada = total − lo que sobra</b>Si la región no es una figura conocida, calcula el área de afuera con triángulos y réstala del total.</div>
+
+<h2>Cuando las áreas son iguales</h2>
+<p>Si un problema dice que varias áreas son iguales, ponles letras a los segmentos (AF = p, AE = q), escribe cada área con esas letras e iguala. En “tres triángulos”, igualar da p = q y luego p² + p − 1 = 0, de donde p = (√5 − 1)/2 ≈ 0,618, el famoso número de oro. Con ese valor, la tangente del ángulo DCE es ED / DC = 1 − p = (3 − √5)/2. Arrastra los puntos y mira cuándo se igualan las tres barras.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="La base es un lado del cuadrado y la altura es todo el lado.">
+  <p>En un cuadrado de lado 8 se dibuja un triángulo con base en el lado de abajo y el tercer vértice en cualquier punto del lado de arriba. ¿Cuál es su área?</p>
+  <label><input type="radio" name="q1" value="a"> 64</label>
+  <label><input type="radio" name="q1" value="b"> 32</label>
+  <label><input type="radio" name="q1" value="c"> 16</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 8 · 8 / 2 = 32: siempre la mitad del cuadrado, sin importar dónde esté el vértice de arriba.</template>
+</div>
+<div class="q" data-ans="a" data-hint="Rombo: D · d / 2.">
+  <p>Un rombo tiene diagonales de 6 cm y 4 cm. ¿Cuál es su área?</p>
+  <label><input type="radio" name="q2" value="a"> 12 cm²</label>
+  <label><input type="radio" name="q2" value="b"> 24 cm²</label>
+  <label><input type="radio" name="q2" value="c"> 10 cm²</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 6 · 4 / 2 = 12 cm².</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=3)=>nf(a,d).replace(/,?0+$/,'')||'0';
+let kind='tri',p=0.5,q=0.4,mx=0.5,nx=0.5,geo=null,drag=null;
+const shoe=P=>Math.abs(P.reduce((s,a,i)=>{const b=P[(i+1)%P.length];return s+a[0]*b[1]-b[0]*a[1];},0))/2;
+function inter(a,b,c,d){const d1=[b[0]-a[0],b[1]-a[1]],d2=[d[0]-c[0],d[1]-c[1]],den=d1[0]*d2[1]-d1[1]*d2[0];if(Math.abs(den)<1e-12)return a;const t=((c[0]-a[0])*d2[1]-(c[1]-a[1])*d2[0])/den;return[a[0]+t*d1[0],a[1]+t*d1[1]];}
+function bars(list){$('#bars').innerHTML=list.map(([t,val,col])=>'<div><span>'+t+'<b>'+n(val)+'</b></span><i><em style="width:'+Math.min(100,val*100*2)+'%;background:var('+col+')"></em></i></div>').join('');}
+function draw(){
+  const c=$('#sq'),{x:g,w,h,s}=prep(c),M=46*s,S=w-2*M,X=x=>M+x*S,Y=y=>M+(1-y)*S;geo={X,Y,M,S,w,h};
+  g.clearRect(0,0,w,h);
+  const fill=(pts,col,al)=>{g.fillStyle=cv(col);g.globalAlpha=al;g.beginPath();pts.forEach((pt,i)=>i?g.lineTo(X(pt[0]),Y(pt[1])):g.moveTo(X(pt[0]),Y(pt[1])));g.closePath();g.fill();g.globalAlpha=1;};
+  const line=(a,b,col,wd)=>{g.strokeStyle=cv(col||'--ink');g.lineWidth=(wd||1.8)*s;g.beginPath();g.moveTo(X(a[0]),Y(a[1]));g.lineTo(X(b[0]),Y(b[1]));g.stroke();};
+  const lab=(t,pt,dx,dy)=>{g.fillStyle=cv('--ink');g.font='600 '+(15*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(t,X(pt[0])+dx*s,Y(pt[1])+dy*s);};
+  const handle=pt=>{g.fillStyle=cv('--accent');g.globalAlpha=0.22;g.beginPath();g.arc(X(pt[0]),Y(pt[1]),18*s,0,7);g.fill();g.globalAlpha=1;g.beginPath();g.arc(X(pt[0]),Y(pt[1]),8*s,0,7);g.fill();};
+  if(kind==='tri'){
+    /* A arriba a la izquierda, B arriba a la derecha, C abajo a la derecha, D abajo a la izquierda */
+    const A=[0,1],B=[1,1],C=[1,0],D=[0,0],F=[p,1],E=[0,1-q];
+    const a1=p*q/2,a2=(1-q)/2,a3=(1-p)/2,a4=1-a1-a2-a3;
+    fill([A,F,E],'--c1',0.45);fill([E,D,C],'--c2',0.35);fill([C,B,F],'--c3',0.35);
+    g.strokeStyle=cv('--ink');g.lineWidth=2.5*s;g.strokeRect(X(0),Y(1),S,S);line(F,E);line(E,C);line(C,F);
+    lab('A',A,-14,-8);lab('B',B,14,-8);lab('C',C,14,18);lab('D',D,-14,18);lab('F',F,0,-14);lab('E',E,-18,5);
+    handle(F);handle(E);
+    const eq=Math.abs(a1-a2)<0.004&&Math.abs(a2-a3)<0.004;
+    $('#fm').textContent='FAE = AF·AE/2 = '+n(a1)+'   EDC = ED/2 = '+n(a2)+'   CBF = BF/2 = '+n(a3);
+    bars([['Triángulo FAE',a1,'--c1'],['Triángulo EDC',a2,'--c2'],['Triángulo CBF',a3,'--c3'],['Triángulo ECF (el blanco)',a4,'--muted']]);
+    $('#ro').innerHTML=(eq?'<b>¡Las tres áreas son iguales!</b> Pasa cuando AF = AE ≈ 0,618. ':'Las tres áreas se igualan solo en un punto. Pista: tiene que ser AF = AE. ')+
+      'AF = '+n(p,2)+' y AE = '+n(q,2)+': FAE = '+n(p,2)+' · '+n(q,2)+' / 2, EDC = '+n(1-q,2)+' · 1 / 2, CBF = '+n(1-p,2)+' · 1 / 2. tan(∠DCE) = ED / DC = '+n(1-q,3)+'.';
+  }else{
+    /* B arriba a la izquierda, C arriba a la derecha, A abajo a la izquierda, D abajo a la derecha; M sobre BC y N sobre AD */
+    const A=[0,0],D=[1,0],B=[0,1],C=[1,1],Mp=[mx,1],Np=[nx,0];
+    const P1=inter(Mp,A,Np,B),P2=inter(Mp,D,Np,C),reg=[Mp,P1,Np,P2],ar=shoe(reg);
+    fill(reg,'--c1',0.4);g.strokeStyle=cv('--ink');g.lineWidth=2.5*s;g.strokeRect(X(0),Y(1),S,S);
+    line(Mp,A);line(Mp,D);line(Np,B);line(Np,C);
+    lab('B',B,-14,-8);lab('C',C,14,-8);lab('A',A,-14,18);lab('D',D,14,18);lab('M',Mp,0,-14);lab('N',Np,0,26);
+    handle(Mp);handle(Np);
+    $('#fm').textContent='área de la región = '+n(ar)+(Math.abs(mx-0.5)<0.01&&Math.abs(nx-0.5)<0.01?' = 1/4':'');
+    bars([['Región morada',ar,'--c1'],['Resto del cuadrado',1-ar,'--muted']]);
+    $('#ro').innerHTML='La región tiene vértices en M, N y los dos cruces de las rectas. '+(Math.abs(mx-0.5)<0.01&&Math.abs(nx-0.5)<0.01?
+      '<b>Con M y N en los puntos medios</b> es un rombo de diagonales 1 y 0,5: área = 1 · 0,5 / 2 = <b>1/4</b>.':'Mueve M y N a los puntos medios y mira qué fracción queda.')+' Área ahora: <b>'+n(ar)+'</b> del cuadrado.';
+  }
+}
+/* arrastre: se mueve el punto más cercano, siempre sobre su lado */
+const sq=$('#sq');
+function pos(e){const r=sq.getBoundingClientRect(),x=((e.clientX-r.left)/r.width*geo.w-geo.M)/geo.S,y=1-((e.clientY-r.top)/r.height*geo.h-geo.M)/geo.S;return[Math.max(0.02,Math.min(0.98,x)),Math.max(0.02,Math.min(0.98,y))];}
+function apply(pt){pt=pt.map(x=>Math.round(x*100)/100);if(kind==='tri'){if(drag==='F')p=pt[0];else q=1-pt[1];}else{if(drag==='M')mx=pt[0];else nx=pt[0];}draw();}
+sq.addEventListener('pointerdown',e=>{const pt=pos(e);
+  if(kind==='tri')drag=Math.hypot(pt[0]-p,pt[1]-1)<Math.hypot(pt[0]-0,pt[1]-(1-q))?'F':'E';else drag=pt[1]>0.5?'M':'N';
+  sq.classList.add('drag');sq.setPointerCapture(e.pointerId);apply(pt);e.preventDefault();});
+sq.addEventListener('pointermove',e=>{if(drag)apply(pos(e));});
+for(const t of['pointerup','pointercancel','lostpointercapture'])sq.addEventListener(t,()=>{drag=null;sq.classList.remove('drag');});
+sq.addEventListener('keydown',e=>{const d={ArrowRight:0.01,ArrowLeft:-0.01,ArrowUp:0.01,ArrowDown:-0.01}[e.key];if(!d)return;e.preventDefault();
+  const r2=x=>Math.round(Math.max(0.02,Math.min(0.98,x))*100)/100;if(kind==='tri'){if(e.shiftKey)q=r2(q+d);else p=r2(p+d);}else{if(e.shiftKey)nx=r2(nx+d);else mx=r2(mx+d);}draw();});
+seg($('#kSeg'),k=>{kind=k;draw();});
+onRedraw(draw);
+lessonNav('areas');
+})();
+</script>
+</body>
+</html>

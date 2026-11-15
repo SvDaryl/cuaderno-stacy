@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Factorización · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.methods{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0}
+.methods div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:15px;line-height:1.55}
+.methods b{display:block;font-family:var(--mono);font-weight:500;font-size:17px;margin-bottom:4px}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Álgebra · Paso 1</span></div>
+<h1>Factorización</h1>
+<p class="lede">Factorizar es deshacer una multiplicación: convertir una suma en un producto. Es como encontrar el largo y el ancho de un rectángulo conociendo su área.</p>
+
+<div class="card">
+  <div class="seg" id="mSeg" role="group" aria-label="Elige el método">
+    <button data-k="aspa" aria-pressed="true">Aspa simple</button><button data-k="dif" aria-pressed="false">Diferencia de cuadrados</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="ar" data-w="400" data-h="340" role="img" aria-label="Modelo de áreas del producto"></canvas>
+    <canvas id="as" data-w="400" data-h="340" role="img" aria-label="Diagrama del método"></canvas>
+  </div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Aspa simple</h2>
+<p>Para x² + b·x + c busca <b>dos números que multiplicados den c y sumados den b</b>. Si son m y n, entonces x² + bx + c = (x + m)(x + n). Es el camino de vuelta del <a href="../funciones/4-polinomicas.html">producto de binomios</a>, y te da los puntos donde una <button class="term" data-p="cuadratica">parábola</button> corta al eje x. En el dibujo, el rectángulo de área x² + bx + c tiene lados x + m y x + n.</p>
+<p>Ejemplo: x² + 5x + 6 → busco dos números que den 6 al multiplicar y 5 al sumar: 2 y 3. Entonces x² + 5x + 6 = (x + 2)(x + 3).</p>
+
+<h2>Diferencia de cuadrados</h2>
+<p>a² − b² = (a + b)(a − b). En el dibujo: a un cuadrado de lado a le quitas uno de lado b; lo que queda se reacomoda en un rectángulo de lados (a + b) y (a − b).</p>
+<div class="key" data-idea><b class="fx">a² − b² = (a + b)(a − b)</b>Aspa simple: x² + bx + c = (x + m)(x + n) con m · n = c y m + n = b.</div>
+
+<h2>Otros métodos que aparecen en concursos</h2>
+<div class="methods">
+  <div><b>Factor común</b>Saca lo que se repite: 6x² + 9x = 3x(2x + 3).</div>
+  <div><b>Agrupación</b>Junta de a dos: ax + ay + bx + by = a(x + y) + b(x + y) = (a + b)(x + y).</div>
+  <div><b>Sumar y restar lo mismo</b>x⁴ + 4 = x⁴ + 4x² + 4 − 4x² = (x² + 2)² − (2x)², y luego diferencia de cuadrados: (x² + 2x + 2)(x² − 2x + 2).</div>
+  <div><b>Coeficientes indeterminados</b>Si no sale a ojo, supón la forma de los factores (por ejemplo dos cúbicos) con letras, multiplica y compara coeficientes. Es el camino para los polinomios grandes.</div>
+</div>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Dos números que multiplicados den 12 y sumados den 7.">
+  <p>¿Cómo se factoriza x² + 7x + 12?</p>
+  <label><input type="radio" name="q1" value="a"> (x + 2)(x + 6)</label>
+  <label><input type="radio" name="q1" value="b"> (x + 3)(x + 4)</label>
+  <label><input type="radio" name="q1" value="c"> (x + 1)(x + 12)</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 3 · 4 = 12 y 3 + 4 = 7. Las otras dan 12 al multiplicar, pero no 7 al sumar.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Es una diferencia de cuadrados: 49 = 7².">
+  <p>¿Cuál es un factor de a² − 49?</p>
+  <label><input type="radio" name="q2" value="a"> a − 49</label>
+  <label><input type="radio" name="q2" value="b"> a² + 7</label>
+  <label><input type="radio" name="q2" value="c"> a + 7</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: a² − 49 = (a + 7)(a − 7).</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const sg=x=>x<0?'− '+(-x):'+ '+x;
+let mode='aspa',v={};
+function pair(b,c){for(let m=-30;m<=30;m++){const n=b-m;if(m*n===c&&m<=n)return[m,n];}return null;}
+function txt(g,t,x,y,s,col,size,w){g.fillStyle=cv(col||'--ink');g.font=(w||'500')+' '+((size||14)*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText(t,x,y);}
+function drawAspa(){
+  const P=pair(v.b,v.c),poly='x² '+sg(v.b)+'x '+sg(v.c);
+  $('#fm').textContent=P?poly+' = (x '+sg(P[0])+')(x '+sg(P[1])+')':poly+'  no se factoriza con enteros';
+  /* modelo de áreas: solo si los dos números son positivos */
+  const a=$('#ar'),{x:g,w,h,s}=prep(a);g.clearRect(0,0,w,h);
+  if(P&&P[0]>0&&P[1]>0){const X=h*0.42,u=Math.min(26*s,(w-X-60*s)/Math.max(P[0],P[1])),ox=30*s,oy=30*s;
+    g.fillStyle=cv('--c1');g.globalAlpha=0.85;g.fillRect(ox,oy,X,X);g.globalAlpha=1;txt(g,'x²',ox+X/2,oy+X/2+6*s,s,'--on-accent',18,'600');
+    for(let i=0;i<P[1];i++){g.fillStyle=cv('--c2');g.globalAlpha=0.8;g.fillRect(ox+X+i*u+1,oy,u-2,X);}
+    for(let j=0;j<P[0];j++){g.fillStyle=cv('--c3');g.globalAlpha=0.8;g.fillRect(ox,oy+X+j*u+1,X,u-2);}
+    for(let i=0;i<P[1];i++)for(let j=0;j<P[0];j++){g.fillStyle=cv('--c4');g.globalAlpha=0.85;g.fillRect(ox+X+i*u+1,oy+X+j*u+1,u-2,u-2);}
+    g.globalAlpha=1;txt(g,'x + '+P[1],ox+(X+P[1]*u)/2,oy-10*s,s);g.save();g.translate(ox-12*s,oy+(X+P[0]*u)/2);g.rotate(-Math.PI/2);txt(g,'x + '+P[0],0,0,s);g.restore();
+    txt(g,'área = x² + '+v.b+'x + '+v.c,w/2,h-12*s,s,'--muted',12);}
+  else txt(g,P?'El dibujo de áreas funciona con números positivos':'Prueba otros valores de b y c',w/2,h/2,s,'--muted',13);
+  /* aspa */
+  const b=$('#as'),{x:q,w:W,h:H,s:S}=prep(b);q.clearRect(0,0,W,H);
+  const lx=W*0.3,rx=W*0.7,y1=H*0.3,y2=H*0.62;
+  txt(q,'x',lx,y1,S,'--ink',24);txt(q,'x',lx,y2,S,'--ink',24);
+  if(P){txt(q,(P[0]>0?'+':'')+P[0],rx,y1,S,'--c3',24,'600');txt(q,(P[1]>0?'+':'')+P[1],rx,y2,S,'--c2',24,'600');
+    q.strokeStyle=cv('--line-2');q.lineWidth=2*S;q.beginPath();q.moveTo(lx+18*S,y1-6*S);q.lineTo(rx-22*S,y2-12*S);q.moveTo(lx+18*S,y2-12*S);q.lineTo(rx-22*S,y1-6*S);q.stroke();
+    txt(q,'x·('+P[1]+') + x·('+P[0]+') = '+v.b+'x',W/2,H*0.82,S,'--ink',13);txt(q,P[0]+' · '+P[1]+' = '+v.c,W/2,H*0.92,S,'--muted',13);}
+  else{txt(q,'?',rx,y1,S,'--muted',24);txt(q,'?',rx,y2,S,'--muted',24);txt(q,'Ningún par de enteros cumple',W/2,H*0.85,S,'--muted',13);}
+  $('#ro').innerHTML=P?'Busco dos números que <b>multiplicados den '+v.c+'</b> y <b>sumados den '+v.b+'</b>: son <b>'+P[0]+'</b> y <b>'+P[1]+'</b>. Entonces '+poly+' = (x '+sg(P[0])+')(x '+sg(P[1])+').':
+    'No hay dos enteros que multiplicados den '+v.c+' y sumados den '+v.b+'. Este trinomio no se factoriza con enteros (su discriminante b² − 4c = '+(v.b*v.b-4*v.c)+' no es un cuadrado perfecto).';
+}
+function drawDif(){
+  const A=v.a,B=Math.min(v.bb,A-1);
+  $('#fm').textContent=A+'² − '+B+'² = '+(A*A-B*B)+' = ('+A+' + '+B+')('+A+' − '+B+') = '+(A+B)+' · '+(A-B);
+  const a=$('#ar'),{x:g,w,h,s}=prep(a);g.clearRect(0,0,w,h);const u=Math.min((h-70*s)/A,(w-60*s)/A),ox=30*s,oy=30*s;
+  g.fillStyle=cv('--c1');g.globalAlpha=0.8;g.fillRect(ox,oy,A*u,A*u);g.globalAlpha=1;
+  g.fillStyle=cv('--card');g.fillRect(ox+(A-B)*u,oy+(A-B)*u,B*u,B*u);g.strokeStyle=cv('--c2');g.setLineDash([5*s,4*s]);g.lineWidth=2*s;g.strokeRect(ox+(A-B)*u,oy+(A-B)*u,B*u,B*u);g.setLineDash([]);
+  txt(g,'a = '+A,ox+A*u/2,oy-10*s,s);txt(g,'b = '+B,ox+(A-B/2)*u,oy+(A-B)*u+B*u/2+5*s,s,'--c2');txt(g,'a² − b²',w/2,h-12*s,s,'--muted',12);
+  /* reacomodo: rectángulo (a + b) por (a − b) */
+  const b=$('#as'),{x:q,w:W,h:H,s:S}=prep(b);q.clearRect(0,0,W,H);const U=Math.min((W-60*S)/(A+B),(H-80*S)/(A-B||1),u),X0=30*S,Y0=40*S;
+  q.fillStyle=cv('--c1');q.globalAlpha=0.8;q.fillRect(X0,Y0,A*U,(A-B)*U);q.fillStyle=cv('--c3');q.fillRect(X0+A*U,Y0,B*U,(A-B)*U);q.globalAlpha=1;
+  q.strokeStyle=cv('--card');q.lineWidth=2*S;q.beginPath();q.moveTo(X0+A*U,Y0);q.lineTo(X0+A*U,Y0+(A-B)*U);q.stroke();
+  txt(q,'a + b = '+(A+B),X0+(A+B)*U/2,Y0-12*S,S);q.save();q.translate(X0+(A+B)*U+16*S,Y0+(A-B)*U/2);q.rotate(Math.PI/2);txt(q,'a − b = '+(A-B),0,0,S);q.restore();
+  txt(q,'el pedazo verde se movió',W/2,H-12*S,S,'--muted',12);
+  $('#ro').innerHTML='Al cuadrado de lado '+A+' (área '+A*A+') le quitas uno de lado '+B+' (área '+B*B+'): quedan <b>'+(A*A-B*B)+'</b>. Esa “L” se corta y se reacomoda en un rectángulo de <b>'+(A+B)+' por '+(A-B)+'</b>. Por eso a² − b² = (a + b)(a − b).';
+}
+function draw(){mode==='aspa'?drawAspa():drawDif();}
+function set(k){mode=k;v=controls($('#ctl'),k==='aspa'?[
+  {id:'b',label:'b (número con x)',min:-12,max:12,step:1,val:5,fmt:a=>String(a),hint:'La suma de los dos números buscados.'},
+  {id:'c',label:'c (número suelto)',min:-24,max:24,step:1,val:6,fmt:a=>String(a),hint:'El producto de los dos números buscados.'}]:[
+  {id:'a',label:'a',min:3,max:12,step:1,val:7,fmt:a=>String(a),hint:'Lado del cuadrado grande.'},
+  {id:'bb',label:'b',min:1,max:11,step:1,val:3,fmt:a=>String(a),hint:'Lado del cuadrado que quitas (menor que a).'}],vv=>{v=vv;draw();});draw();}
+seg($('#mSeg'),set);set('aspa');onRedraw(draw);
+lessonNav('factorizacion');
+})();
+</script>
+</body>
+</html>

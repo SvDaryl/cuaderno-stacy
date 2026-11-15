@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matrices y determinantes · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.mx-row{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin:8px 0 4px}
+.mx{display:grid;grid-template-columns:repeat(2,100px);gap:8px;padding:10px 14px;border-left:3px solid var(--ink);border-right:3px solid var(--ink);border-radius:10px}
+.mx .cell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mx .cell b{font-family:var(--mono);font-size:22px;font-weight:500;min-width:44px;text-align:center}
+.mx .cell .pm{display:flex;gap:2px}
+.mx .cell .pm button{width:44px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--sunk);color:var(--ink);font:inherit;font-size:15px;cursor:pointer;line-height:1}
+.mx.res .cell{min-height:84px;font:inherit;background:transparent;color:var(--ink);justify-content:center;border-radius:10px;cursor:pointer;border:2px solid transparent}
+.mx.res .cell:hover{background:var(--sunk)}
+.mx.res .cell.on{border-color:var(--accent);background:var(--accent-soft)}
+.op{font-family:var(--mono);font-size:28px}
+.mx .cell.hl b{color:var(--accent-ink);background:var(--accent-soft);border-radius:8px}
+.lab{text-align:center;font-weight:600;font-size:15px;margin-bottom:4px}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Álgebra · Paso 2</span></div>
+<h1>Matrices y determinantes</h1>
+<p class="lede">Una matriz es una tabla de números. Se suman casilla por casilla, pero se multiplican fila por columna.</p>
+
+<div class="card">
+  <div class="seg" id="oSeg" role="group" aria-label="Elige la operación">
+    <button data-k="sum" aria-pressed="true">A + B</button><button data-k="esc" aria-pressed="false">3 · A</button><button data-k="mul" aria-pressed="false">A · B</button><button data-k="det" aria-pressed="false">Determinante de A</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="mx-row" id="mxs"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+<p class="tip"><b>Cambia los números</b> con los botones + y −, y <b>toca una casilla del resultado</b> para ver de dónde sale.</p>
+
+<h2>Qué es una matriz</h2>
+<p>Una matriz se nombra por sus filas y columnas: una de 2 × 3 tiene 2 filas y 3 columnas. Cada casilla tiene una dirección: a₁₂ es la de la fila 1, columna 2. Se usan para guardar datos en tablas, en las hojas de cálculo y en los gráficos de los videojuegos.</p>
+
+<h2>Igualdad: casilla por casilla</h2>
+<p>Dos matrices son iguales solo si cada casilla es igual a la que está en su mismo lugar. Así, una igualdad de matrices 2 × 2 se convierte en <b>cuatro ecuaciones</b>. Ejemplo:</p>
+<div class="steps">a·[1 0 ; 2 1] + b·[0 1 ; 1 1] = [3 2 ; 8 5]<br>casilla 11: a = 3 · casilla 12: b = 2<br>casilla 21: 2a + b = 8 ✔ · casilla 22: a + b = 5 ✔<br>a + b = 5</div>
+<p>Si una ecuación no se cumple con los valores que salieron, revisa una suma: es la mejor comprobación.</p>
+
+<h2>Multiplicar: fila por columna</h2>
+<p>La casilla (i ; j) de A · B se obtiene con la <b>fila i de A</b> y la <b>columna j de B</b>: multiplicas pareja por pareja y sumas. Por eso, en general, A · B ≠ B · A.</p>
+<div class="key" data-idea><b class="fx">det [a b ; c d] = a·d − b·c</b>Suma: casilla por casilla. Producto: fila por columna. Si el determinante es 0, la matriz no tiene inversa.</div>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="Diagonal principal por diagonal principal, menos la otra diagonal.">
+  <p>¿Cuánto vale el determinante de [4 3 ; 2 5]?</p>
+  <label><input type="radio" name="q1" value="a"> 14</label>
+  <label><input type="radio" name="q1" value="b"> 26</label>
+  <label><input type="radio" name="q1" value="c"> 2</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 4 · 5 − 3 · 2 = 20 − 6 = 14.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Iguala casilla por casilla: salen x + y = 7 y x − y = 1.">
+  <p>Si [x + y 2 ; 3 x − y] = [7 2 ; 3 1], ¿cuánto vale x · y?</p>
+  <label><input type="radio" name="q2" value="a"> 7</label>
+  <label><input type="radio" name="q2" value="b"> 8</label>
+  <label><input type="radio" name="q2" value="c"> 12</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: x + y = 7 y x − y = 1 → x = 4, y = 3, y x · y = 12.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,$$,seg,lessonNav}=Kit;
+let op='sum',A=[[2,1],[3,4]],B=[[1,0],[2,5]],sel=[0,0];
+const p=x=>x<0?'('+x+')':String(x);
+function result(){if(op==='sum')return A.map((r,i)=>r.map((x,j)=>x+B[i][j]));if(op==='esc')return A.map(r=>r.map(x=>3*x));
+  if(op==='mul')return [0,1].map(i=>[0,1].map(j=>A[i][0]*B[0][j]+A[i][1]*B[1][j]));return null;}
+function explain(i,j){
+  if(op==='sum')return 'Casilla ('+(i+1)+' ; '+(j+1)+'): '+p(A[i][j])+' + '+p(B[i][j])+' = <b>'+(A[i][j]+B[i][j])+'</b>. Se suman las que están en el mismo lugar.';
+  if(op==='esc')return 'Casilla ('+(i+1)+' ; '+(j+1)+'): 3 · '+p(A[i][j])+' = <b>'+3*A[i][j]+'</b>. El número multiplica a todas las casillas.';
+  return 'Casilla ('+(i+1)+' ; '+(j+1)+'): fila '+(i+1)+' de A por columna '+(j+1)+' de B → '+p(A[i][0])+'·'+p(B[0][j])+' + '+p(A[i][1])+'·'+p(B[1][j])+' = <b>'+(A[i][0]*B[0][j]+A[i][1]*B[1][j])+'</b>.';}
+function matHTML(M,id,lab,hl){return '<div><div class="lab">'+lab+'</div><div class="mx" data-m="'+id+'">'+M.map((r,i)=>r.map((x,j)=>'<div class="cell'+(hl&&hl(i,j)?' hl':'')+'"><b>'+x+'</b><span class="pm"><button type="button" data-d="-1" data-i="'+i+'" data-j="'+j+'" aria-label="Restar 1 a '+id+(i+1)+(j+1)+'">−</button><button type="button" data-d="1" data-i="'+i+'" data-j="'+j+'" aria-label="Sumar 1 a '+id+(i+1)+(j+1)+'">+</button></span></div>').join('')).join('')+'</div></div>';}
+function draw(){
+  const R=result(),[si,sj]=sel;
+  const hlA=op==='mul'?(i)=>i===si:op==='det'?()=>false:(i,j)=>i===si&&j===sj,hlB=op==='mul'?(i,j)=>j===sj:(i,j)=>i===si&&j===sj;
+  let h=matHTML(A,'A','A',hlA);
+  if(op==='sum')h+='<span class="op">+</span>'+matHTML(B,'B','B',hlB);
+  if(op==='mul')h+='<span class="op">·</span>'+matHTML(B,'B','B',hlB);
+  if(R)h+='<span class="op">=</span><div><div class="lab">Resultado</div><div class="mx res">'+R.map((r,i)=>r.map((x,j)=>'<button type="button" class="cell'+(i===si&&j===sj?' on':'')+'" data-ri="'+i+'" data-rj="'+j+'" aria-label="Ver cómo sale la casilla '+(i+1)+','+(j+1)+'"><b>'+x+'</b></button>').join('')).join('')+'</div></div>';
+  $('#mxs').innerHTML=h;
+  const det=A[0][0]*A[1][1]-A[0][1]*A[1][0];
+  const cs='casilla ('+(si+1)+' ; '+(sj+1)+')';
+  $('#fm').textContent=op==='det'?'det A = '+p(A[0][0])+'·'+p(A[1][1])+' − '+p(A[0][1])+'·'+p(A[1][0])+' = '+det:op==='mul'?cs+' de A·B = fila '+(si+1)+' de A · columna '+(sj+1)+' de B':op==='sum'?cs+' de A + B = la de A + la de B':cs+' de 3A = 3 · la de A';
+  $('#ro').innerHTML=op==='det'?'Multiplica la diagonal principal ('+p(A[0][0])+' y '+p(A[1][1])+') y réstale el producto de la otra ('+p(A[0][1])+' y '+p(A[1][0])+'): <b>'+det+'</b>. '+(det===0?'Vale 0: esta matriz no tiene inversa.':'Como no es 0, la matriz tiene inversa.'):explain(si,sj);
+  $$('#mxs .pm button').forEach(b=>b.addEventListener('click',()=>{const M=b.closest('.mx').dataset.m==='A'?A:B,i=+b.dataset.i,j=+b.dataset.j;M[i][j]=Math.max(-9,Math.min(9,M[i][j]+ +b.dataset.d));sel=[i,j];draw();}));
+  $$('#mxs .res .cell').forEach(b=>b.addEventListener('click',()=>{sel=[+b.dataset.ri,+b.dataset.rj];draw();}));
+}
+seg($('#oSeg'),k=>{op=k;draw();});
+draw();
+lessonNav('matrices');
+})();
+</script>
+</body>
+</html>

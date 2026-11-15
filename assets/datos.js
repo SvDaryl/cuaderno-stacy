@@ -30,7 +30,7 @@ window.TEMAS = [
   { id:'primos',       materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Divisores y números primos', resumen:'Descomposición en primos y cuántos divisores tiene un número.', antes:['divisibilidad'], estado:'pronto' },
   { id:'bases',        materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Numeración en otras bases',  resumen:'Escribir números en base 2, 5 o 12, y volver a base 10.', antes:['potencias'], estado:'pronto' },
   { id:'porcentajes',  materia:'matematica', bloque:'Aritmética', paso:2, titulo:'Tanto por ciento',           resumen:'Aumentos, descuentos sucesivos, ganancia y pérdida.', antes:['reales'], estado:'pronto' },
-  { id:'proporcionalidad',materia:'matematica',bloque:'Aritmética', paso:2, titulo:'Magnitudes proporcionales y regla de tres', resumen:'Directa, inversa y compuesta.', antes:['reales'], estado:'pronto' },
+  { id:'proporcionalidad',materia:'matematica',bloque:'Aritmética', paso:2, titulo:'Magnitudes proporcionales y regla de tres', resumen:'Directa, inversa y compuesta.', antes:['reales'], estado:'lista', url:'matematica/aritmetica/regla-de-tres.html', fecha:'2026-11-14' },
   { id:'obras',        materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Problemas de obras',          resumen:'Cuánto avanza cada uno por día cuando trabajan juntos.', antes:['proporcionalidad'], estado:'pronto' },
   { id:'mezclas',      materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Promedios y mezclas',        resumen:'Precio medio, promedio ponderado y porcentaje de pureza.', antes:['reales'], estado:'pronto' },
   { id:'conteo',       materia:'matematica', bloque:'Aritmética', paso:4, titulo:'Conteo y combinaciones',     resumen:'Principio de multiplicación, permutaciones y combinaciones.', antes:['potencias'], estado:'pronto' },
@@ -54,7 +54,7 @@ window.TEMAS = [
   /* --- Álgebra --- */
   { id:'ecuaciones',   materia:'matematica', bloque:'Álgebra',   paso:0, titulo:'Ecuaciones lineales',        resumen:'Despejar x, también cuando hay letras como a o b.', antes:[], estado:'pronto' },
   { id:'productos',    materia:'matematica', bloque:'Álgebra',   paso:0, titulo:'Productos notables',         resumen:'(a + b)², (a + b)(a − b) y sus parientes.', antes:['potencias'], estado:'pronto' },
-  { id:'factorizacion',materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Factorización',              resumen:'Factor común, diferencia de cuadrados, aspa simple y más.', antes:['productos'], estado:'pronto' },
+  { id:'factorizacion',materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Factorización',              resumen:'Factor común, diferencia de cuadrados, aspa simple y más.', antes:['productos'], estado:'lista', url:'matematica/algebra/factorizacion.html', fecha:'2026-11-14' },
   { id:'ecuadratica',  materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Ecuación cuadrática',        resumen:'Raíces, discriminante, suma y producto de raíces.', antes:['factorizacion','ecuaciones'], estado:'pronto' },
   { id:'absoluto',     materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Valor absoluto',            resumen:'La distancia al cero y sus ecuaciones.', antes:['intervalos'], estado:'pronto' },
   { id:'inecuaciones', materia:'matematica', bloque:'Álgebra',   paso:3, titulo:'Inecuaciones',              resumen:'Lineales, cuadráticas, racionales y con valor absoluto.', antes:['absoluto','polinomicas','ecuadratica'], estado:'pronto' },
@@ -62,17 +62,17 @@ window.TEMAS = [
   { id:'progresiones', materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Progresiones aritméticas y geométricas', resumen:'Sumar o multiplicar siempre lo mismo.', antes:['sucesiones'], estado:'pronto' },
   { id:'sucesiones',   materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Sucesiones',                resumen:'Listas de números con una regla, y hacia dónde van.', antes:['funcion'], estado:'pronto' },
   { id:'complejos',    materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Números complejos',         resumen:'La unidad i, el plano complejo y el módulo.', antes:['reales','potencias'], estado:'pronto' },
-  { id:'matrices',     materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Matrices y determinantes',  resumen:'Tablas de números que se suman y se multiplican.', antes:['reales'], estado:'pronto' },
+  { id:'matrices',     materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Matrices y determinantes',  resumen:'Tablas de números que se suman y se multiplican.', antes:['reales'], estado:'lista', url:'matematica/algebra/matrices.html', fecha:'2026-11-14' },
   /* --- Geometría plana --- */
   { id:'angulos',      materia:'matematica', bloque:'Geometría plana', paso:1, titulo:'Ángulos y rectas paralelas', resumen:'Ángulos entre paralelas cortadas por una secante.', antes:[], estado:'pronto' },
   { id:'triangulos',   materia:'matematica', bloque:'Geometría plana', paso:2, titulo:'Triángulos',             resumen:'Suma de ángulos, desigualdad triangular y Pitágoras.', antes:['angulos'], estado:'pronto' },
   { id:'poligonos',    materia:'matematica', bloque:'Geometría plana', paso:3, titulo:'Polígonos regulares',    resumen:'Ángulos internos, centrales y diagonales.', antes:['triangulos'], estado:'pronto' },
   { id:'cuadrilateros',materia:'matematica', bloque:'Geometría plana', paso:3, titulo:'Cuadriláteros',          resumen:'Paralelogramos, trapecios y cuadriláteros inscriptibles.', antes:['triangulos'], estado:'pronto' },
   { id:'circunferencia',materia:'matematica',bloque:'Geometría plana', paso:4, titulo:'Circunferencia',         resumen:'Cuerdas, tangentes y ángulos inscritos.', antes:['triangulos'], estado:'pronto' },
-  { id:'areas',        materia:'matematica', bloque:'Geometría plana', paso:5, titulo:'Áreas de regiones planas', resumen:'Triángulos, polígonos, círculos y regiones sombreadas.', antes:['poligonos','circunferencia'], estado:'pronto' },
+  { id:'areas',        materia:'matematica', bloque:'Geometría plana', paso:5, titulo:'Áreas de regiones planas', resumen:'Triángulos, polígonos, círculos y regiones sombreadas.', antes:['poligonos','circunferencia'], estado:'lista', url:'matematica/plana/areas.html', fecha:'2026-11-14' },
   /* --- Geometría del espacio --- */
   { id:'poliedros',    materia:'matematica', bloque:'Geometría del espacio', paso:1, titulo:'Poliedros regulares', resumen:'Los cinco sólidos platónicos: caras, aristas y vértices.', antes:['poligonos'], estado:'pronto' },
-  { id:'prismas',      materia:'matematica', bloque:'Geometría del espacio', paso:2, titulo:'Prisma, pirámide y cilindro', resumen:'Áreas y volúmenes de los sólidos más usados.', antes:['areas'], estado:'pronto' },
+  { id:'prismas',      materia:'matematica', bloque:'Geometría del espacio', paso:2, titulo:'Prisma, pirámide y cilindro', resumen:'Áreas y volúmenes de los sólidos más usados.', antes:['areas'], estado:'lista', url:'matematica/espacio/prisma-piramide-cilindro.html', fecha:'2026-11-14' },
   { id:'esfera',       materia:'matematica', bloque:'Geometría del espacio', paso:3, titulo:'Esfera y casquetes',  resumen:'Área y volumen de la esfera y de sus partes.', antes:['prismas'], estado:'pronto' },
   { id:'revolucion',   materia:'matematica', bloque:'Geometría del espacio', paso:4, titulo:'Sólidos de revolución', resumen:'Girar una figura plana para crear un sólido.', antes:['esfera'], estado:'pronto' },
   /* --- Trigonometría --- */

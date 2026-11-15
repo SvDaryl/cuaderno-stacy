@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnitudes proporcionales y regla de tres · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#pc{touch-action:none;cursor:pointer}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.cols div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:15px;line-height:1.55}
+.cols b{display:block;font-size:17px;margin-bottom:4px}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Aritmética · Paso 2</span></div>
+<h1>Magnitudes proporcionales y regla de tres</h1>
+<p class="lede">Si compras el doble de pan, pagas el doble. Si trabajan el doble de obreros, tardan la mitad. Reconocer cuál de los dos casos es te resuelve el problema.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el tipo de proporcionalidad">
+    <button data-k="d" aria-pressed="true">Directa</button><button data-k="i" aria-pressed="false">Inversa</button><button data-k="c" aria-pressed="false">Compuesta</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="pc" data-w="660" data-h="320" tabindex="0" aria-label="Gráfica de las dos magnitudes; tócala para elegir un valor"></canvas>
+  <p class="cap"><b>Toca o arrastra sobre la gráfica</b> para elegir otro valor del eje horizontal.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Directa o inversa</h2>
+<div class="cols">
+  <div><b>Directamente proporcionales</b>Si una se duplica, la otra también. Su <b>cociente</b> es constante: precio / kilos. La gráfica es una <button class="term" data-p="lineal">recta</button> que pasa por el origen.</div>
+  <div><b>Inversamente proporcionales</b>Si una se duplica, la otra se reduce a la mitad. Su <b>producto</b> es constante: obreros · días. La gráfica es una curva que baja.</div>
+</div>
+<div class="key" data-idea><b class="fx">Directa: a / b = k · Inversa: a · b = k</b>Pregúntate: “si hay más de esta, ¿hay más o menos de la otra?”. Más–más es directa; más–menos es inversa.</div>
+
+<h2>Regla de tres simple</h2>
+<p>Con tres datos sacas el cuarto. 3 kg de arroz cuestan S/ 12; ¿cuánto cuestan 5 kg? Es directa: 12 / 3 = x / 5 → x = S/ 20. Si 4 obreros tardan 15 días, ¿cuánto tardan 6? Es inversa: 4 · 15 = 6 · x → x = 10 días.</p>
+
+<h2>Regla de tres compuesta</h2>
+<p>Cuando cambian varias cosas a la vez, ve una por una y pregunta si es directa o inversa respecto a lo que buscas. Ejemplo: <i>12 vacas comen 12 fardos de pasto en 12 días; ¿cuántos fardos comen 4 vacas en 18 días?</i></p>
+<div class="steps">Parte de 12 fardos.<br>Vacas: de 12 a 4 (menos vacas, menos pasto: directa) → × 4/12<br>Días: de 12 a 18 (más días, más pasto: directa) → × 18/12<br>12 · (4/12) · (18/12) = 12 · 1/3 · 3/2 = <b>6 fardos</b></div>
+<p>Truco: busca lo que hace <b>una sola unidad</b>. Aquí, 1 vaca come 1 fardo cada 12 días. Entonces 4 vacas en 18 días comen 4 · 18/12 = 6 fardos. Cuando el enunciado mezcla dos datos distintos (cazar y beber, por ejemplo), sácalos por separado.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Más kilos, más precio: es directa. Precio por kilo = 12 / 3.">
+  <p>3 kg de arroz cuestan S/ 12. ¿Cuánto cuestan 7 kg?</p>
+  <label><input type="radio" name="q1" value="a"> S/ 21</label>
+  <label><input type="radio" name="q1" value="b"> S/ 28</label>
+  <label><input type="radio" name="q1" value="c"> S/ 5,14</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! S/ 4 el kilo, y 7 · 4 = S/ 28.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Piezas ∝ máquinas · horas. Primero cuántas piezas hace 1 máquina en 1 hora.">
+  <p>4 máquinas hacen 400 piezas en 5 horas. ¿Cuántas horas necesitan 6 máquinas iguales para hacer 900 piezas?</p>
+  <label><input type="radio" name="q2" value="a"> 5 h</label>
+  <label><input type="radio" name="q2" value="b"> 11,25 h</label>
+  <label><input type="radio" name="q2" value="c"> 7,5 h</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 1 máquina hace 400 / (4 · 5) = 20 piezas por hora. 6 máquinas hacen 120 por hora: 900 / 120 = 7,5 h.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+/* cada modo: controles, eje x (control que se toca en la gráfica) y dibujo */
+const M={
+  d:{x:'kg',ctl:[{id:'p',label:'Precio por kilo',min:2,max:10,step:0.5,val:4,fmt:a=>'S/ '+nf(a,2),hint:'Es la constante k = precio / kilos: la pendiente de la recta.'},
+                {id:'kg',label:'Kilos',min:0.5,max:10,step:0.5,val:3,fmt:a=>nf(a,1)+' kg',hint:'El doble de kilos, el doble de precio.'}],
+     xr:[0,10],go(v){const y=v.p*v.kg;return{f:'precio = '+n(v.p)+' · '+n(v.kg)+' = S/ '+n(y),
+       o:{yr:[0,100],xs:1,ys:10,xl:'kg',yl:'S/',fns:[{f:x=>v.p*x,color:cv('--c1')}],pts:[{x:v.kg,y,color:cv('--c2'),label:'S/ '+n(y)},{x:2*v.kg<=10?2*v.kg:v.kg/2,y:v.p*(2*v.kg<=10?2*v.kg:v.kg/2),color:cv('--c3'),hollow:true}]},
+       r:n(v.kg)+' kg cuestan <b>S/ '+n(y)+'</b>. '+(2*v.kg<=10?'El doble, '+n(2*v.kg)+' kg, cuesta S/ '+n(2*y)+': también el doble.':'La mitad, '+n(v.kg/2)+' kg, cuesta S/ '+n(y/2)+'.')+' El cociente precio / kilos siempre da <b>'+n(v.p)+'</b>.'};}},
+  i:{x:'o',ctl:[{id:'k',label:'Tamaño de la obra',min:60,max:240,step:12,val:120,fmt:a=>a+' días-obrero',hint:'Lo que vale la obra: obreros · días siempre da esto.'},
+                {id:'o',label:'Obreros',min:1,max:20,step:1,val:8,fmt:a=>a+' obreros',hint:'Más obreros, menos días.'}],
+     xr:[0,20],go(v){const y=v.k/v.o;return{f:'días = '+v.k+' / '+v.o+' = '+n(y),
+       o:{yr:[0,Math.min(250,v.k)+10],xs:2,xl:'obreros',yl:'días',fns:[{f:x=>v.k/x,color:cv('--c1'),from:0.5}],pts:[{x:v.o,y,color:cv('--c2'),label:n(y)+' días'}]},
+       r:'Con <b>'+v.o+' obreros</b> tardan <b>'+n(y)+' días</b>. '+(2*v.o<=20?'Con el doble ('+2*v.o+') tardan la mitad, '+n(y/2)+' días.':'')+' El producto obreros · días siempre da <b>'+v.k+'</b>.'};}},
+  c:{x:'o',ctl:[{id:'o',label:'Obreros',min:1,max:20,step:1,val:6,fmt:a=>a+' obreros',hint:'Inversa con los días: más obreros, menos días.'},
+                {id:'h',label:'Horas por día',min:2,max:12,step:1,val:8,fmt:a=>a+' h/día',hint:'Inversa con los días: más horas al día, menos días.'},
+                {id:'w',label:'Cantidad de obra',min:0.5,max:3,step:0.5,val:1,fmt:a=>nf(a,1)+' obras',hint:'Directa con los días: el doble de obra, el doble de días.'}],
+     xr:[0,20],go(v){const D=x=>10*(6/x)*(8/v.h)*(v.w/1),y=D(v.o);return{f:'días = 10 · (6/'+v.o+') · (8/'+v.h+') · ('+n(v.w)+'/1) = '+n(y),
+       o:{yr:[0,Math.max(20,Math.ceil(D(1)/20)*20)],xs:2,xl:'obreros',yl:'días',fns:[{f:D,color:cv('--c1'),from:0.5}],pts:[{x:v.o,y,color:cv('--c2'),label:n(y)+' días'}]},
+       r:'Caso base: <b>6 obreros, 8 h/día, 10 días, 1 obra</b>. Cada dato cambia los días: obreros e horas al revés (inversas), la obra igual (directa). Resultado: <b>'+n(y)+' días</b>.'};}}
+};
+let k='d',v={};
+function draw(){const d=M[k].go(v);$('#fm').textContent=d.f;plot($('#pc'),Object.assign({xr:M[k].xr},d.o));$('#ro').innerHTML=d.r;}
+function set(nk){k=nk;v=controls($('#ctl'),M[k].ctl,vv=>{v=vv;draw();});draw();}
+seg($('#kSeg'),set);set('d');onRedraw(draw);
+/* tocar o arrastrar la gráfica mueve el control del eje x */
+const pc=$('#pc');let dr=false;
+function pick(e){const r=pc.getBoundingClientRect(),{w,s}=prep(pc),L=52*s,R=14*s,px=(e.clientX-r.left)/r.width*w,[x0,x1]=M[k].xr,x=x0+(px-L)/(w-L-R)*(x1-x0);
+  const defs=M[k].ctl,i=defs.findIndex(d=>d.id===M[k].x),inp=$('#ctl').querySelectorAll('input')[i],d=defs[i];
+  inp.value=Math.max(d.min,Math.min(d.max,Math.round(x/d.step)*d.step));inp.dispatchEvent(new Event('input',{bubbles:true}));}
+pc.addEventListener('pointerdown',e=>{dr=true;pc.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+pc.addEventListener('pointermove',e=>{if(dr)pick(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])pc.addEventListener(t,()=>{dr=false;});
+lessonNav('proporcionalidad');
+})();
+</script>
+</body>
+</html>

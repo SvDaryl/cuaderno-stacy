@@ -54,6 +54,11 @@
 <p style="font-family:var(--mono)">f(3) = 3² − 1 = 8 &nbsp;&nbsp; f(−2) = (−2)² − 1 = 3 &nbsp;&nbsp; f(0) = −1</p>
 <p>El punto (3 ; 8) está en la gráfica, porque f(3) = 8.</p>
 
+<h2>Una función como conjunto de pares</h2>
+<p>A veces la función no viene como fórmula sino como una lista de pares (entrada ; salida). Para que sea función, <b>si dos pares tienen la misma primera componente, sus segundas componentes deben ser iguales</b>. Los pares repetidos cuentan una sola vez.</p>
+<div class="steps" style="font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0">f = {(2 ; a + b), (5 ; 9), (2 ; 6), (5 ; a²), (a − b ; 4)} es función<br>x = 2 aparece dos veces → a + b = 6<br>x = 5 aparece dos veces → a² = 9 → a = 3 (con b = 3) o a = −3 (con b = 9)<br>Si a = 3 y b = 3: el par (a − b ; 4) = (0 ; 4)<br>f = {(2 ; 6), (5 ; 9), (0 ; 4)} → dominio {2 ; 5 ; 0}, rango {6 ; 9 ; 4}</div>
+<p>Ojo: si a = −3 y b = 9, el par sería (−12 ; 4), también válido. Cuando hay dos opciones, el enunciado suele dar un dato más (por ejemplo, “a &gt; 0”). Al final, escribe los pares <b>sin repetir</b> antes de sumar el rango.</p>
+
 <h2>Pruébate</h2>
 <div class="q" data-ans="b" data-hint="Reemplaza x por 4: 3 · 4 − 5.">
   <p>Si <code>f(x) = 3x − 5</code>, ¿cuánto vale f(4)?</p>
@@ -70,6 +75,15 @@
   <label><input type="radio" name="q2" value="c"> {(1;2), (1;3), (2;4)}</label>
   <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
   <template>Exacto: al 1 le tocan dos salidas (2 y 3). En la b todas dan 5, y eso sí está permitido.</template>
+</div>
+
+<div class="q" data-ans="b" data-hint="Pares con la misma x: sus y deben ser iguales. Así sacas a y b, y luego armas el conjunto sin repetir.">
+  <p>Si f = {(1 ; a + b), (3 ; 7), (1 ; 5), (3 ; a + 2b)} es una función, ¿cuál es la suma de los elementos de su rango?</p>
+  <label><input type="radio" name="q3" value="a"> 24</label>
+  <label><input type="radio" name="q3" value="b"> 12</label>
+  <label><input type="radio" name="q3" value="c"> 17</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! a + b = 5 y a + 2b = 7 → b = 2, a = 3. f = {(1 ; 5), (3 ; 7)}: rango {5 ; 7}, suma 12. El 24 sale de sumar los pares repetidos.</template>
 </div>
 
 <nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>

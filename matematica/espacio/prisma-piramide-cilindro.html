@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prisma, pirámide y cilindro · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#s3{touch-action:none;cursor:grab;border-radius:12px}
+#s3.drag{cursor:grabbing}
+table.f{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table.f th,table.f td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line)}
+table.f th{background:var(--sunk);font-weight:600}
+table.f td{font-family:var(--mono)}
+table.f td:first-child{font-family:var(--body)}
+table.f tr:last-child td{border-bottom:0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Geometría del espacio · Paso 2</span></div>
+<h1>Prisma, pirámide y cilindro</h1>
+<p class="lede">Para medir un sólido casi siempre hay un triángulo rectángulo escondido adentro. Encontrarlo es la mitad del problema.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el sólido">
+    <button data-k="pir" aria-pressed="true">Pirámide cuadrangular</button><button data-k="pri" aria-pressed="false">Rectoedro</button><button data-k="cil" aria-pressed="false">Cilindro</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="s3" data-w="660" data-h="360" tabindex="0" aria-label="Sólido en 3D que gira al arrastrarlo"></canvas>
+  <p class="cap"><b>Arrastra el sólido</b> hacia los lados para girarlo. El triángulo morado es el triángulo rectángulo que sirve para calcular.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>La pirámide y su apotema</h2>
+<p>En una pirámide regular, la <b>apotema de la pirámide</b> (ap) es la altura de cada cara triangular: va del vértice de arriba al punto medio de un lado de la base. La <b>altura</b> (h) va del vértice al centro de la base. Junto con la mitad del lado de la base forman un triángulo rectángulo donde <b>la apotema es la hipotenusa</b>:</p>
+<div class="key" data-idea><b class="fx">ap² = h² + (l/2)²</b>Pirámide: V = área de la base · h / 3. Prisma y cilindro: V = área de la base · h.</div>
+<p>Si te dan la apotema y el lado, la altura sale restando: h = √(ap² − (l/2)²). Es el <a href="../plana/areas.html">teorema de Pitágoras</a> de siempre, solo que en 3D.</p>
+
+<h2>Fórmulas</h2>
+<table class="f">
+  <thead><tr><th>Sólido</th><th>Área lateral</th><th>Volumen</th></tr></thead>
+  <tbody>
+    <tr><td>Rectoedro (a, b, c)</td><td>área total = 2(ab + bc + ca)</td><td>a · b · c</td></tr>
+    <tr><td>Pirámide cuadrangular (l, h)</td><td>4 · (l · ap / 2) = 2 · l · ap</td><td>l² · h / 3</td></tr>
+    <tr><td>Cilindro (r, h)</td><td>2π · r · h</td><td>π · r² · h</td></tr>
+  </tbody>
+</table>
+<p><b>Caras, vértices y aristas.</b> En todo poliedro se cumple la relación de Euler: C + V = A + 2. Una pirámide de base con n lados tiene n + 1 caras (n triángulos y la base). La suma de los ángulos de todas sus caras es 180°·(n − 2) de la base más 180°·n de los triángulos.</p>
+<p>El volumen de una caja también se puede optimizar: mira la <button class="term" data-p="cubica">caja de cartulina más grande</button>.</p>
+<p><b>La diagonal del rectoedro</b> también sale de Pitágoras, dos veces: d = √(a² + b² + c²).</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="La apotema es la hipotenusa: h = √(ap² − (l/2)²).">
+  <p>Una pirámide cuadrangular regular tiene base de 12 de lado y apotema 10. ¿Cuánto mide su altura?</p>
+  <label><input type="radio" name="q1" value="a"> 8</label>
+  <label><input type="radio" name="q1" value="b"> √244</label>
+  <label><input type="radio" name="q1" value="c"> 10</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! h = √(10² − 6²) = √64 = 8. La opción √244 sale de sumar en vez de restar: ahí se toma la apotema como cateto.</template>
+</div>
+<div class="q" data-ans="c" data-hint="d = √(a² + b² + c²).">
+  <p>Un rectoedro mide 3, 4 y 12. ¿Cuánto mide su diagonal?</p>
+  <label><input type="radio" name="q2" value="a"> 19</label>
+  <label><input type="radio" name="q2" value="b"> 5</label>
+  <label><input type="radio" name="q2" value="c"> 13</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: √(9 + 16 + 144) = √169 = 13. Y su volumen es 3 · 4 · 12 = 144.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+let kind='pir',v={},phi=0.6,drag=false,lx=0;
+const TILT=0.38;
+function view(w,h,s,size){const k=Math.min(w,h)*0.62/size,cx=w/2,cy=h*0.62;
+  return p=>{const x=p[0]*Math.cos(phi)+p[2]*Math.sin(phi),z=-p[0]*Math.sin(phi)+p[2]*Math.cos(phi);return[cx+k*x,cy-k*p[1]*Math.cos(TILT)+k*z*Math.sin(TILT),z];};}
+function edge(g,P,a,b,s,col,dash){const A=P(a),B=P(b),back=(A[2]+B[2])/2<-1e-6;g.strokeStyle=cv(col||'--ink');g.lineWidth=(back?1.5:2.5)*s;g.setLineDash(back||dash?[6*s,5*s]:[]);g.beginPath();g.moveTo(A[0],A[1]);g.lineTo(B[0],B[1]);g.stroke();g.setLineDash([]);}
+function poly(g,P,pts,col,al){g.fillStyle=cv(col);g.globalAlpha=al;g.beginPath();pts.forEach((p,i)=>{const q=P(p);i?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);});g.closePath();g.fill();g.globalAlpha=1;}
+function label(g,P,p,t,s,col){const q=P(p);g.fillStyle=cv(col||'--ink');g.font='600 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(t,q[0],q[1]);}
+function draw(){
+  const c=$('#s3'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);
+  if(kind==='pir'){const L=v.l/2,H=v.h,ap=Math.hypot(H,L),P=view(w,h,s,Math.max(v.l*1.3,H*1.2));
+    const B=[[-L,0,-L],[L,0,-L],[L,0,L],[-L,0,L]],T=[0,H,0],M=[0,0,L],O=[0,0,0];
+    poly(g,P,B,'--sunk',1);B.forEach((b,i)=>edge(g,P,b,B[(i+1)%4],s));B.forEach(b=>edge(g,P,b,T,s));
+    poly(g,P,[T,O,M],'--accent',0.35);edge(g,P,T,O,s,'--c1',true);edge(g,P,O,M,s,'--c2');edge(g,P,T,M,s,'--c3');
+    label(g,P,[0,H/2,0.15*L],'h',s,'--c1');label(g,P,[0,-0.08*H,L/2],'l/2',s,'--c2');label(g,P,[0,H/2+0.05*H,L/2+0.25*L],'ap',s,'--c3');
+    $('#fm').textContent='ap = √(h² + (l/2)²) = √('+n(H)+'² + '+n(L)+'²) = '+n(ap);
+    $('#ro').innerHTML='Apotema <b>ap = '+n(ap)+'</b>. Área lateral = 2 · l · ap = <b>'+n(2*v.l*ap)+'</b>; área total = '+n(2*v.l*ap+v.l*v.l)+'. Volumen = l² · h / 3 = '+n(v.l*v.l)+' · '+n(H)+' / 3 = <b>'+n(v.l*v.l*H/3)+'</b>. Tiene 5 caras, 5 vértices y 8 aristas (5 + 5 = 8 + 2).';}
+  else if(kind==='pri'){const a=v.a/2,b=v.b/2,cc=v.c,P=view(w,h,s,Math.max(v.a,v.b,v.c)*1.3);
+    const lo=[[-a,0,-b],[a,0,-b],[a,0,b],[-a,0,b]],hi=lo.map(p=>[p[0],cc,p[2]]);
+    lo.forEach((p,i)=>{edge(g,P,p,lo[(i+1)%4],s);edge(g,P,hi[i],hi[(i+1)%4],s);edge(g,P,p,hi[i],s);});
+    poly(g,P,[lo[0],lo[2],hi[2]],'--accent',0.3);edge(g,P,lo[0],lo[2],s,'--c2',true);edge(g,P,lo[0],hi[2],s,'--c3',true);
+    const d=Math.hypot(v.a,v.b,v.c);
+    $('#fm').textContent='d = √(a² + b² + c²) = √('+n(v.a)+'² + '+n(v.b)+'² + '+n(v.c)+'²) = '+n(d);
+    $('#ro').innerHTML='Área total = 2(ab + bc + ca) = <b>'+n(2*(v.a*v.b+v.b*v.c+v.c*v.a))+'</b>. Volumen = a · b · c = <b>'+n(v.a*v.b*v.c)+'</b>. Diagonal <b>'+n(d)+'</b>: primero la diagonal de la base, √(a² + b²) = '+n(Math.hypot(v.a,v.b))+', y luego con la altura.';}
+  else{const r=v.r,H=v.h,P=view(w,h,s,Math.max(2*r,H)*1.3),N=48,ring=y=>Array.from({length:N},(_,i)=>[r*Math.cos(i/N*2*Math.PI),y,r*Math.sin(i/N*2*Math.PI)]);
+    const b=ring(0),t=ring(H);poly(g,P,b,'--sunk',1);
+    for(let i=0;i<N;i++){edge(g,P,b[i],b[(i+1)%N],s);edge(g,P,t[i],t[(i+1)%N],s);}
+    let mx=0,mn=0;for(let i=0;i<N;i++){const q=P(b[i]);if(q[0]>P(b[mx])[0])mx=i;if(q[0]<P(b[mn])[0])mn=i;}
+    edge(g,P,b[mx],t[mx],s);edge(g,P,b[mn],t[mn],s);
+    poly(g,P,[[0,0,0],[r,0,0],[r,H,0],[0,H,0]],'--accent',0.25);edge(g,P,[0,0,0],[r,0,0],s,'--c2',true);edge(g,P,[0,0,0],[0,H,0],s,'--c1',true);
+    $('#fm').textContent='V = π · r² · h = π · '+n(r)+'² · '+n(H)+' = '+n(Math.PI*r*r*H);
+    $('#ro').innerHTML='Área lateral = 2π · r · h = <b>'+n(2*Math.PI*r*H)+'</b> (si lo desenrollas es un rectángulo de 2πr por h). Área total = '+n(2*Math.PI*r*(H+r))+'. Volumen = <b>'+n(Math.PI*r*r*H)+'</b>.';}
+}
+function set(k){kind=k;v=controls($('#ctl'),k==='pir'?[
+  {id:'l',label:'Lado de la base (l)',min:2,max:16,step:1,val:12,fmt:a=>String(a),hint:'La mitad del lado es un cateto del triángulo morado.'},
+  {id:'h',label:'Altura (h)',min:2,max:16,step:1,val:8,fmt:a=>String(a),hint:'El otro cateto. La apotema siempre es más larga que la altura.'}]:k==='pri'?[
+  {id:'a',label:'Largo (a)',min:1,max:12,step:1,val:3,fmt:a=>String(a),hint:''},
+  {id:'b',label:'Ancho (b)',min:1,max:12,step:1,val:4,fmt:a=>String(a),hint:''},
+  {id:'c',label:'Alto (c)',min:1,max:12,step:1,val:12,fmt:a=>String(a),hint:'Prueba 3, 4 y 12: la diagonal sale exacta, 13.'}]:[
+  {id:'r',label:'Radio (r)',min:1,max:8,step:0.5,val:3,fmt:a=>nf(a,1),hint:''},
+  {id:'h',label:'Altura (h)',min:1,max:14,step:0.5,val:8,fmt:a=>nf(a,1),hint:''}],vv=>{v=vv;draw();});draw();}
+seg($('#kSeg'),set);set('pir');onRedraw(draw);
+const c3=$('#s3');
+c3.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;c3.classList.add('drag');c3.setPointerCapture(e.pointerId);e.preventDefault();});
+c3.addEventListener('pointermove',e=>{if(!drag)return;phi+=(e.clientX-lx)*0.012;lx=e.clientX;draw();});
+for(const t of['pointerup','pointercancel','lostpointercapture'])c3.addEventListener(t,()=>{drag=false;c3.classList.remove('drag');});
+c3.addEventListener('keydown',e=>{const d={ArrowRight:0.15,ArrowLeft:-0.15}[e.key];if(!d)return;e.preventDefault();phi+=d;draw();});
+lessonNav('prismas');
+})();
+</script>
+</body>
+</html>
