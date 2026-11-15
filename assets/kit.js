@@ -7,6 +7,8 @@ const cv = n=>getComputedStyle(document.documentElement).getPropertyValue(n).tri
 /* m(): pega con espacio duro las operaciones (x − 1, 2 · 3) para que una fórmula no se parta a mitad de línea */
 const m = s=>String(s).replace(/ ([+−·×\/]) /g,'\u00A0$1\u00A0');
 const nf = (v,d=2)=>Number(v).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:false}); /* sin punto de miles: 16000, no 16.000 */
+/* num(): como nf pero sin ceros decimales sobrantes (2,50 → 2,5; 20 → 20), sin −0 y con el signo menos tipográfico */
+const num = (v,d=2)=>{if(Math.abs(v)<1e-12)v=0;let t=nf(v,d);if(t.includes(','))t=t.replace(/0+$/,'').replace(/,$/,'');return t.replace('-','−');};
 const redraws = [];
 const onRedraw = fn=>{redraws.push(fn);fn();};
 const redrawAll = ()=>redraws.forEach(f=>{try{f();}catch(e){console.error(e);}});
@@ -208,6 +210,39 @@ const PANELS={
     draw(v,c,r){const gs=[1.62,3.71,8.87,9.8,10.4,24.8],nm=['la Luna','Marte','Venus','la Tierra','Saturno','Júpiter'],g=gs[v.p];
       plot(c,{xr:[0,100],yr:[0,2500],xs:10,ys:500,xl:'masa (kg)',yl:'peso (N)',fns:[{f:x=>x*9.8,color:cv('--muted'),dash:[6,5],width:2},{f:x=>x*g,color:cv('--c1')}],pts:[{x:v.m,y:v.m*g,color:cv('--c2'),label:nf(v.m*g,0)+' N'}]});
       r.innerHTML='En '+nm[v.p]+' (g = '+nf(g,2)+' m/s²) tu peso es '+v.m+' · '+nf(g,2)+' = <b>'+nf(v.m*g,0)+' N</b>; en la Tierra, '+nf(v.m*9.8,0)+' N. La línea punteada es la Tierra.';}},
+  resorte:{title:'MAS: la suspensión de un auto',uses:['Suspensión de autos y motos','Colchones y sillas de oficina','Balanzas de resorte'],
+    intro:'Cada rueda tiene un resorte. Cuando el auto pasa un bache, sube y baja como una pesa en un resorte: con más carga, oscila más lento. Los amortiguadores frenan ese vaivén.',
+    ctl:[{id:'m',label:'Auto + carga',min:800,max:1600,step:50,val:1200,fmt:v=>v+' kg',hint:'Con más pasajeros, más masa.'},
+         {id:'k',label:'Dureza de los resortes (k)',min:20000,max:80000,step:5000,val:40000,fmt:v=>nf(v/1000,0)+' kN/m',hint:'Suspensión deportiva: resortes más duros.'}],
+    draw(v,c,r){const T=x=>2*Math.PI*Math.sqrt(x/v.k);
+      plot(c,{xr:[800,1600],yr:[0,2],xs:100,ys:0.25,xl:'masa (kg)',yl:'T (s)',fns:[{f:T,color:cv('--c1')}],pts:[{x:v.m,y:T(v.m),color:cv('--c2'),label:nf(T(v.m),2)+' s'}]});
+      r.innerHTML='T = 2π · √('+v.m+' / '+v.k+') = <b>'+nf(T(v.m),2)+' s</b> por oscilación. Con el doble de masa, el período crece √2 ≈ 1,41 veces.';}},
+  onda:{title:'Ondas: el tamaño de un sonido',uses:['Música e instrumentos','Parlantes','Ecografías y sonares'],
+    intro:'El sonido viaja por el aire a unos 343 m/s (a 20 °C). Con v = λ · f sabes cuánto mide cada onda: los graves son ondas largas y los agudos, cortas.',
+    ctl:[{id:'f',label:'Frecuencia',min:50,max:2000,step:10,val:440,fmt:v=>v+' Hz',hint:'440 Hz es la nota La que usan para afinar.'}],
+    draw(v,c,r){const L=x=>343/x;
+      plot(c,{xr:[0,2000],yr:[0,7],xs:250,ys:1,xl:'f (Hz)',yl:'λ (m)',fns:[{f:L,color:cv('--c1'),from:40}],pts:[{x:v.f,y:L(v.f),color:cv('--c2'),label:nf(L(v.f)*100,0)+' cm'}]});
+      r.innerHTML='λ = 343 / '+v.f+' = <b>'+nf(L(v.f),3)+' m</b> = '+nf(L(v.f)*100,1)+' cm. Un bajo de 50 Hz hace ondas de casi 7 m.';}},
+  presion:{title:'Presión: bucear en el mar',uses:['Buceo','Submarinos','Represas'],
+    intro:'En el mar la presión sube rápido: cada 10 m de agua salada suman casi una atmósfera. Por eso los buzos suben despacio y los submarinos tienen paredes gruesas.',
+    ctl:[{id:'h',label:'Profundidad',min:0,max:40,step:1,val:10,fmt:v=>v+' m',hint:'Un buzo recreativo baja hasta unos 18 a 30 m.'}],
+    draw(v,c,r){const P=x=>(101300+1030*9.8*x)/101300;
+      plot(c,{xr:[0,40],yr:[0,5],xs:5,ys:1,xl:'profundidad (m)',yl:'P (atm)',fns:[{f:P,color:cv('--c1')}],pts:[{x:v.h,y:P(v.h),color:cv('--c2'),label:nf(P(v.h),2)+' atm'}]});
+      r.innerHTML='A '+v.h+' m: P = 1 atm + 1030 · 9,8 · '+v.h+' Pa = <b>'+nf(P(v.h),2)+' atm</b>. El aire de los pulmones se comprime a 1/'+nf(P(v.h),2)+' de su volumen.';}},
+  dilatacion:{title:'Dilatación: las juntas de un puente',uses:['Puentes y rieles','Tuberías','Tapas de frascos'],
+    intro:'Un puente de acero crece en los días de calor. Si no tuviera juntas (espacios con dientes metálicos entre tramos), se doblaría. ¿Cuánto espacio hay que dejar?',
+    ctl:[{id:'L',label:'Largo del tramo',min:10,max:100,step:5,val:50,fmt:v=>v+' m',hint:''},
+         {id:'dT',label:'Cambio de temperatura',min:5,max:50,step:5,val:30,fmt:v=>v+' °C',hint:'Entre una noche fría y una tarde de sol.'}],
+    draw(v,c,r){const d=x=>12e-6*v.L*x*1000;
+      plot(c,{xr:[0,50],yr:[0,60],xs:5,ys:10,xl:'ΔT (°C)',yl:'ΔL (mm)',fns:[{f:d,color:cv('--c1')}],pts:[{x:v.dT,y:d(v.dT),color:cv('--c2'),label:nf(d(v.dT),1)+' mm'}]});
+      r.innerHTML='ΔL = 12×10⁻⁶ · '+v.L+' · '+v.dT+' = <b>'+nf(d(v.dT),1)+' mm</b>. La junta debe dejar al menos ese espacio.';}},
+  gas:{title:'Gas ideal: la presión de una llanta',uses:['Llantas y pelotas','Ollas a presión','Aerosoles'],
+    intro:'Después de rodar, las llantas se calientan. Su volumen casi no cambia, así que la presión sube con la temperatura (en kelvin): P₂ = P₁ · T₂ / T₁. Por eso se miden en frío.',
+    ctl:[{id:'P1',label:'Presión en frío (20 °C)',min:200,max:350,step:10,val:300,fmt:v=>v+' kPa',hint:'Presión absoluta.'},
+         {id:'T',label:'Temperatura de la llanta',min:0,max:80,step:5,val:50,fmt:v=>v+' °C',hint:''}],
+    draw(v,c,r){const P=x=>v.P1*(x+273)/293;
+      plot(c,{xr:[0,80],yr:[150,450],xs:10,ys:50,xl:'T (°C)',yl:'P (kPa)',fns:[{f:P,color:cv('--c1')}],pts:[{x:v.T,y:P(v.T),color:cv('--c2'),label:nf(P(v.T),0)+' kPa'}]});
+      r.innerHTML='P₂ = '+v.P1+' · ('+v.T+' + 273) / (20 + 273) = <b>'+nf(P(v.T),0)+' kPa</b>. Ojo: siempre en kelvin.';}},
   lineal:{title:'Función lineal: el precio de un taxi',uses:['Taxis y apps de viaje','Planes de celular','Recibo de luz'],
     intro:'Un taxi cobra un monto fijo al subir (la b) y un precio por cada kilómetro (la m, o pendiente). El total es y = m·x + b. Cada kilómetro suma lo mismo, por eso la gráfica es una recta.',
     ctl:[{id:'b',label:'Al subir (b)',min:0,max:10,step:0.5,val:4,fmt:v=>'S/ '+nf(v),hint:'Sube o baja la recta.'},
@@ -386,7 +421,7 @@ const scene={
   }
 };
 
-window.Kit={$,$$,cv,nf,m,scene,icon,drawMap,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
+window.Kit={$,$,cv,nf,num,m,scene,icon,drawMap,plot,prep,controls,seg,PANELS,openPanel,bindTerms,quiz,progress,store,lessonNav,onRedraw,BASE};
 
 chrome();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{bindTerms();quiz();});

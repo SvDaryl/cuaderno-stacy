@@ -65,7 +65,7 @@
 <script>
 (function(){
 const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
-const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+const n=(a,d=2)=>Kit.num(a,d);
 let k='jun',v={},t=1,geo=null,drag=false;
 /* fracción hecha por cada uno hasta el día t */
 function parts(t){const ra=1/v.a,rb=1/v.b;

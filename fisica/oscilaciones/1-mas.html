@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Movimiento armónico simple · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.play{margin:16px 2px 4px}
+.duo{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:start}
+#sp{touch-action:none;cursor:grab;border-radius:12px}
+#sp.drag{cursor:grabbing}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Oscilaciones, fluidos y calor · Paso 1</span></div>
+<h1>Movimiento armónico simple</h1>
+<p class="lede">Estira un resorte con una pesa y suéltalo: sube y baja siempre con el mismo ritmo. Ese vaivén perfecto es el MAS.</p>
+
+<div class="card stage">
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="sp" data-w="240" data-h="380" tabindex="0" aria-label="Resorte vertical con una pesa; se arrastra hacia abajo para estirarlo"></canvas>
+    <canvas id="gr" data-w="440" data-h="380" role="img" aria-label="Posición de la pesa contra el tiempo"></canvas>
+  </div>
+  <p class="cap"><b>Arrastra la pesa hacia abajo o hacia arriba</b> para elegir cuánto la estiras (la amplitud) y luego dale a soltar.</p>
+  <div class="row play"><button class="btn" type="button" id="play">Soltar</button></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Qué tiene de especial</h2>
+<p>El resorte empuja con una fuerza proporcional a lo que lo estiras y en sentido contrario: <b>F = −k · x</b> (ley de Hooke). k es la constante del resorte, en N/m: un resorte duro tiene k grande. Esa fuerza que siempre jala hacia el centro produce un movimiento que se repite igual: el <b>movimiento armónico simple</b>.</p>
+<p>La posición sigue una <button class="term" data-p="seno">función seno o coseno</button>: x = A · cos(ω · t). A es la <b>amplitud</b> (cuánto se aleja del centro), y ω (omega) la frecuencia angular, como en el <a href="../cinematica/4-movimiento-circular.html">movimiento circular</a>: el MAS es la sombra de un punto que gira.</p>
+<div class="key" data-idea><b class="fx">T = 2π · √(m / k)</b>ω = √(k / m). El período no depende de la amplitud: lo estires poco o mucho, tarda lo mismo en ir y volver. Rapidez máxima: v = ω · A, en el centro.</div>
+
+<h2>Dónde va rápido y dónde se detiene</h2>
+<p>En los extremos (x = ±A) la pesa se detiene un instante y la aceleración es máxima. En el centro (x = 0) va lo más rápido posible y la aceleración es cero. En cualquier punto: v = ω · √(A² − x²). La <a href="../dinamica/4-trabajo-y-energia.html">energía</a> pasa de elástica (½kx²) a cinética (½mv²) y vuelve, sin perderse.</p>
+<p>Un auto lleva <button class="term" data-p="resorte">resortes en la suspensión</button>: con más carga oscila más lento.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="T = 2π · √(m / k).">
+  <p>Una pesa de 0,5 kg cuelga de un resorte de k = 50 N/m. ¿Cuál es su período? (π ≈ 3,14)</p>
+  <label><input type="radio" name="q1" value="a"> 0,1 s</label>
+  <label><input type="radio" name="q1" value="b"> ≈ 0,63 s</label>
+  <label><input type="radio" name="q1" value="c"> 10 s</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! √(0,5/50) = √0,01 = 0,1, y T = 2π · 0,1 ≈ 0,63 s. Hace casi 1,6 oscilaciones por segundo.</template>
+</div>
+<div class="q" data-ans="a" data-hint="v máx = ω · A, con ω = √(k/m).">
+  <p>Con la misma pesa y el mismo resorte, la estiras 10 cm y la sueltas. ¿Con qué rapidez pasa por el centro?</p>
+  <label><input type="radio" name="q2" value="a"> 1 m/s</label>
+  <label><input type="radio" name="q2" value="b"> 10 m/s</label>
+  <label><input type="radio" name="q2" value="c"> 0,1 m/s</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: ω = √(50/0,5) = 10 rad/s, y v = 10 · 0,1 = 1 m/s.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,controls,onRedraw,lessonNav,icon}=Kit;
+const n=(a,d=2)=>Kit.num(a,d);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let v={m:0.5,k:50},A=0.1,T=0,playing=false,geo=null,drag=false,raf=0,last=0;
+const W=()=>Math.sqrt(v.k/v.m),X=t=>A*Math.cos(W()*t);
+function draw(){
+  const w0=W(),P=2*Math.PI/w0,x=X(T),vel=-A*w0*Math.sin(w0*T),TM=Math.max(3*P,2);
+  $('#fm').textContent='ω = √('+n(v.k,0)+' / '+n(v.m)+') = '+n(w0)+' rad/s    T = 2π/ω = '+n(P,3)+' s';
+  const c=$('#sp'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);const cx=w/2,top=20*s,eq=h*0.5,U=(h*0.36)/0.2;geo={eq,U,h,s};
+  g.fillStyle=cv('--muted');g.fillRect(cx-60*s,top-6*s,120*s,8*s);
+  /* resorte en zigzag hasta la pesa */
+  const yb=eq-x*U*(-1),coils=14;g.strokeStyle=cv('--ink');g.lineWidth=2*s;g.beginPath();g.moveTo(cx,top);
+  for(let i=1;i<=coils;i++){g.lineTo(cx+(i%2?14:-14)*s,top+(yb-30*s-top)*i/coils);}g.lineTo(cx,yb-30*s);g.stroke();
+  /* referencias: centro y extremos */
+  g.strokeStyle=cv('--line-2');g.setLineDash([5*s,4*s]);g.lineWidth=1.5*s;for(const yy of[eq,eq+A*U,eq-A*U]){g.beginPath();g.moveTo(cx-70*s,yy);g.lineTo(cx+70*s,yy);g.stroke();}g.setLineDash([]);
+  g.fillStyle=cv('--muted');g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='left';g.fillText('x = 0',cx+72*s,eq+4*s);
+  if(drag){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.arc(cx,yb,40*s,0,7);g.fill();g.globalAlpha=1;}
+  g.fillStyle=cv('--c1');g.fillRect(cx-28*s,yb-30*s,56*s,56*s);g.fillStyle=cv('--on-accent');g.font='600 '+(12*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(n(v.m)+' kg',cx,yb+3*s);
+  plot($('#gr'),{xr:[0,TM],yr:[-0.22,0.22],ys:0.05,xl:'t (s)',yl:'x (m)',fns:[{f:X,color:cv('--muted'),dash:[6,5],width:2,n:800},{f:X,from:0,to:T,color:cv('--c1'),width:3,n:800}],pts:[{x:T,y:x,color:cv('--c2')}]});
+  $('#ro').innerHTML='Amplitud <b>A = '+n(Math.abs(A)*100,1)+' cm</b>. Período <b>'+n(P,3)+' s</b> ('+n(1/P)+' oscilaciones por segundo). '+(T>0?'En t = '+n(T)+' s: x = '+n(x*100,1)+' cm y v = '+n(vel)+' m/s. ':'')+'Rapidez máxima (en el centro): ω · A = <b>'+n(w0*Math.abs(A))+' m/s</b>.';
+}
+const ctl=controls($('#ctl'),[
+  {id:'m',label:'Masa (m)',min:0.1,max:2,step:0.1,val:0.5,fmt:a=>nf(a,1)+' kg',hint:'Más masa, oscila más lento.'},
+  {id:'k',label:'Constante del resorte (k)',min:5,max:100,step:5,val:50,fmt:a=>a+' N/m',hint:'Resorte más duro, oscila más rápido.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+const btn=$('#play');
+function stop(){cancelAnimationFrame(raf);raf=0;playing=false;btn.innerHTML=icon('play')+'Soltar';$('#ro').setAttribute('aria-live','polite');draw();}
+function step(now){const dt=Math.min(0.05,(now-last)/1000);last=now;T+=dt;if(T>Math.max(3*2*Math.PI/W(),2))T=0;draw();raf=requestAnimationFrame(step);}
+btn.addEventListener('click',()=>{if(playing){stop();return;}if(reduce){T=Math.PI/W();draw();return;}playing=true;T=0;btn.innerHTML=icon('pause')+'Detener';$('#ro').setAttribute('aria-live','off');last=performance.now();raf=requestAnimationFrame(step);});
+btn.innerHTML=icon('play')+'Soltar';
+/* arrastrar la pesa: fija la amplitud (se suelta desde ahí) */
+const sp=$('#sp');
+function setA(e){const r=sp.getBoundingClientRect(),py=(e.clientY-r.top)/r.height*geo.h;A=Math.max(-0.2,Math.min(0.2,Math.round((py-geo.eq)/geo.U*100)/100));if(A===0)A=0.01;T=0;draw();}
+sp.addEventListener('pointerdown',e=>{if(playing)stop();drag=true;sp.classList.add('drag');sp.setPointerCapture(e.pointerId);setA(e);e.preventDefault();});
+sp.addEventListener('pointermove',e=>{if(drag)setA(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])sp.addEventListener(t,()=>{drag=false;sp.classList.remove('drag');draw();});
+sp.addEventListener('keydown',e=>{const d={ArrowDown:0.01,ArrowUp:-0.01}[e.key];if(!d)return;e.preventDefault();if(playing)stop();A=Math.max(-0.2,Math.min(0.2,Math.round((A+d)*100)/100))||0.01;T=0;draw();});
+onRedraw(draw);
+lessonNav('mas');
+})();
+</script>
+</body>
+</html>

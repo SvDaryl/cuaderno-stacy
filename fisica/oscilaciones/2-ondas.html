@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ondas · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.play{margin:16px 2px 4px}
+#wv{touch-action:none;cursor:pointer;border-radius:12px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Oscilaciones, fluidos y calor · Paso 2</span></div>
+<h1>Ondas</h1>
+<p class="lede">Una onda lleva energía de un lugar a otro sin llevarse la materia: la cuerda sube y baja, pero no viaja.</p>
+
+<div class="card stage">
+  <p class="formula" id="fm"></p>
+  <canvas id="wv" data-w="660" data-h="300" tabindex="0" aria-label="Cuerda con una onda; toca un punto para marcarlo y ver que solo sube y baja"></canvas>
+  <p class="cap"><b>Toca la cuerda</b> para marcar un punto naranja. Dale a mover y fíjate: el punto solo sube y baja, mientras la onda avanza.</p>
+  <div class="row play"><button class="btn" type="button" id="play">Mover la onda</button></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Las partes de una onda</h2>
+<p>La <b>amplitud</b> A es cuánto se aleja la cuerda del centro. La <b>longitud de onda</b> λ (lambda) es la distancia entre dos crestas seguidas. El <b>período</b> T es lo que tarda un punto en hacer una oscilación completa, y la <b>frecuencia</b> f = 1/T, cuántas por segundo. Cada punto de la cuerda hace un <a href="1-mas.html">MAS</a>.</p>
+<div class="key" data-idea><b class="fx">v = λ · f</b>En un período la onda avanza exactamente una longitud de onda. La rapidez depende del medio (la cuerda, el aire, el agua), no de qué tan fuerte la sacudes.</div>
+
+<h2>La ecuación de una onda</h2>
+<p>Una onda que viaja hacia la derecha se escribe y = A · sen(k·x − ω·t), con k = 2π/λ (número de onda) y ω = 2π·f. Si te dan la ecuación, de ahí sacas todo: por ejemplo, en y = 0,05 · sen(2π·x − 10π·t), A = 0,05 m, λ = 1 m, f = 5 Hz y v = 5 m/s.</p>
+<p>El sonido es una onda en el aire: a unos 340 m/s. Con v = λ·f sale el tamaño de cada <button class="term" data-p="onda">onda de sonido</button>, y la nota que oyes depende de la frecuencia (lo viste en la <button class="term" data-p="seno">nota musical</button>).</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="v = λ · f.">
+  <p>En una cuerda, las crestas están separadas 2 m y pasan 5 por segundo. ¿Con qué rapidez viaja la onda?</p>
+  <label><input type="radio" name="q1" value="a"> 2,5 m/s</label>
+  <label><input type="radio" name="q1" value="b"> 0,4 m/s</label>
+  <label><input type="radio" name="q1" value="c"> 10 m/s</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! λ = 2 m y f = 5 Hz: v = 2 · 5 = 10 m/s.</template>
+</div>
+<div class="q" data-ans="a" data-hint="Compara con y = A · sen(k·x − ω·t): k = 2π/λ y ω = 2π·f.">
+  <p>Una onda es y = 0,02 · sen(4π·x − 8π·t), en metros y segundos. ¿Cuánto valen λ y f?</p>
+  <label><input type="radio" name="q2" value="a"> λ = 0,5 m y f = 4 Hz</label>
+  <label><input type="radio" name="q2" value="b"> λ = 4 m y f = 8 Hz</label>
+  <label><input type="radio" name="q2" value="c"> λ = 2 m y f = 0,25 Hz</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 2π/λ = 4π → λ = 0,5 m; 2π·f = 8π → f = 4 Hz. Y v = 0,5 · 4 = 2 m/s.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,onRedraw,lessonNav,icon}=Kit;
+const n=(a,d=2)=>Kit.num(a,d);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const XM=6;
+let v={A:0.3,l:2,f:0.5},t=0,mark=1.5,playing=false,raf=0,last=0,geo=null;
+const Y=(x,tt)=>v.A*Math.sin(2*Math.PI*(x/v.l-v.f*tt));
+function draw(){
+  const vel=v.l*v.f,c=$('#wv'),{x:g,w,h,s}=prep(c),L=30*s,R=w-20*s,cy=h*0.5,U=(h*0.36)/0.5,X=x=>L+x/XM*(R-L);geo={L,R,w};
+  $('#fm').textContent='y = '+n(v.A)+' · sen(2π·(x/'+n(v.l)+' − '+n(v.f)+'·t))    v = λ·f = '+n(v.l)+' · '+n(v.f)+' = '+n(vel)+' m/s';
+  g.clearRect(0,0,w,h);
+  g.strokeStyle=cv('--line');g.lineWidth=1*s;g.beginPath();g.moveTo(L,cy);g.lineTo(R,cy);g.stroke();
+  g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.textAlign='center';for(let m=0;m<=XM;m++)g.fillText(m+' m',X(m),h-10*s);
+  /* cuerda */
+  g.strokeStyle=cv('--c1');g.lineWidth=4*s;g.lineCap='round';g.beginPath();for(let i=0;i<=400;i++){const x=i/400*XM,yy=cy-Y(x,t)*U;i?g.lineTo(X(x),yy):g.moveTo(X(x),yy);}g.stroke();
+  /* una longitud de onda marcada: entre dos crestas */
+  const x0=((v.f*t+0.25)%1)*v.l;if(x0+v.l<=XM){const yc=cy-v.A*U-18*s;g.strokeStyle=cv('--c3');g.lineWidth=2*s;g.beginPath();g.moveTo(X(x0),yc);g.lineTo(X(x0+v.l),yc);g.stroke();
+    for(const xx of[x0,x0+v.l]){g.beginPath();g.moveTo(X(xx),yc-6*s);g.lineTo(X(xx),yc+6*s);g.stroke();}g.fillStyle=cv('--c3');g.fillText('λ = '+n(v.l)+' m',X(x0+v.l/2),yc-8*s);}
+  /* amplitud */
+  g.strokeStyle=cv('--c4');g.setLineDash([4*s,4*s]);g.lineWidth=1.5*s;g.beginPath();g.moveTo(L,cy-v.A*U);g.lineTo(R,cy-v.A*U);g.moveTo(L,cy+v.A*U);g.lineTo(R,cy+v.A*U);g.stroke();g.setLineDash([]);
+  /* punto marcado */
+  const ym=cy-Y(mark,t)*U;g.fillStyle=cv('--c2');g.beginPath();g.arc(X(mark),ym,9*s,0,7);g.fill();g.strokeStyle=cv('--c2');g.lineWidth=1.5*s;g.setLineDash([3*s,3*s]);g.beginPath();g.moveTo(X(mark),cy-v.A*U);g.lineTo(X(mark),cy+v.A*U);g.stroke();g.setLineDash([]);
+  $('#ro').innerHTML='λ = '+n(v.l)+' m, f = '+n(v.f)+' Hz (período '+n(1/v.f)+' s): la onda viaja a <b>'+n(vel)+' m/s</b>. El punto naranja (en x = '+n(mark,1)+' m) solo sube y baja entre ±'+n(v.A)+' m: <b>la cuerda no viaja, viaja la forma</b>. Si subes la frecuencia con la misma rapidez del medio, las ondas se acortan.';
+}
+const ctl=controls($('#ctl'),[
+  {id:'A',label:'Amplitud (A)',min:0.05,max:0.5,step:0.05,val:0.3,fmt:a=>nf(a,2)+' m',hint:'Qué tan alto sube la cuerda. No cambia la rapidez.'},
+  {id:'l',label:'Longitud de onda (λ)',min:0.5,max:4,step:0.25,val:2,fmt:a=>nf(a,2)+' m',hint:'Distancia entre crestas.'},
+  {id:'f',label:'Frecuencia (f)',min:0.1,max:2,step:0.1,val:0.5,fmt:a=>nf(a,1)+' Hz',hint:'Cuántas crestas pasan por segundo.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+const btn=$('#play');
+function stop(){cancelAnimationFrame(raf);raf=0;playing=false;btn.innerHTML=icon('play')+'Mover la onda';$('#ro').setAttribute('aria-live','polite');draw();}
+function step(now){const dt=Math.min(0.05,(now-last)/1000);last=now;t+=dt;draw();raf=requestAnimationFrame(step);}
+btn.addEventListener('click',()=>{if(playing){stop();return;}if(reduce){t+=0.25/v.f;draw();return;}playing=true;btn.innerHTML=icon('pause')+'Detener';$('#ro').setAttribute('aria-live','off');last=performance.now();raf=requestAnimationFrame(step);});
+btn.innerHTML=icon('play')+'Mover la onda';
+const wv=$('#wv');
+wv.addEventListener('pointerdown',e=>{const r=wv.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w;mark=Math.max(0,Math.min(XM,Math.round((px-geo.L)/(geo.R-geo.L)*XM*10)/10));draw();});
+wv.addEventListener('keydown',e=>{const d={ArrowRight:0.1,ArrowLeft:-0.1}[e.key];if(!d)return;e.preventDefault();mark=Math.max(0,Math.min(XM,Math.round((mark+d)*10)/10));draw();});
+onRedraw(draw);
+lessonNav('ondas');
+})();
+</script>
+</body>
+</html>

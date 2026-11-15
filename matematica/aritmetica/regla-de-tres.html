@@ -73,7 +73,7 @@
 <script>
 (function(){
 const {$,cv,nf,plot,prep,controls,seg,onRedraw,lessonNav}=Kit;
-const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+const n=(a,d=2)=>Kit.num(a,d);
 /* cada modo: controles, eje x (control que se toca en la gráfica) y dibujo */
 const M={
   d:{x:'kg',ctl:[{id:'p',label:'Precio por kilo',min:2,max:10,step:0.5,val:4,fmt:a=>'S/ '+nf(a,2),hint:'Es la constante k = precio / kilos: la pendiente de la recta.'},

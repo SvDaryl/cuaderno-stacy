@@ -63,7 +63,7 @@
 <script>
 (function(){
 const {$,cv,nf,prep,controls,onRedraw,lessonNav}=Kit;
-const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'')||'0';
+const n=(a,d=2)=>Kit.num(a,d);
 let v={a:3,b:5,c:1,d:13},X=1,geo=null,drag=false;
 const sol=()=>v.a===v.c?null:(v.d-v.b)/(v.a-v.c);
 function pan(g,cx,y,boxes,ones,s){const bw=26*s,gap=4*s;let items=[];for(let i=0;i<boxes;i++)items.push('x');for(let i=0;i<ones;i++)items.push('1');

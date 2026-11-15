@@ -79,7 +79,7 @@ table.f tr:last-child td{border-bottom:0}
 <script>
 (function(){
 const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
-const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+const n=(a,d=2)=>Kit.num(a,d);
 let kind='pir',v={},phi=0.6,drag=false,lx=0;
 const TILT=0.38;
 function view(w,h,s,size){const k=Math.min(w,h)*0.62/size,cx=w/2,cy=h*0.62;

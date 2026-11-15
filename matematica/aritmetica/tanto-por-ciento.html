@@ -68,7 +68,7 @@
 <script>
 (function(){
 const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
-const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+const n=(a,d=2)=>Kit.num(a,d);
 let k='ven',v={},geo=null,drag=false;
 function bar(g,y,h,len,col,label,val,s,x0){g.fillStyle=cv(col);g.beginPath();g.roundRect?g.roundRect(x0,y,Math.max(2,len),h,8*s):g.rect(x0,y,len,h);g.fill();
   g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='left';g.fillText(label,x0,y-8*s);

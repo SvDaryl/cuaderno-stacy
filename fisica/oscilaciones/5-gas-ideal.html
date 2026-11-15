@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gas ideal y termodinámica · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.duo{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+#pv{touch-action:none;cursor:grab;border-radius:12px}
+#pv.drag{cursor:grabbing}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.cols div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px;line-height:1.5}
+.cols b{display:block;font-size:16px;margin-bottom:4px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Oscilaciones, fluidos y calor · Paso 2</span></div>
+<h1>Gas ideal y termodinámica</h1>
+<p class="lede">Un gas encerrado tiene tres números que se mueven juntos: presión, volumen y temperatura. Si cambias uno, los otros responden.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el proceso">
+    <button data-k="iso" aria-pressed="true">Isotérmico (T fija)</button><button data-k="bar" aria-pressed="false">Isobárico (P fija)</button><button data-k="cor" aria-pressed="false">Isocórico (V fijo)</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="cy" data-w="220" data-h="340" role="img" aria-label="Cilindro con un pistón; su altura muestra el volumen"></canvas>
+    <canvas id="pv" data-w="460" data-h="340" tabindex="0" aria-label="Diagrama presión-volumen; arrastra el punto B a lo largo del proceso"></canvas>
+  </div>
+  <p class="cap"><b>Arrastra el punto B</b> en el diagrama: se mueve por la curva del proceso elegido. El área sombreada es el trabajo del gas.</p>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>La ecuación del gas ideal</h2>
+<div class="key" data-idea><b class="fx">P · V = n · R · T</b>P en pascales, V en m³, n en moles, T en kelvin y R = 8,31 J/(mol·K). Con la misma cantidad de gas: P₁V₁/T₁ = P₂V₂/T₂.</div>
+<div class="cols">
+  <div><b>Isotérmico</b>T no cambia: P · V = constante. Si comprimes a la mitad, la presión se duplica.</div>
+  <div><b>Isobárico</b>P no cambia: V / T = constante. Al calentar, el gas se expande.</div>
+  <div><b>Isocórico</b>V no cambia: P / T = constante. Al calentar una <button class="term" data-p="gas">llanta</button>, sube la presión.</div>
+</div>
+<p>Ojo: la temperatura siempre en <a href="4-dilatacion.html">kelvin</a>. Con °C las proporciones salen mal (a 0 °C dividirías entre cero).</p>
+
+<h2>Trabajo y primera ley</h2>
+<p>Cuando un gas se expande empujando un pistón, hace <b>trabajo</b>: es el área bajo la curva en el diagrama P–V. A presión constante, W = P · ΔV. A volumen constante, W = 0.</p>
+<p>La <b>primera ley de la termodinámica</b> es la conservación de la energía: el calor Q que recibe el gas se reparte entre aumentar su energía interna ΔU y hacer trabajo W: <b>Q = ΔU + W</b>. Para un gas ideal monoatómico, ΔU = (3/2) · n · R · ΔT.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="Isotérmico: P₁V₁ = P₂V₂.">
+  <p>Un gas a 2 atm ocupa 10 L. Si a temperatura constante lo comprimes hasta 5 L, ¿qué presión tendrá?</p>
+  <label><input type="radio" name="q1" value="a"> 1 atm</label>
+  <label><input type="radio" name="q1" value="b"> 2 atm</label>
+  <label><input type="radio" name="q1" value="c"> 4 atm</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 2 · 10 = P · 5 → P = 4 atm.</template>
+</div>
+<div class="q" data-ans="a" data-hint="A presión constante, W = P · ΔV. Pasa los litros a m³.">
+  <p>Un gas se expande a 200 kPa constantes de 3 L a 6 L. ¿Cuánto trabajo hace?</p>
+  <label><input type="radio" name="q2" value="a"> 600 J</label>
+  <label><input type="radio" name="q2" value="b"> 600 000 J</label>
+  <label><input type="radio" name="q2" value="c"> 1200 J</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: ΔV = 3 L = 0,003 m³, y W = 200000 · 0,003 = 600 J.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=1)=>Kit.num(a,d);
+const R=8.31,NM=1,PA=150,VA=20;   /* estado A: 150 kPa, 20 L, 1 mol */
+const TA=PA*VA/(NM*R);
+let k='iso',B={P:75,V:40},drag=false;
+function setB(val){if(k==='iso'){const V=Math.max(5,Math.min(55,val.V));B={V,P:PA*VA/V};}else if(k==='bar'){B={P:PA,V:Math.max(5,Math.min(55,val.V))};}else{B={V:VA,P:Math.max(30,Math.min(380,val.P))};}}
+function draw(){
+  const TB=B.P*B.V/(NM*R),W=k==='iso'?NM*R*TA*Math.log(B.V/VA):k==='bar'?PA*(B.V-VA):0,dU=1.5*NM*R*(TB-TA),Q=dU+W;
+  $('#fm').textContent='P·V = n·R·T → '+n(B.P)+' kPa · '+n(B.V)+' L = 1 · 8,31 · T → T = '+n(TB,0)+' K';
+  /* cilindro */
+  const c=$('#cy'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);const cx=w/2,cw=110*s,base=h-30*s,top=30*s,hh=(base-top)*B.V/60;
+  g.strokeStyle=cv('--ink');g.lineWidth=3*s;g.beginPath();g.moveTo(cx-cw/2,top);g.lineTo(cx-cw/2,base);g.lineTo(cx+cw/2,base);g.lineTo(cx+cw/2,top);g.stroke();
+  const tcol=TB>TA*1.05?'--c2':TB<TA*0.95?'--c1':'--c4';g.fillStyle=cv(tcol);g.globalAlpha=0.3;g.fillRect(cx-cw/2+2*s,base-hh,cw-4*s,hh);g.globalAlpha=1;
+  g.fillStyle=cv('--muted');g.fillRect(cx-cw/2+2*s,base-hh-12*s,cw-4*s,12*s);g.fillRect(cx-4*s,top-10*s,8*s,base-hh-12*s-top+10*s);
+  g.fillStyle=cv('--ink');g.font='600 '+(13*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText(n(TB,0)+' K',cx,base-hh/2+5*s);
+  /* diagrama P–V */
+  const iso=V=>PA*VA/V,curve=k==='iso'?{f:iso,from:5,to:55}:k==='bar'?{f:()=>PA,from:5,to:55}:null;
+  const fills=k==='iso'?[{f:iso,from:Math.min(VA,B.V),to:Math.max(VA,B.V),color:cv('--c3'),alpha:0.25}]:k==='bar'?[{f:()=>PA,from:Math.min(VA,B.V),to:Math.max(VA,B.V),color:cv('--c3'),alpha:0.25}]:[];
+  plot($('#pv'),{xr:[0,60],yr:[0,400],xs:10,ys:50,xl:'V (L)',yl:'P (kPa)',fills,fns:curve?[Object.assign({color:cv('--c1'),width:3},curve)]:[],vx:k==='cor'?[{x:VA,color:cv('--c1')}]:[],
+    pts:[{x:VA,y:PA,color:cv('--muted'),label:'A'},{x:B.V,y:B.P,color:cv('--c2'),label:'B'}]});
+  $('#ro').innerHTML='De A (150 kPa, 20 L, '+n(TA,0)+' K) a B ('+n(B.P)+' kPa, '+n(B.V)+' L, '+n(TB,0)+' K). '+
+    (k==='iso'?'Temperatura fija: P·V se mantiene en '+n(PA*VA,0)+'. ':k==='bar'?'Presión fija: el volumen sigue a la temperatura. ':'Volumen fijo: no hay trabajo; la presión sigue a la temperatura. ')+
+    'Trabajo del gas <b>W = '+n(W,0)+' J</b>'+(W<0?' (lo comprimen)':'')+', cambio de energía interna ΔU = '+n(dU,0)+' J, calor <b>Q = '+n(Q,0)+' J</b>.';
+}
+seg($('#kSeg'),kk=>{k=kk;setB(k==='cor'?{P:250}:{V:40});draw();});
+setB({V:40});
+const pv=$('#pv');
+function pick(e){const r=pv.getBoundingClientRect(),{w,h,s}=prep(pv),L=52*s,Rr=14*s,T=14*s,Bt=34*s,px=(e.clientX-r.left)/r.width*w,py=(e.clientY-r.top)/r.height*h;
+  setB({V:Math.round(((px-L)/(w-L-Rr)*60)*2)/2,P:Math.round((400-(py-T)/(h-T-Bt)*400)/5)*5});draw();}
+pv.addEventListener('pointerdown',e=>{drag=true;pv.classList.add('drag');pv.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+pv.addEventListener('pointermove',e=>{if(drag)pick(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])pv.addEventListener(t,()=>{drag=false;pv.classList.remove('drag');});
+pv.addEventListener('keydown',e=>{const d={ArrowRight:1,ArrowLeft:-1,ArrowUp:1,ArrowDown:-1}[e.key];if(!d)return;e.preventDefault();setB(k==='cor'?{P:B.P+d*10}:{V:B.V+d});draw();});
+onRedraw(draw);
+lessonNav('termo');
+})();
+</script>
+</body>
+</html>

@@ -69,7 +69,7 @@
 <script>
 (function(){
 const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
-const nn=(a,d=2)=>nf(a,d).replace(/,?0+$/,'')||'0';
+const nn=(a,d=2)=>Kit.num(a,d);
 const SUB='₀₁₂₃₄₅₆₇₈₉',sub=i=>String(i).split('').map(c=>SUB[+c]).join('');
 let k='pa',v={},sel=3,geo=null;
 const term=i=>k==='pa'?v.a+(i-1)*v.r:v.a*Math.pow(v.r,i-1);

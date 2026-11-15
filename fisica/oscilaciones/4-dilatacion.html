@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperatura y dilatación · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#dl{touch-action:none;cursor:grab;border-radius:12px}
+#dl.drag{cursor:grabbing}
+table.f{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table.f th,table.f td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+table.f th{background:var(--sunk);font-weight:600}
+table.f td:last-child{font-family:var(--mono)}
+table.f tr:last-child td{border-bottom:0}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Oscilaciones, fluidos y calor · Paso 1</span></div>
+<h1>Temperatura y dilatación</h1>
+<p class="lede">Los rieles del tren y los puentes tienen pequeñas separaciones a propósito: con el calor, el metal crece.</p>
+
+<div class="card">
+  <p class="formula" id="fm"></p>
+  <canvas id="dl" data-w="660" data-h="320" tabindex="0" aria-label="Termómetro que se arrastra y una barra de metal que se alarga con la temperatura"></canvas>
+  <p class="cap"><b>Arrastra el termómetro</b> hacia arriba o hacia abajo. El cambio de la barra está dibujado 200 veces más grande para que se note el cambio.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Escalas de temperatura</h2>
+<p>En el Perú usamos grados Celsius (°C): el agua se congela a 0 °C y hierve a 100 °C. En física se usa el <b>kelvin</b> (K), que empieza en el cero absoluto, la temperatura más baja posible: 0 K = −273 °C. En EE. UU. usan Fahrenheit, que ya viste en la <button class="term" data-p="funcion">app del clima</button>.</p>
+<p style="font-family:var(--mono);font-size:18px">K = °C + 273 &nbsp;&nbsp;·&nbsp;&nbsp; °F = 1,8 · °C + 32</p>
+<p>Un cambio de 1 °C es igual a un cambio de 1 K: por eso en las fórmulas de dilatación da lo mismo usar ΔT en °C o en K.</p>
+
+<h2>Dilatación lineal</h2>
+<p>Al calentarse, los átomos de un sólido vibran más y se separan un poco: el objeto se alarga. El aumento es proporcional al largo inicial y al cambio de temperatura:</p>
+<div class="key" data-idea><b class="fx">ΔL = α · L₀ · ΔT</b>α (alfa) es el coeficiente de dilatación del material, en 1/°C. Largo final: L = L₀ · (1 + α · ΔT).</div>
+<table class="f">
+  <thead><tr><th>Material</th><th>α (1/°C)</th></tr></thead>
+  <tbody><tr><td>Aluminio</td><td>24 × 10⁻⁶</td></tr><tr><td>Cobre</td><td>17 × 10⁻⁶</td></tr><tr><td>Acero</td><td>12 × 10⁻⁶</td></tr><tr><td>Vidrio común</td><td>9 × 10⁻⁶</td></tr></tbody>
+</table>
+<p>Por eso los <button class="term" data-p="dilatacion">puentes tienen juntas</button> que dejan espacio para que el metal crezca en verano. Para superficies y volúmenes se usan 2α y 3α.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="ΔL = α · L₀ · ΔT con α = 12 × 10⁻⁶.">
+  <p>Un riel de acero de 10 m se calienta 40 °C. ¿Cuánto se alarga?</p>
+  <label><input type="radio" name="q1" value="a"> 4,8 mm</label>
+  <label><input type="radio" name="q1" value="b"> 48 cm</label>
+  <label><input type="radio" name="q1" value="c"> 0,48 mm</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 12 × 10⁻⁶ · 10 · 40 = 0,0048 m = 4,8 mm.</template>
+</div>
+<div class="q" data-ans="c" data-hint="K = °C + 273.">
+  <p>Un día de 27 °C, ¿cuántos kelvin son?</p>
+  <label><input type="radio" name="q2" value="a"> 246 K</label>
+  <label><input type="radio" name="q2" value="b"> 80,6 K</label>
+  <label><input type="radio" name="q2" value="c"> 300 K</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 27 + 273 = 300 K. (80,6 son los grados Fahrenheit.)</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>Kit.num(a,d);
+const MAT=[['aluminio',24e-6],['cobre',17e-6],['acero',12e-6],['vidrio',9e-6]],T0=20,TMIN=-20,TMAX=120;
+let v={m:2,L:10},T=60,geo=null,drag=false;
+function draw(){
+  const [mn,a]=MAT[v.m],dT=T-T0,dL=a*v.L*dT;
+  $('#fm').textContent='ΔL = '+n(a*1e6,0)+'×10⁻⁶ · '+n(v.L,0)+' · '+n(dT,0)+' = '+n(dL*1000,3)+' mm';
+  const c=$('#dl'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);
+  /* termómetro */
+  const tx=60*s,tT=30*s,tB=h-60*s,Y=t=>tB-(t-TMIN)/(TMAX-TMIN)*(tB-tT);geo={Y,tT,tB,h};
+  g.fillStyle=cv('--sunk');g.beginPath();g.roundRect?g.roundRect(tx-10*s,tT-8*s,20*s,tB-tT+16*s,10*s):g.rect(tx-10*s,tT,20*s,tB-tT);g.fill();g.strokeStyle=cv('--line-2');g.lineWidth=1.5*s;g.stroke();
+  g.fillStyle=cv('--c2');g.fillRect(tx-5*s,Y(T),10*s,tB-Y(T)+8*s);g.beginPath();g.arc(tx,tB+18*s,16*s,0,7);g.fill();
+  g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.textAlign='left';
+  for(let t=-20;t<=120;t+=20){g.fillRect(tx+12*s,Y(t),8*s,1.5*s);g.fillText(t+'°',tx+24*s,Y(t)+4*s);}
+  g.fillStyle=cv('--accent');g.globalAlpha=drag?0.4:0.2;g.beginPath();g.arc(tx,Y(T),18*s,0,7);g.fill();g.globalAlpha=1;g.beginPath();g.arc(tx,Y(T),7*s,0,7);g.fill();
+  /* barra: largo inicial gris y largo actual exagerado ×1000 */
+  const bx=150*s,bw0=(w-bx-140*s)/1.5,by=h*0.42,ex=200,len=bw0*(1+a*dT*ex);
+  g.fillStyle=cv('--muted');g.fillRect(bx-14*s,by-50*s,14*s,130*s);
+  g.strokeStyle=cv('--line-2');g.setLineDash([5*s,4*s]);g.lineWidth=1.5*s;g.strokeRect(bx,by,bw0,40*s);g.setLineDash([]);
+  g.fillStyle=cv(dT>=0?'--c4':'--c1');g.globalAlpha=0.85;g.fillRect(bx,by,len,40*s);g.globalAlpha=1;
+  g.fillStyle=cv('--ink');g.font='600 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='left';g.fillText('Barra de '+mn+', '+n(v.L,0)+' m a 20 °C',bx,by-14*s);
+  g.font=(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillText((dL>=0?'+':'')+n(dL*1000,3)+' mm',bx+Math.max(len,bw0)+8*s,by+25*s);
+  $('#ro').innerHTML='<b>'+n(T,0)+' °C</b> = '+n(T+273,0)+' K = '+n(1.8*T+32,1)+' °F. Desde 20 °C cambió <b>'+n(dT,0)+' °C</b>, así que la barra de '+mn+' '+(dL>=0?'se alargó':'se acortó')+' <b>'+n(Math.abs(dL)*1000,3)+' mm</b>. '+
+    (Math.abs(dL)*1000<1?'Es muy poco, pero en un riel de kilómetros suma.':'Por eso hay que dejar juntas en rieles y puentes.');
+}
+const ctl=controls($('#ctl'),[
+  {id:'m',label:'Material',min:0,max:3,step:1,val:2,fmt:i=>MAT[i][0]+' ('+MAT[i][1]*1e6+'×10⁻⁶)',hint:'El aluminio se dilata el doble que el acero.'},
+  {id:'L',label:'Largo inicial (L₀)',min:1,max:100,step:1,val:10,fmt:a=>a+' m',hint:'El doble de largo, el doble de alargamiento.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+const dl=$('#dl');
+function setT(e){const r=dl.getBoundingClientRect(),py=(e.clientY-r.top)/r.height*geo.h;T=Math.max(TMIN,Math.min(TMAX,Math.round((TMIN+(geo.tB-py)/(geo.tB-geo.tT)*(TMAX-TMIN))/5)*5));draw();}
+dl.addEventListener('pointerdown',e=>{drag=true;dl.classList.add('drag');dl.setPointerCapture(e.pointerId);setT(e);e.preventDefault();});
+dl.addEventListener('pointermove',e=>{if(drag)setT(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])dl.addEventListener(t,()=>{drag=false;dl.classList.remove('drag');draw();});
+dl.addEventListener('keydown',e=>{const d={ArrowUp:5,ArrowDown:-5}[e.key];if(!d)return;e.preventDefault();T=Math.max(TMIN,Math.min(TMAX,T+d));draw();});
+onRedraw(draw);
+lessonNav('dilatacion');
+})();
+</script>
+</body>
+</html>

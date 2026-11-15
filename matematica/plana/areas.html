@@ -78,7 +78,7 @@
 <script>
 (function(){
 const {$,cv,nf,prep,seg,onRedraw,lessonNav}=Kit;
-const n=(a,d=3)=>nf(a,d).replace(/,?0+$/,'')||'0';
+const n=(a,d=3)=>Kit.num(a,d);
 let kind='tri',p=0.5,q=0.4,mx=0.5,nx=0.5,geo=null,drag=null;
 const shoe=P=>Math.abs(P.reduce((s,a,i)=>{const b=P[(i+1)%P.length];return s+a[0]*b[1]-b[0]*a[1];},0))/2;
 function inter(a,b,c,d){const d1=[b[0]-a[0],b[1]-a[1]],d2=[d[0]-c[0],d[1]-c[1]],den=d1[0]*d2[1]-d1[1]*d2[0];if(Math.abs(den)<1e-12)return a;const t=((c[0]-a[0])*d2[1]-(c[1]-a[1])*d2[0])/den;return[a[0]+t*d1[0],a[1]+t*d1[1]];}

@@ -103,11 +103,11 @@ window.TEMAS = [
   { id:'choques',      materia:'fisica', bloque:'Dinámica', paso:4, titulo:'Cantidad de movimiento y choques', resumen:'Lo que se conserva cuando dos cuerpos chocan.', antes:['trabajo'], estado:'lista', url:'fisica/dinamica/5-choques.html', fecha:'2026-11-14' },
   { id:'gravitacion',  materia:'fisica', bloque:'Dinámica', paso:4, titulo:'Gravitación',              resumen:'La atracción entre masas y la gravedad a cierta altura.', antes:['newton','circular'], estado:'lista', url:'fisica/dinamica/6-gravitacion.html', fecha:'2026-11-14' },
   /* --- Oscilaciones, fluidos y calor --- */
-  { id:'mas',          materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Movimiento armónico simple', resumen:'Un resorte que sube y baja: amplitud y periodo.', antes:['trabajo','funtrig'], estado:'pronto' },
-  { id:'ondas',        materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:2, titulo:'Ondas',            resumen:'Longitud de onda, frecuencia y rapidez.', antes:['mas'], estado:'pronto' },
-  { id:'fluidos',      materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Presión y fluidos', resumen:'Presión absoluta, manométrica y empuje.', antes:['newton'], estado:'pronto' },
-  { id:'dilatacion',   materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Temperatura y dilatación', resumen:'Por qué los metales crecen con el calor.', antes:['magnitudes'], estado:'pronto' },
-  { id:'termo',        materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:2, titulo:'Gas ideal y termodinámica', resumen:'P · V = n · R · T y el trabajo de un gas.', antes:['dilatacion','fluidos'], estado:'pronto' },
+  { id:'mas',          materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Movimiento armónico simple', resumen:'Un resorte que sube y baja: amplitud y periodo.', antes:['trabajo','funtrig'], estado:'lista', url:'fisica/oscilaciones/1-mas.html', fecha:'2026-11-14' },
+  { id:'ondas',        materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:2, titulo:'Ondas',            resumen:'Longitud de onda, frecuencia y rapidez.', antes:['mas'], estado:'lista', url:'fisica/oscilaciones/2-ondas.html', fecha:'2026-11-14' },
+  { id:'fluidos',      materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Presión y fluidos', resumen:'Presión absoluta, manométrica y empuje.', antes:['newton'], estado:'lista', url:'fisica/oscilaciones/3-fluidos.html', fecha:'2026-11-14' },
+  { id:'dilatacion',   materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Temperatura y dilatación', resumen:'Por qué los metales crecen con el calor.', antes:['magnitudes'], estado:'lista', url:'fisica/oscilaciones/4-dilatacion.html', fecha:'2026-11-14' },
+  { id:'termo',        materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:2, titulo:'Gas ideal y termodinámica', resumen:'P · V = n · R · T y el trabajo de un gas.', antes:['dilatacion','fluidos'], estado:'lista', url:'fisica/oscilaciones/5-gas-ideal.html', fecha:'2026-11-14' },
   /* --- Electricidad y magnetismo --- */
   { id:'carga',        materia:'fisica', bloque:'Electricidad y magnetismo', paso:1, titulo:'Carga, corriente y voltaje', resumen:'Qué se mueve por un cable y qué lo empuja.', antes:['magnitudes'], estado:'pronto' },
   { id:'circuitos',    materia:'fisica', bloque:'Electricidad y magnetismo', paso:2, titulo:'Resistencias y circuitos',  resumen:'Ley de Ohm, serie y paralelo.', antes:['carga'], estado:'pronto' },
@@ -163,6 +163,11 @@ window.EJEMPLOS = [
   { panel:'energia',     titulo:'Subir las escaleras', tema:'trabajo' },
   { panel:'choques',     titulo:'Patinadores que se empujan', tema:'choques' },
   { panel:'gravedad',    titulo:'Tu peso en otros mundos', tema:'gravitacion' },
+  { panel:'resorte',     titulo:'La suspensión de un auto', tema:'mas' },
+  { panel:'onda',        titulo:'El tamaño de un sonido', tema:'ondas' },
+  { panel:'presion',     titulo:'Bucear en el mar', tema:'fluidos' },
+  { panel:'dilatacion',  titulo:'Las juntas de un puente', tema:'dilatacion' },
+  { panel:'gas',         titulo:'La presión de una llanta', tema:'termo' },
   { panel:'cuadratica',  titulo:'El camino de un balón',  tema:'polinomicas' },
   { panel:'cubica',      titulo:'La caja más grande',     tema:'polinomicas' },
   { panel:'exponencial', titulo:'Un chisme en WhatsApp',  tema:'trascendentes' },
@@ -175,5 +180,6 @@ window.EXAMENES = [
   { id:'funciones-1', titulo:'Funciones · Examen 1', desc:'Función, dominio y rango, clasificación. 8 preguntas.', url:'examenes/funciones-1.html' },
   { id:'omasur-practica', titulo:'Práctica tipo OMASUR', desc:'20 problemas como los del concurso OMASUR-UNI (3.º de secundaria): porcentajes, obras, álgebra, funciones, matrices y geometría.', url:'examenes/omasur-practica.html' },
   { id:'fisica-1',    titulo:'Física · Examen 1',    desc:'Bases y cinemática: unidades, vectores, MRU, MRUV, caída libre y circular. 8 preguntas.', url:'examenes/fisica-1.html' },
-  { id:'fisica-2',    titulo:'Física · Examen 2',    desc:'Dinámica: Newton, rozamiento, equilibrio, energía, choques y gravitación. 8 preguntas.', url:'examenes/fisica-2.html' }
+  { id:'fisica-2',    titulo:'Física · Examen 2',    desc:'Dinámica: Newton, rozamiento, equilibrio, energía, choques y gravitación. 8 preguntas.', url:'examenes/fisica-2.html' },
+  { id:'fisica-3',    titulo:'Física · Examen 3',    desc:'Oscilaciones, ondas, fluidos y calor. 8 preguntas.', url:'examenes/fisica-3.html' }
 ];

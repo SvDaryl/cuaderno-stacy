@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presión y fluidos · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+#tk{touch-action:none;cursor:grab;border-radius:12px}
+#tk.drag{cursor:grabbing}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Oscilaciones, fluidos y calor · Paso 1</span></div>
+<h1>Presión y fluidos</h1>
+<p class="lede">Cuando te sumerges en una piscina sientes los oídos apretados: el agua de arriba pesa. Y ese mismo líquido te empuja hacia arriba.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige qué ver">
+    <button data-k="pre" aria-pressed="true">Presión con la profundidad</button><button data-k="emp" aria-pressed="false">Empuje: flotar o hundirse</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="tk" data-w="330" data-h="360" tabindex="0" aria-label="Tanque con agua; arrastra a la buceadora o al bloque"></canvas>
+    <canvas id="gr" data-w="330" data-h="360" role="img" aria-label="Presión contra la profundidad"></canvas>
+  </div>
+  <p class="cap" id="cap"></p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Presión</h2>
+<p>La <b>presión</b> es fuerza dividida entre el área donde se aplica: p = F / A, en pascales (1 Pa = 1 N/m²). Por eso un cuchillo afilado corta: la misma fuerza en un área pequeñísima da una presión enorme.</p>
+<p>Dentro de un líquido, la presión crece con la profundidad porque cada capa carga el peso de las de arriba. Es la <b>presión hidrostática</b>: ρ · g · h, con ρ la densidad del líquido. A esa hay que sumarle la presión del aire de arriba, la atmosférica (unos 101 kPa a nivel del mar).</p>
+<div class="key" data-idea><b class="fx">P_abs = P_atm + ρ · g · h</b>La presión manométrica es solo ρ·g·h (lo que mide un manómetro). Empuje de Arquímedes: E = ρ_líquido · g · V_sumergido.</div>
+<p>Cada 10 m de agua suman más o menos una atmósfera: a 10 m de profundidad la presión absoluta es el doble que en la superficie. Lo sienten los <button class="term" data-p="presion">buzos en el mar</button>.</p>
+
+<h2>Empuje</h2>
+<p>Todo cuerpo sumergido recibe una fuerza hacia arriba igual al peso del líquido que desaloja (principio de Arquímedes). Si el cuerpo es <b>menos denso</b> que el líquido, flota con una parte afuera: la fracción sumergida es ρ_cuerpo / ρ_líquido. Si es <b>más denso</b>, se hunde, pero pesa menos dentro del agua.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="P manométrica = ρ · g · h con ρ = 1000 kg/m³.">
+  <p>¿Cuánta presión manométrica hay a 10 m de profundidad en agua dulce? (g = 10 m/s²)</p>
+  <label><input type="radio" name="q1" value="a"> 10 kPa</label>
+  <label><input type="radio" name="q1" value="b"> 100 kPa</label>
+  <label><input type="radio" name="q1" value="c"> 1000 kPa</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 1000 · 10 · 10 = 100000 Pa = 100 kPa, casi una atmósfera. La absoluta sería unos 200 kPa.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Densidad = masa / volumen; compárala con la del agua.">
+  <p>Un bloque de 0,6 kg tiene un volumen de 1 litro (0,001 m³). Si lo pones en agua, ¿qué pasa?</p>
+  <label><input type="radio" name="q2" value="a"> Se hunde</label>
+  <label><input type="radio" name="q2" value="b"> Flota con 40% sumergido</label>
+  <label><input type="radio" name="q2" value="c"> Flota con 60% sumergido</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: su densidad es 600 kg/m³, menor que 1000: flota, con 600/1000 = 60% bajo el agua.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>Kit.num(a,d);
+const G=9.8,PA=101300,HM=20;
+let k='pre',v={},hd=8,geo=null,drag=false;
+function tank(g,w,h,s){const L=24*s,R=w-24*s,T=40*s,B=h-24*s;g.fillStyle=cv('--sc-sky');g.fillRect(0,0,w,T);g.fillStyle=cv('--c1');g.globalAlpha=0.18;g.fillRect(L,T,R-L,B-T);g.globalAlpha=1;
+  g.strokeStyle=cv('--ink');g.lineWidth=2.5*s;g.beginPath();g.moveTo(L,T-10*s);g.lineTo(L,B);g.lineTo(R,B);g.lineTo(R,T-10*s);g.stroke();
+  g.strokeStyle=cv('--c1');g.lineWidth=2*s;g.beginPath();g.moveTo(L,T);g.lineTo(R,T);g.stroke();return{L,R,T,B};}
+function draw(){
+  const c=$('#tk'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);const{L,R,T,B}=tank(g,w,h,s);
+  if(k==='pre'){const Y=d=>T+d/HM*(B-T),pm=v.rho*G*hd,pa=PA+pm;geo={T,B,h};
+    g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.textAlign='left';for(let d=0;d<=HM;d+=5)g.fillText(d+' m',L+4*s,Y(d)+4*s);
+    const x=(L+R)/2,y=Y(hd);if(drag){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.arc(x,y,26*s,0,7);g.fill();g.globalAlpha=1;}
+    g.fillStyle=cv('--c4');g.beginPath();g.ellipse(x,y,22*s,9*s,0,0,7);g.fill();g.fillStyle=cv('--ink');g.beginPath();g.arc(x+20*s,y-4*s,7*s,0,7);g.fill();
+    /* flechas de presión: más largas abajo */
+    const len=8*s+pm/20000*s*6;g.strokeStyle=cv('--c2');g.lineWidth=2.5*s;for(const [dx,dy] of [[0,-1],[0,1],[-1,0],[1,0]]){g.beginPath();g.moveTo(x+dx*(34*s+len),y+dy*(24*s+len));g.lineTo(x+dx*32*s,y+dy*20*s);g.stroke();}
+    $('#fm').textContent='P = '+n(PA/1000,1)+' kPa + '+n(v.rho,0)+' · 9,8 · '+n(hd,1)+' = '+n(pa/1000,1)+' kPa';
+    plot($('#gr'),{xr:[0,HM],yr:[0,400],xs:5,ys:50,xl:'h (m)',yl:'P (kPa)',fns:[{f:d=>(PA+v.rho*G*d)/1000,color:cv('--c1'),width:3},{f:d=>v.rho*G*d/1000,color:cv('--muted'),dash:[6,5],width:2}],pts:[{x:hd,y:pa/1000,color:cv('--c2'),label:n(pa/1000,0)+' kPa'}]});
+    $('#ro').innerHTML='A <b>'+n(hd,1)+' m</b> de profundidad: presión manométrica ρ·g·h = <b>'+n(pm/1000,1)+' kPa</b>, absoluta <b>'+n(pa/1000,1)+' kPa</b> = '+n(pa/PA,2)+' atm. La línea punteada es solo la manométrica.';}
+  else{const rl=v.rl,rb=v.rb,Vl=v.V/1000,m=rb*Vl,W=m*G,floats=rb<rl,frac=floats?rb/rl:1,E=rl*G*Vl*frac,side=Math.cbrt(Vl),px=(B-T)*0.28*Math.cbrt(v.V/5),x=(L+R)/2;
+    const yTop=floats?T-px*(1-frac):B-px-4*s;geo={T,B,h};
+    g.fillStyle=cv(floats?'--c4':'--c2');g.fillRect(x-px/2,yTop,px,px);g.strokeStyle=cv('--ink');g.lineWidth=1.5*s;g.strokeRect(x-px/2,yTop,px,px);
+    g.fillStyle=cv('--ink');g.font='600 '+(12*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(n(m,2)+' kg',x,yTop+px/2+4*s);
+    g.strokeStyle=cv('--c3');g.lineWidth=3*s;g.beginPath();g.moveTo(x-px/2-14*s,yTop+px);g.lineTo(x-px/2-14*s,yTop+px-Math.min(90*s,E/W*50*s));g.stroke();
+    g.fillStyle=cv('--c3');g.fillText('E',x-px/2-24*s,yTop+px-Math.min(90*s,E/W*50*s)/2);
+    $('#fm').textContent='E = '+n(rl,0)+' · 9,8 · '+n(Vl*frac,5)+' = '+n(E,1)+' N    peso = '+n(W,1)+' N';
+    plot($('#gr'),{xr:[0,2000],yr:[0,1.1],xs:250,ys:0.1,xl:'ρ cuerpo (kg/m³)',yl:'parte sumergida',fns:[{f:r=>Math.min(1,r/rl),color:cv('--c1'),width:3}],vx:[{x:rl,color:cv('--muted')}],pts:[{x:rb,y:frac,color:cv('--c2'),label:n(frac*100,0)+'%'}]});
+    $('#ro').innerHTML='Densidad del bloque <b>'+n(rb,0)+' kg/m³</b>, del líquido <b>'+n(rl,0)+'</b>. '+(floats?'Es menos denso: <b>flota</b> con el '+n(frac*100,0)+'% sumergido. El empuje ('+n(E,1)+' N) iguala su peso.':
+      'Es más denso: <b>se hunde</b>. Recibe un empuje de '+n(E,1)+' N, así que dentro del líquido “pesa” '+n(W-E,1)+' N en vez de '+n(W,1)+' N.');}
+}
+function set(kk){k=kk;$('#cap').innerHTML=k==='pre'?'<b>Arrastra a la buceadora</b> hacia arriba o hacia abajo.':'Cambia la densidad del bloque y del líquido con los deslizadores.';
+  v=controls($('#ctl'),k==='pre'?[{id:'rho',label:'Densidad del líquido (ρ)',min:700,max:1300,step:10,val:1000,fmt:a=>a+' kg/m³',hint:'Aceite ≈ 900 · agua dulce 1000 · agua de mar ≈ 1030.'}]:[
+    {id:'rb',label:'Densidad del bloque',min:100,max:2000,step:50,val:600,fmt:a=>a+' kg/m³',hint:'Madera ≈ 600 · hielo ≈ 920 · ladrillo ≈ 1900.'},
+    {id:'rl',label:'Densidad del líquido',min:700,max:1300,step:10,val:1000,fmt:a=>a+' kg/m³',hint:'En agua de mar se flota más que en agua dulce.'},
+    {id:'V',label:'Volumen del bloque',min:1,max:10,step:1,val:2,fmt:a=>a+' L',hint:'1 litro = 0,001 m³.'}],vv=>{v=vv;draw();});draw();}
+seg($('#kSeg'),set);set('pre');onRedraw(draw);
+const tk=$('#tk');
+function setH(e){if(k!=='pre')return;const r=tk.getBoundingClientRect(),py=(e.clientY-r.top)/r.height*geo.h;hd=Math.max(0,Math.min(HM,Math.round((py-geo.T)/(geo.B-geo.T)*HM*2)/2));draw();}
+tk.addEventListener('pointerdown',e=>{if(k!=='pre')return;drag=true;tk.classList.add('drag');tk.setPointerCapture(e.pointerId);setH(e);e.preventDefault();});
+tk.addEventListener('pointermove',e=>{if(drag)setH(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])tk.addEventListener(t,()=>{drag=false;tk.classList.remove('drag');draw();});
+tk.addEventListener('keydown',e=>{const d={ArrowDown:0.5,ArrowUp:-0.5}[e.key];if(!d||k!=='pre')return;e.preventDefault();hd=Math.max(0,Math.min(HM,hd+d));draw();});
+lessonNav('fluidos');
+})();
+</script>
+</body>
+</html>

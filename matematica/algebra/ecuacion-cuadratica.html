@@ -64,7 +64,7 @@
 <script>
 (function(){
 const {$,cv,nf,plot,prep,controls,onRedraw,lessonNav}=Kit;
-const n=(a,d=2)=>(nf(a,d).replace(/,?0+$/,'')||'0').replace('-','−');
+const n=(a,d=2)=>Kit.num(a,d);
 const sg=x=>x<0?'− '+n(-x):'+ '+n(x);
 let v={b:-5,c:6},drag=false;
 function draw(){
