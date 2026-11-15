@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ecuaciones lineales · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#bl{touch-action:none;cursor:grab;border-radius:12px}
+#bl.drag{cursor:grabbing}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Álgebra · Paso 0</span></div>
+<h1>Ecuaciones lineales</h1>
+<p class="lede">Una ecuación es una balanza en equilibrio. Lo que hagas de un lado, hazlo del otro, y la balanza sigue igual.</p>
+
+<div class="card">
+  <p class="formula" id="fm"></p>
+  <canvas id="bl" data-w="660" data-h="300" tabindex="0" aria-label="Balanza con cajas x y pesas; arrastra para probar valores de x"></canvas>
+  <p class="cap"><b>Arrastra a los lados sobre la balanza</b> para probar valores de x. Cuando aciertas, queda derecha.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Despejar paso a paso</h2>
+<p>Cada caja morada pesa x y cada pesita pesa 1. Para encontrar x, deja las cajas de un lado y las pesitas del otro, haciendo siempre lo mismo en los dos platos:</p>
+<div class="steps" id="stp"></div>
+<div class="key" data-idea><b class="fx">a·x + b = c·x + d → x = (d − b) / (a − c)</b>Lo que suma de un lado pasa a restar al otro; lo que multiplica pasa a dividir. Siempre comprueba reemplazando.</div>
+
+<h2>Con letras (parámetros)</h2>
+<p>En los concursos, la ecuación trae otra letra, como a. Se despeja igual: x queda en función de a. Primero <b>quita paréntesis</b>, luego <b>junta las x</b> de un lado y las a del otro:</p>
+<div class="steps">2(x − a) + 5(a + x) − 3(2x + a) = 4a<br>2x − 2a + 5a + 5x − 6x − 3a = 4a<br>(2 + 5 − 6)x + (−2 + 5 − 3)a = 4a<br>x + 0 = 4a → x = 4a</div>
+<p>Si al juntar las x se te van todas (queda 0 · x), la ecuación no tiene solución o tiene infinitas, según lo que quede del otro lado.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="Pasa x a la izquierda y 5 a la derecha: 3x − x = 13 − 5.">
+  <p>Resuelve 3x + 5 = x + 13.</p>
+  <label><input type="radio" name="q1" value="a"> x = 4</label>
+  <label><input type="radio" name="q1" value="b"> x = 9</label>
+  <label><input type="radio" name="q1" value="c"> x = 2</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 2x = 8 → x = 4. Comprueba: 3·4 + 5 = 17 y 4 + 13 = 17.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Quita paréntesis: 2x − 2a + 3a = x + 4a.">
+  <p>Si 2(x − a) + 3a = x + 4a, ¿cuánto vale x?</p>
+  <label><input type="radio" name="q2" value="a"> x = a</label>
+  <label><input type="radio" name="q2" value="b"> x = 5a</label>
+  <label><input type="radio" name="q2" value="c"> x = 3a</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 2x + a = x + 4a → x = 3a.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'')||'0';
+let v={a:3,b:5,c:1,d:13},X=1,geo=null,drag=false;
+const sol=()=>v.a===v.c?null:(v.d-v.b)/(v.a-v.c);
+function pan(g,cx,y,boxes,ones,s){const bw=26*s,gap=4*s;let items=[];for(let i=0;i<boxes;i++)items.push('x');for(let i=0;i<ones;i++)items.push('1');
+  const per=7,rows=Math.ceil(items.length/per);items.forEach((it,i)=>{const r=Math.floor(i/per),col=i%per,cnt=Math.min(per,items.length-r*per),x=cx-(cnt*(bw+gap))/2+col*(bw+gap),yy=y-(r+1)*(bw+gap);
+    g.fillStyle=cv(it==='x'?'--c1':'--c4');if(it==='x'){g.fillRect(x,yy,bw,bw);}else{g.beginPath();g.arc(x+bw/2,yy+bw/2,bw*0.38,0,7);g.fill();}
+    g.fillStyle=cv('--on-accent');g.font='600 '+(12*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(it,x+bw/2,yy+bw/2+4*s);});}
+function draw(){
+  const S=sol(),L=v.a*X+v.b,R=v.c*X+v.d,diff=L-R,ang=Math.max(-0.22,Math.min(0.22,-diff*0.02));
+  const tx=(k,b)=>(k===0?'':(k===1?'':k)+'x'+(b?' + ':''))+(b||!k?b:'');
+  $('#fm').textContent=tx(v.a,v.b)+' = '+tx(v.c,v.d)+(S===null?'   (no hay una sola solución)':'   →   x = '+n(S));
+  const c=$('#bl'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);geo={w};
+  const px=w/2,py=h*0.32,arm=w*0.32;
+  g.fillStyle=cv('--muted');g.beginPath();g.moveTo(px,py);g.lineTo(px-30*s,h-20*s);g.lineTo(px+30*s,h-20*s);g.closePath();g.fill();
+  g.save();g.translate(px,py);g.rotate(ang);g.fillStyle=cv('--ink');g.fillRect(-arm,-4*s,2*arm,8*s);g.restore();
+  for(const [side,boxes,ones,val] of [[-1,v.a,v.b,L],[1,v.c,v.d,R]]){
+    const ex=px+side*arm*Math.cos(ang),ey=py+side*arm*Math.sin(ang)+60*s;
+    g.strokeStyle=cv('--line-2');g.lineWidth=1.5*s;g.beginPath();g.moveTo(px+side*arm*Math.cos(ang),py+side*arm*Math.sin(ang));g.lineTo(ex-70*s,ey);g.moveTo(px+side*arm*Math.cos(ang),py+side*arm*Math.sin(ang));g.lineTo(ex+70*s,ey);g.stroke();
+    g.fillStyle=cv('--sunk');g.fillRect(ex-90*s,ey,180*s,8*s);pan(g,ex,ey,boxes,ones,s);
+    g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText('= '+n(val),ex,ey+28*s);}
+  g.fillStyle=cv('--accent');g.globalAlpha=drag?0.35:0.15;g.beginPath();g.arc(px,py,24*s,0,7);g.fill();g.globalAlpha=1;
+  g.fillStyle=cv('--ink');g.font='600 '+(14*s).toFixed(1)+'px Lexend, sans-serif';g.fillText('x = '+n(X,1),px,py-30*s);
+  const ok=Math.abs(diff)<1e-9;
+  $('#ro').innerHTML='Probando <b>x = '+n(X,1)+'</b>: izquierda '+v.a+'·'+n(X,1)+' + '+v.b+' = '+n(L)+', derecha '+v.c+'·'+n(X,1)+' + '+v.d+' = '+n(R)+'. '+
+    (ok?'<b>¡Equilibrio!</b> Esa es la solución.':S===null?'Con igual número de cajas en los dos lados, x no cambia nada.':'Pesa más la '+(diff>0?'izquierda':'derecha')+': '+(diff>0===(v.a>v.c)?'baja':'sube')+' x. La solución es '+n(S)+'.');
+  $('#stp').innerHTML=S===null?'Hay '+v.a+' cajas a cada lado: al quitarlas queda '+v.b+' = '+v.d+(v.b===v.d?', siempre cierto (infinitas soluciones).':', imposible (no tiene solución).'):
+    v.a+'x + '+v.b+' = '+v.c+'x + '+v.d+'<br>Quito '+v.c+'x de los dos platos: '+(v.a-v.c)+'x + '+v.b+' = '+v.d+'<br>Quito '+v.b+' de los dos platos: '+(v.a-v.c)+'x = '+(v.d-v.b)+'<br>Divido entre '+(v.a-v.c)+': x = '+n(S);
+}
+const ctl=controls($('#ctl'),[
+  {id:'a',label:'Cajas a la izquierda (a)',min:1,max:6,step:1,val:3,fmt:x=>x+'x',hint:''},
+  {id:'b',label:'Pesitas a la izquierda (b)',min:0,max:20,step:1,val:5,fmt:x=>String(x),hint:''},
+  {id:'c',label:'Cajas a la derecha (c)',min:0,max:6,step:1,val:1,fmt:x=>x+'x',hint:'Si es igual a a, las x se cancelan.'},
+  {id:'d',label:'Pesitas a la derecha (d)',min:0,max:20,step:1,val:13,fmt:x=>String(x),hint:''}
+],vv=>{v=vv;draw();});
+v=ctl;
+const bl=$('#bl');
+function pick(e){const r=bl.getBoundingClientRect(),f=(e.clientX-r.left)/r.width;X=Math.round((f*20-10)*2)/2;draw();}
+bl.addEventListener('pointerdown',e=>{drag=true;bl.classList.add('drag');bl.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+bl.addEventListener('pointermove',e=>{if(drag)pick(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])bl.addEventListener(t,()=>{drag=false;bl.classList.remove('drag');draw();});
+bl.addEventListener('keydown',e=>{const d={ArrowRight:0.5,ArrowLeft:-0.5}[e.key];if(!d)return;e.preventDefault();X=Math.max(-10,Math.min(10,X+d));draw();});
+onRedraw(draw);
+lessonNav('ecuaciones');
+})();
+</script>
+</body>
+</html>

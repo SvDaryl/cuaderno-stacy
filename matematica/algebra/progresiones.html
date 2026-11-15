@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progresiones aritméticas y geométricas · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#pg{touch-action:none;cursor:pointer;border-radius:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.cols div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:15px;line-height:1.6}
+.cols b{display:block;font-size:17px;margin-bottom:6px}
+.cols code{white-space:normal}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Álgebra · Paso 2</span></div>
+<h1>Progresiones aritméticas y geométricas</h1>
+<p class="lede">Ahorrar S/ 5 más cada semana es una progresión aritmética. Que un video se comparta el doble cada hora es una geométrica.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige la progresión">
+    <button data-k="pa" aria-pressed="true">Aritmética (sumar)</button><button data-k="pg" aria-pressed="false">Geométrica (multiplicar)</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="pg" data-w="660" data-h="300" tabindex="0" aria-label="Barras con los términos de la progresión; toca una para ver cómo se calcula"></canvas>
+  <p class="cap"><b>Toca una barra</b> para ver cómo se calcula ese término.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Las dos progresiones</h2>
+<div class="cols">
+  <div><b>Aritmética (PA)</b>Cada término es el anterior <b>más</b> una diferencia r: 5, 8, 11, 14…<br><code>aₙ = a₁ + (n − 1)·r</code><br><code>Sₙ = n · (a₁ + aₙ) / 2</code><br>Crece como una <button class="term" data-p="lineal">función lineal</button>.</div>
+  <div><b>Geométrica (PG)</b>Cada término es el anterior <b>por</b> una razón q: 3, 6, 12, 24…<br><code>aₙ = a₁ · qⁿ⁻¹</code><br><code>Sₙ = a₁ · (qⁿ − 1) / (q − 1)</code><br>Crece como una <button class="term" data-p="exponencial">exponencial</button>.</div>
+</div>
+<div class="key" data-idea><b class="fx">PA: aₙ = a₁ + (n − 1)·r</b>PG: aₙ = a₁ · qⁿ⁻¹. La suma de una PA es “número de términos por el promedio del primero y el último”.</div>
+
+<h2>Truco: tres términos en progresión</h2>
+<p>Si tres números están en PA, llámalos <b>a − r, a, a + r</b>: al sumarlos, las r se cancelan y sale 3a. Por ejemplo, si las dimensiones de una caja están en PA y suman 18, la del medio es 6. Para tres en PG, usa a/q, a, a·q: su producto es a³. Los verás en problemas de <a href="../espacio/prisma-piramide-cilindro.html">sólidos</a>.</p>
+<p>Las progresiones son <a href="../index.html#b-algebra">sucesiones</a> con una regla muy simple. Hay otras, como 6, 9, 14, 21… donde lo que crece en PA son las diferencias (3, 5, 7…): esas dan una fórmula cuadrática.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="a₂₀ = a₁ + 19·r.">
+  <p>En la progresión 5, 8, 11, 14, …, ¿cuál es el término 20?</p>
+  <label><input type="radio" name="q1" value="a"> 65</label>
+  <label><input type="radio" name="q1" value="b"> 62</label>
+  <label><input type="radio" name="q1" value="c"> 60</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! r = 3, así que a₂₀ = 5 + 19 · 3 = 62. (65 sale de usar 20 en vez de 19.)</template>
+</div>
+<div class="q" data-ans="c" data-hint="Sₙ = a₁ · (qⁿ − 1)/(q − 1) con a₁ = 3, q = 2, n = 6.">
+  <p>¿Cuánto suman los 6 primeros términos de 3, 6, 12, 24, …?</p>
+  <label><input type="radio" name="q2" value="a"> 96</label>
+  <label><input type="radio" name="q2" value="b"> 192</label>
+  <label><input type="radio" name="q2" value="c"> 189</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 3 · (2⁶ − 1)/(2 − 1) = 3 · 63 = 189. Compruébalo: 3 + 6 + 12 + 24 + 48 + 96 = 189.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const nn=(a,d=2)=>nf(a,d).replace(/,?0+$/,'')||'0';
+const SUB='₀₁₂₃₄₅₆₇₈₉',sub=i=>String(i).split('').map(c=>SUB[+c]).join('');
+let k='pa',v={},sel=3,geo=null;
+const term=i=>k==='pa'?v.a+(i-1)*v.r:v.a*Math.pow(v.r,i-1);
+function draw(){
+  const N=v.n;sel=Math.min(sel,N);const T=Array.from({length:N},(_,i)=>term(i+1)),S=T.reduce((a,b)=>a+b,0);
+  const c=$('#pg'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);
+  const lo=Math.min(0,...T),hi=Math.max(1,...T),L=40*s,R=20*s,top=30*s,bot=40*s,Y=y=>top+(hi-y)/(hi-lo)*(h-top-bot),bw=(w-L-R)/N;geo={L,bw,N,w};
+  g.strokeStyle=cv('--line-2');g.lineWidth=1.5*s;g.beginPath();g.moveTo(L,Y(0));g.lineTo(w-R,Y(0));g.stroke();
+  T.forEach((t,i)=>{const x=L+i*bw+bw*0.15,ww=bw*0.7,on=i+1===sel;g.fillStyle=cv(on?'--c2':'--c1');g.globalAlpha=on?1:0.75;g.fillRect(x,Math.min(Y(t),Y(0)),ww,Math.abs(Y(t)-Y(0)));g.globalAlpha=1;
+    g.fillStyle=cv('--ink');g.font=(on?'600 ':'500 ')+(12*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText(nn(t),x+ww/2,Math.min(Y(t),Y(0))-6*s);
+    g.fillStyle=cv('--muted');g.fillText('a'+sub(i+1),x+ww/2,h-14*s);});
+  const t=term(sel);
+  $('#fm').textContent=k==='pa'?'a'+sub(sel)+' = '+nn(v.a)+' + ('+sel+' − 1)·'+nn(v.r)+' = '+nn(t):'a'+sub(sel)+' = '+nn(v.a)+' · '+nn(v.r)+'^'+(sel-1)+' = '+nn(t);
+  $('#ro').innerHTML='El término '+sel+' es <b>'+nn(t)+'</b>. '+(k==='pa'?'Para llegar a él sumas la diferencia '+(sel-1)+' veces (no '+sel+': el primero ya está). ':'Para llegar a él multiplicas por '+nn(v.r)+' un total de '+(sel-1)+' veces. ')+
+    'La suma de los '+N+' términos es <b>'+nn(S)+'</b>'+(k==='pa'?' = '+N+' · ('+nn(T[0])+' + '+nn(T[N-1])+')/2.':v.r!==1?' = '+nn(v.a)+' · ('+nn(v.r)+'^'+N+' − 1)/('+nn(v.r)+' − 1).':'.');
+}
+function set(kk){k=kk;v=controls($('#ctl'),k==='pa'?[
+  {id:'a',label:'Primer término (a₁)',min:-10,max:20,step:1,val:5,fmt:x=>String(x),hint:''},
+  {id:'r',label:'Diferencia (r)',min:-5,max:8,step:1,val:3,fmt:x=>String(x),hint:'Lo que se suma cada vez. Negativa: la progresión baja.'},
+  {id:'n',label:'Número de términos (n)',min:3,max:12,step:1,val:8,fmt:x=>String(x),hint:''}]:[
+  {id:'a',label:'Primer término (a₁)',min:1,max:10,step:1,val:3,fmt:x=>String(x),hint:''},
+  {id:'r',label:'Razón (q)',min:0.5,max:3,step:0.5,val:2,fmt:x=>nf(x,1),hint:'Por cuánto se multiplica cada vez. Menor que 1: va bajando.'},
+  {id:'n',label:'Número de términos (n)',min:3,max:10,step:1,val:6,fmt:x=>String(x),hint:''}],vv=>{v=vv;draw();});draw();}
+seg($('#kSeg'),set);set('pa');onRedraw(draw);
+const pg=$('#pg');
+pg.addEventListener('pointerdown',e=>{const r=pg.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w;sel=Math.max(1,Math.min(geo.N,Math.floor((px-geo.L)/geo.bw)+1));draw();});
+pg.addEventListener('keydown',e=>{const d={ArrowRight:1,ArrowLeft:-1}[e.key];if(!d)return;e.preventDefault();sel=Math.max(1,Math.min(v.n,sel+d));draw();});
+lessonNav('progresiones');
+})();
+</script>
+</body>
+</html>

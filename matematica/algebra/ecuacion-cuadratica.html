@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ecuación cuadrática · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#qc{touch-action:none;cursor:grab;border-radius:12px}
+#qc.drag{cursor:grabbing}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Álgebra · Paso 2</span></div>
+<h1>Ecuación cuadrática</h1>
+<p class="lede">Resolver x² + bx + c = 0 es buscar dónde la parábola cruza el eje x. Puede cruzarlo dos veces, una o ninguna.</p>
+
+<div class="card">
+  <p class="formula" id="fm"></p>
+  <canvas id="qc" data-w="660" data-h="360" tabindex="0" aria-label="Parábola cuyo vértice se arrastra; se marcan sus raíces"></canvas>
+  <p class="cap"><b>Arrastra la parábola</b> (agárrala de cualquier lado): su vértice va a donde lleves el dedo.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Las tres formas de resolverla</h2>
+<p><b>Factorizando</b> con <a href="factorizacion.html">aspa simple</a>: x² − 5x + 6 = (x − 2)(x − 3) = 0 → x = 2 o x = 3. <b>Con la fórmula general</b>, que siempre funciona:</p>
+<p style="font-family:var(--mono);font-size:19px">x = (−b ± √Δ) / 2a &nbsp;&nbsp; con &nbsp; Δ = b² − 4ac</p>
+<p>El <b>discriminante</b> Δ decide cuántas soluciones reales hay: Δ &gt; 0, dos; Δ = 0, una (doble); Δ &lt; 0, ninguna. Es lo mismo que ves en la gráfica de la <a href="../funciones/4-polinomicas.html">función cuadrática</a>.</p>
+
+<h2>Suma y producto de raíces</h2>
+<p>Si x₁ y x₂ son las raíces de ax² + bx + c = 0, no hace falta hallarlas para saber su suma y su producto:</p>
+<div class="key" data-idea><b class="fx">x₁ + x₂ = −b/a · x₁ · x₂ = c/a</b>Al revés: si conoces la suma S y el producto P, la ecuación es x² − S·x + P = 0.</div>
+<div class="steps">Raíces 4 + √5 y 4 − √5<br>S = 8 · P = 16 − 5 = 11<br>Ecuación: x² − 8x + 11 = 0 → b = −8, c = 11</div>
+<p>Truco de concurso: con S y P también sacas otras cosas, como 1/x₁ + 1/x₂ = S/P o x₁² + x₂² = S² − 2P.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="x² − S·x + P = 0 con S = 8 y P = 15.">
+  <p>¿Qué ecuación tiene raíces 3 y 5?</p>
+  <label><input type="radio" name="q1" value="a"> x² + 8x + 15 = 0</label>
+  <label><input type="radio" name="q1" value="b"> x² − 8x − 15 = 0</label>
+  <label><input type="radio" name="q1" value="c"> x² − 8x + 15 = 0</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! S = 8 y P = 15: x² − 8x + 15 = (x − 3)(x − 5).</template>
+</div>
+<div class="q" data-ans="a" data-hint="1/x₁ + 1/x₂ = (x₁ + x₂)/(x₁ · x₂) = S/P.">
+  <p>Si x₁ y x₂ son las raíces de x² − 6x + 4 = 0, ¿cuánto vale 1/x₁ + 1/x₂?</p>
+  <label><input type="radio" name="q2" value="a"> 3/2</label>
+  <label><input type="radio" name="q2" value="b"> 2/3</label>
+  <label><input type="radio" name="q2" value="c"> −3/2</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: S = 6 y P = 4, así que S/P = 6/4 = 3/2.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>(nf(a,d).replace(/,?0+$/,'')||'0').replace('-','−');
+const sg=x=>x<0?'− '+n(-x):'+ '+n(x);
+let v={b:-5,c:6},drag=false;
+function draw(){
+  const b=v.b,c=v.c,D=b*b-4*c,f=x=>x*x+b*x+c,h=-b/2,k=f(h);
+  let roots=[];if(D>1e-9)roots=[(-b-Math.sqrt(D))/2,(-b+Math.sqrt(D))/2];else if(Math.abs(D)<=1e-9)roots=[h];
+  $('#fm').textContent='x² '+sg(b)+'x '+sg(c)+' = 0    Δ = '+n(b*b)+' − 4·'+n(c)+' = '+n(D);
+  plot($('#qc'),{xr:[-8,8],yr:[-8,10],xs:1,ys:2,xl:'x',yl:'y',fns:[{f,color:cv('--c1'),width:3}],
+    pts:[{x:h,y:k,color:cv('--accent'),label:'vértice'}].concat(roots.map(r=>({x:r,y:0,color:cv('--c2'),label:'x = '+n(r)})))});
+  $('#ro').innerHTML=(D>1e-9?'Δ &gt; 0: <b>dos raíces</b>, x₁ = '+n(roots[0])+' y x₂ = '+n(roots[1])+'. ':Math.abs(D)<=1e-9?'Δ = 0: <b>una raíz doble</b>, x = '+n(h)+' (la parábola toca el eje). ':'Δ &lt; 0: <b>no hay raíces reales</b> (la parábola no toca el eje). ')+
+    'Suma de raíces −b = <b>'+n(-b)+'</b> y producto c = <b>'+n(c)+'</b>'+(D>1e-9?' (compruébalo: '+n(roots[0])+' + '+n(roots[1])+' = '+n(roots[0]+roots[1])+').':'.');
+}
+const ctl=controls($('#ctl'),[
+  {id:'b',label:'b',min:-10,max:10,step:1,val:-5,fmt:x=>String(x),hint:'Mueve la parábola en diagonal. −b es la suma de las raíces.'},
+  {id:'c',label:'c',min:-10,max:20,step:0.25,val:6,fmt:x=>nf(x,2),hint:'Sube o baja la parábola. Es el producto de las raíces.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+/* arrastrar: el vértice va adonde está el dedo (h en pasos de 0,5) */
+const qc=$('#qc');
+function pick(e){const r=qc.getBoundingClientRect(),{w,h,s}=prep(qc),L=52*s,R=14*s,T=14*s,B=34*s,px=(e.clientX-r.left)/r.width*w,py=(e.clientY-r.top)/r.height*h;
+  const x=-8+(px-L)/(w-L-R)*16,y=10-(py-T)/(h-T-B)*18,hh=Math.max(-5,Math.min(5,Math.round(x*2)/2)),kk=Math.round(y*4)/4;
+  const ins=$('#ctl').querySelectorAll('input');ins[0].value=-2*hh;ins[1].value=Math.max(-10,Math.min(20,hh*hh+kk));
+  ins.forEach(i=>i.dispatchEvent(new Event('input',{bubbles:true})));}
+qc.addEventListener('pointerdown',e=>{drag=true;qc.classList.add('drag');qc.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+qc.addEventListener('pointermove',e=>{if(drag)pick(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])qc.addEventListener(t,()=>{drag=false;qc.classList.remove('drag');});
+onRedraw(draw);
+lessonNav('ecuadratica');
+})();
+</script>
+</body>
+</html>

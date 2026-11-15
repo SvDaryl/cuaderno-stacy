@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tanto por ciento · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#bc{touch-action:none;cursor:grab;border-radius:12px}
+#bc.drag{cursor:grabbing}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Aritmética · Paso 2</span></div>
+<h1>Tanto por ciento</h1>
+<p class="lede">Subir 20% y luego bajar 20% no te deja donde empezaste. Entender por qué es la clave de los problemas de precios.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el caso">
+    <button data-k="ven" aria-pressed="true">Aumento y descuento</button><button data-k="suc" aria-pressed="false">Descuentos sucesivos</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="bc" data-w="660" data-h="260" tabindex="0" aria-label="Barras de los precios; la punta de la barra morada se arrastra"></canvas>
+  <p class="cap"><b>Arrastra la punta de la barra morada</b> para cambiar el primer porcentaje.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Qué es un tanto por ciento</h2>
+<p>“Por ciento” quiere decir “de cada cien”: 20% es 20/100 = 0,2. Para sacar el 20% de 350 multiplicas 350 · 0,2 = 70. Es una forma de <a href="regla-de-tres.html">proporcionalidad directa</a>: el 20% de una cantidad el doble de grande también es el doble.</p>
+
+<h2>Aumentos y descuentos: multiplicar</h2>
+<p>Aumentar un 20% es quedarse con el 120%: <b>multiplicar por 1,2</b>. Descontar un 20% es quedarse con el 80%: <b>multiplicar por 0,8</b>. Si hay varios cambios seguidos, se multiplican todos los factores. Así 200 · 1,2 · 0,8 = 192: subir y bajar el mismo porcentaje deja menos que al inicio, porque el descuento se calcula sobre un número más grande.</p>
+<div class="key" data-idea><b class="fx">aumento a% → × (1 + a/100)</b>Descuento d% → × (1 − d/100). Descuentos sucesivos: se multiplican, no se suman. La ganancia se mide respecto al costo.</div>
+
+<h2>Ganancia en una tienda</h2>
+<p>Una tienda compra a un <b>costo</b> C, le pone un <b>precio fijado</b> (más alto) y al vender hace un <b>descuento</b> sobre ese precio. Lo que gana es venta − costo, y el porcentaje de ganancia se da <b>sobre el costo</b>:</p>
+<div class="steps">Costo C. Precio fijado = C · 1,9 (aumento de 90%)<br>Venta = 1,9C · 0,8 = 1,52C (descuento de 20%)<br>Ganancia = 0,52C → gana 52% del costo</div>
+<p>Truco para los problemas con letras: si te dicen que después de aumentar y descontar se gana lo mismo que se aumentó, los descuentos tienen que anularse: (1 − p/100)(1 − q/100) = 1.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="Multiplica: 200 · 1,2 · 0,8.">
+  <p>Un polo cuesta S/ 200. Sube 20% y luego baja 20%. ¿Cuánto cuesta ahora?</p>
+  <label><input type="radio" name="q1" value="a"> S/ 200</label>
+  <label><input type="radio" name="q1" value="b"> S/ 208</label>
+  <label><input type="radio" name="q1" value="c"> S/ 192</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 200 · 1,2 = 240, y 240 · 0,8 = 192. Bajó 4% respecto al inicio.</template>
+</div>
+<div class="q" data-ans="a" data-hint="Queda 0,9 · 0,8 del precio. ¿Cuánto falta para el 100%?">
+  <p>Dos descuentos sucesivos del 10% y del 20% equivalen a un descuento único de:</p>
+  <label><input type="radio" name="q2" value="a"> 28%</label>
+  <label><input type="radio" name="q2" value="b"> 30%</label>
+  <label><input type="radio" name="q2" value="c"> 2%</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: queda 0,9 · 0,8 = 0,72 = 72% del precio, así que el descuento es 28%.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+let k='ven',v={},geo=null,drag=false;
+function bar(g,y,h,len,col,label,val,s,x0){g.fillStyle=cv(col);g.beginPath();g.roundRect?g.roundRect(x0,y,Math.max(2,len),h,8*s):g.rect(x0,y,len,h);g.fill();
+  g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='left';g.fillText(label,x0,y-8*s);
+  g.font='500 '+(14*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='right';g.fillStyle=cv('--on-accent');if(len>90*s)g.fillText(val,x0+len-10*s,y+h/2+5*s);else{g.fillStyle=cv('--ink');g.textAlign='left';g.fillText(val,x0+len+8*s,y+h/2+5*s);}}
+function draw(){
+  const c=$('#bc'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);const x0=24*s,MAX=2.2,U=(w-80*s)/MAX,bh=36*s;
+  if(k==='ven'){const C=1,F=C*(1+v.a/100),V=F*(1-v.d/100),G=V-C;geo={x0,U,w,base:1};
+    $('#fm').textContent='venta = C · '+n(1+v.a/100)+' · '+n(1-v.d/100)+' = '+n(V,4)+' · C';
+    bar(g,34*s,bh,C*U,'--muted','Costo (100%)','100%',s,x0);
+    bar(g,110*s,bh,F*U,'--c1','Precio fijado (+'+v.a+'%)',n(F*100,1)+'%',s,x0);
+    bar(g,186*s,bh,V*U,G>=0?'--ok':'--bad','Venta (−'+v.d+'% del precio fijado)',n(V*100,1)+'%',s,x0);
+    g.strokeStyle=cv('--line-2');g.setLineDash([5*s,4*s]);g.beginPath();g.moveTo(x0+U,20*s);g.lineTo(x0+U,h-6*s);g.stroke();g.setLineDash([]);
+    g.fillStyle=cv('--c1');g.globalAlpha=drag?0.4:0.2;g.beginPath();g.arc(x0+F*U,110*s+bh/2,20*s,0,7);g.fill();g.globalAlpha=1;
+    $('#ro').innerHTML='Con costo S/ 100: precio fijado S/ '+n(100*F)+', venta S/ '+n(100*V)+'. '+(Math.abs(G)<1e-9?'<b>No gana ni pierde.</b>':G>0?'<b>Gana '+n(G*100,1)+'% del costo</b> (S/ '+n(100*G)+').':'<b>Pierde '+n(-G*100,1)+'% del costo</b> (S/ '+n(-100*G)+').')+' Fíjate: el descuento de '+v.d+'% se aplica sobre el precio fijado, no sobre el costo.';}
+  else{const r=(1-v.a/100)*(1-v.d/100),eq=1-r;geo={x0,U,w,base:1};
+    $('#fm').textContent='queda '+n(1-v.a/100)+' · '+n(1-v.d/100)+' = '+n(r,4)+' → descuento único '+n(eq*100,2)+'%';
+    bar(g,34*s,bh,U,'--muted','Precio original','100%',s,x0);
+    bar(g,110*s,bh,(1-v.a/100)*U,'--c1','Después del 1.er descuento (−'+v.a+'%)',n((1-v.a/100)*100,1)+'%',s,x0);
+    bar(g,186*s,bh,r*U,'--c2','Después del 2.º descuento (−'+v.d+'% de lo que quedaba)',n(r*100,2)+'%',s,x0);
+    g.fillStyle=cv('--c1');g.globalAlpha=drag?0.4:0.2;g.beginPath();g.arc(x0+(1-v.a/100)*U,110*s+bh/2,20*s,0,7);g.fill();g.globalAlpha=1;
+    $('#ro').innerHTML='Descontar '+v.a+'% y luego '+v.d+'% <b>no</b> es descontar '+(v.a+v.d)+'%: el segundo se calcula sobre un precio ya rebajado. El descuento único es <b>'+n(eq*100,2)+'%</b> = '+v.a+' + '+v.d+' − '+v.a+'·'+v.d+'/100.';}
+}
+function set(kk){k=kk;v=controls($('#ctl'),k==='ven'?[
+  {id:'a',label:'Aumento sobre el costo',min:0,max:100,step:5,val:90,fmt:x=>x+'%',hint:'Cuánto sube el precio fijado respecto al costo.'},
+  {id:'d',label:'Descuento al vender',min:0,max:50,step:5,val:20,fmt:x=>x+'%',hint:'Se calcula sobre el precio fijado.'}]:[
+  {id:'a',label:'Primer descuento',min:0,max:60,step:5,val:20,fmt:x=>x+'%',hint:''},
+  {id:'d',label:'Segundo descuento',min:0,max:60,step:5,val:10,fmt:x=>x+'%',hint:'Se aplica sobre lo que quedó.'}],vv=>{v=vv;draw();});draw();}
+seg($('#kSeg'),set);set('ven');onRedraw(draw);
+const bc=$('#bc');
+function pick(e){const r=bc.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w,f=(px-geo.x0)/geo.U,inp=$('#ctl').querySelectorAll('input')[0];
+  let val=k==='ven'?(f-1)*100:(1-f)*100;inp.value=Math.max(+inp.min,Math.min(+inp.max,Math.round(val/5)*5));inp.dispatchEvent(new Event('input',{bubbles:true}));}
+bc.addEventListener('pointerdown',e=>{drag=true;bc.classList.add('drag');bc.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+bc.addEventListener('pointermove',e=>{if(drag)pick(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])bc.addEventListener(t,()=>{drag=false;bc.classList.remove('drag');draw();});
+lessonNav('porcentajes');
+})();
+</script>
+</body>
+</html>

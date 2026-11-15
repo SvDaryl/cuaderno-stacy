@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Problemas de obras · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#ob{touch-action:none;cursor:grab;border-radius:12px}
+#ob.drag{cursor:grabbing}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Aritmética · Paso 3</span></div>
+<h1>Problemas de obras</h1>
+<p class="lede">Si Ana pinta una pared en 6 horas y Beto en 3, juntos no tardan 4,5 ni 9: tardan 2. El secreto es pensar en cuánto hace cada uno en una hora.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el caso">
+    <button data-k="jun" aria-pressed="true">Trabajan juntos</button><button data-k="ret" aria-pressed="false">Uno se retira</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="ob" data-w="660" data-h="230" tabindex="0" aria-label="Barra de la obra que se va llenando con el aporte de cada persona; se arrastra para mover el tiempo"></canvas>
+  <p class="cap"><b>Arrastra sobre la barra</b> para avanzar o retroceder los días.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Pensar en un día</h2>
+<p>Si alguien hace una obra en a días, en un día hace <b>1/a</b> de la obra. Si trabajan juntos, en un día hacen la <b>suma</b> de lo que hace cada uno. Es la idea de <a href="regla-de-tres.html">proporcionalidad</a>: lo que hacen es directamente proporcional al tiempo.</p>
+<div class="key" data-idea><b class="fx">1/T = 1/a + 1/b</b>a y b: lo que tarda cada uno solo. T: lo que tardan juntos. Si uno deshace (un desagüe), su parte se resta.</div>
+<p>Ejemplo: Ana en 6 h, Beto en 3 h. En una hora hacen 1/6 + 1/3 = 1/6 + 2/6 = 3/6 = 1/2 de la pared. Toda la pared: 2 horas.</p>
+
+<h2>Cuando alguien se va a mitad de obra</h2>
+<div class="steps">Un pintor y su ayudante terminan una obra en 12 días.<br>Trabajan juntos 3 días: hacen 3/12 = 1/4 de la obra.<br>El ayudante se va y el pintor termina los 3/4 en 15 días.<br>Pintor: (3/4) / 15 = 1/20 por día → solo tardaría 20 días.<br>Ayudante: 1/12 − 1/20 = 5/60 − 3/60 = 2/60 = 1/30 → 30 días.</div>
+<p>Siempre: calcula qué fracción de obra se hizo en cada tramo, y lo que falta lo hace quien queda.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="1/6 + 1/3 de la obra por día. ¿Cuántos días para completar 1?">
+  <p>Un caño llena un tanque en 6 h y otro en 3 h. Abiertos los dos, ¿en cuánto tiempo lo llenan?</p>
+  <label><input type="radio" name="q1" value="a"> 4,5 h</label>
+  <label><input type="radio" name="q1" value="b"> 2 h</label>
+  <label><input type="radio" name="q1" value="c"> 9 h</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 1/6 + 1/3 = 1/2 de tanque por hora: 2 horas.</template>
+</div>
+<div class="q" data-ans="c" data-hint="El desagüe resta: 1/4 − 1/6 por hora.">
+  <p>Un caño llena un tanque en 4 h y un desagüe lo vacía en 6 h. Si los dos están abiertos, ¿en cuánto tiempo se llena?</p>
+  <label><input type="radio" name="q2" value="a"> 2,4 h</label>
+  <label><input type="radio" name="q2" value="b"> 10 h</label>
+  <label><input type="radio" name="q2" value="c"> 12 h</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 1/4 − 1/6 = 3/12 − 2/12 = 1/12 por hora: 12 horas.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,seg,onRedraw,lessonNav}=Kit;
+const n=(a,d=2)=>nf(a,d).replace(/,?0+$/,'');
+let k='jun',v={},t=1,geo=null,drag=false;
+/* fracción hecha por cada uno hasta el día t */
+function parts(t){const ra=1/v.a,rb=1/v.b;
+  if(k==='jun'){const T=1/(ra+rb),tt=Math.min(t,T);return{A:ra*tt,B:rb*tt,T};}
+  const tj=Math.min(v.j,1/(ra+rb)),done=(ra+rb)*tj,T=tj+(1-done)/ra,tt=Math.min(t,T);
+  return{A:ra*tt,B:rb*Math.min(tt,tj),T,tj};}
+function draw(){
+  const P=parts(t),T=P.T,tm=Math.max(T,1)*1.15;
+  $('#fm').textContent=k==='jun'?'1/T = 1/'+v.a+' + 1/'+v.b+' → T = '+n(T)+' días':'Juntos '+n(P.tj)+' días, luego solo A: T = '+n(T)+' días';
+  const c=$('#ob'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);const x0=30*s,W=w-60*s,y=70*s,bh=56*s;geo={x0,W,tm,w};
+  g.fillStyle=cv('--sunk');g.fillRect(x0,y,W,bh);g.strokeStyle=cv('--line-2');g.lineWidth=1.5*s;g.strokeRect(x0,y,W,bh);
+  g.fillStyle=cv('--c1');g.fillRect(x0,y,W*P.A,bh);g.fillStyle=cv('--c2');g.fillRect(x0+W*P.A,y,W*P.B,bh);
+  g.fillStyle=cv('--ink');g.font='600 '+(14*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='left';g.fillText('La obra (100%)',x0,y-14*s);
+  g.textAlign='right';g.font='500 '+(14*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillText(n((P.A+P.B)*100,1)+'% hecha',x0+W,y-14*s);
+  /* línea de tiempo */
+  const ty=y+bh+50*s;g.strokeStyle=cv('--line-2');g.lineWidth=3*s;g.beginPath();g.moveTo(x0,ty);g.lineTo(x0+W,ty);g.stroke();
+  g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillStyle=cv('--muted');
+  const st=[0.5,1,2,5,10].find(q=>tm/q<=12)||10;for(let d=0;d<=tm;d+=st)g.fillText(n(d,1),x0+W*d/tm,ty+20*s);
+  g.fillStyle=cv('--ok');g.fillRect(x0+W*T/tm-1.5*s,ty-14*s,3*s,28*s);g.fillText('fin',x0+W*T/tm,ty-20*s);
+  if(k==='ret'){g.fillStyle=cv('--c2');g.fillRect(x0+W*P.tj/tm-1.5*s,ty-10*s,3*s,20*s);}
+  g.fillStyle=cv('--accent');g.globalAlpha=drag?0.4:0.2;g.beginPath();g.arc(x0+W*Math.min(t,tm)/tm,ty,18*s,0,7);g.fill();g.globalAlpha=1;g.beginPath();g.arc(x0+W*Math.min(t,tm)/tm,ty,8*s,0,7);g.fill();
+  g.fillStyle=cv('--ink');g.textAlign='left';g.font='500 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.fillText('día '+n(t,1),Math.min(x0+W*Math.min(t,tm)/tm+12*s,x0+W-60*s),ty-14*s);
+  const legend=[['--c1','A: '+n(P.A*100,1)+'%'],['--c2','B: '+n(P.B*100,1)+'%']];legend.forEach(([col,tx],i)=>{g.fillStyle=cv(col);g.fillRect(x0+i*170*s,y+bh+12*s,12*s,12*s);g.fillStyle=cv('--ink');g.fillText(tx,x0+i*170*s+18*s,y+bh+23*s);});
+  $('#ro').innerHTML=(k==='jun'?'A hace 1/'+v.a+' por día y B 1/'+v.b+'. Juntos: '+n(1/v.a+1/v.b,4)+' de obra por día, así que terminan en <b>'+n(T)+' días</b>.':
+    'Trabajan juntos '+n(P.tj)+(P.tj===1?' día':' días')+' y hacen '+n((1/v.a+1/v.b)*P.tj*100,1)+'%. Luego A, solo, completa el resto. Total: <b>'+n(T)+' días</b>.')+' En el día '+n(t,1)+' van '+n((P.A+P.B)*100,1)+'%: A hizo '+n(P.A*100,1)+'% y B '+n(P.B*100,1)+'%.';
+}
+function set(kk){k=kk;const base=[{id:'a',label:'A solo tarda',min:2,max:30,step:1,val:6,fmt:x=>x+' días',hint:'En un día hace 1/a de la obra.'},{id:'b',label:'B solo tarda',min:2,max:30,step:1,val:3,fmt:x=>x+' días',hint:'El más rápido aporta más.'}];
+  v=controls($('#ctl'),k==='jun'?base:base.concat([{id:'j',label:'Días juntos antes de que B se vaya',min:0,max:10,step:0.5,val:1,fmt:x=>nf(x,1)+' días',hint:'Después de eso, A trabaja solo.'}]),vv=>{v=vv;draw();});t=1;draw();}
+seg($('#kSeg'),set);set('jun');onRedraw(draw);
+const ob=$('#ob');
+function pick(e){const r=ob.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w;t=Math.max(0,Math.min(geo.tm,Math.round((px-geo.x0)/geo.W*geo.tm*10)/10));draw();}
+ob.addEventListener('pointerdown',e=>{drag=true;ob.classList.add('drag');ob.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+ob.addEventListener('pointermove',e=>{if(drag)pick(e);});
+for(const tt of['pointerup','pointercancel','lostpointercapture'])ob.addEventListener(tt,()=>{drag=false;ob.classList.remove('drag');draw();});
+ob.addEventListener('keydown',e=>{const d={ArrowRight:0.1,ArrowLeft:-0.1}[e.key];if(!d)return;e.preventDefault();t=Math.max(0,Math.min(geo.tm,Math.round((t+d*(e.shiftKey?10:1))*10)/10));draw();});
+lessonNav('obras');
+})();
+</script>
+</body>
+</html>

@@ -313,7 +313,7 @@ function lessonNav(id){
         [t.bloque,...bloques.filter(x=>x!==t.bloque)].map(b=>{
           /* solo el bloque de esta lección se abre; los demás son una fila que lleva al mapa */
           if(b!==t.bloque){const r=all.filter(x=>x.bloque===b),l=r.filter(x=>x.estado==='lista').length;
-            return '<a class="lk blk" href="'+mapUrl+'#b-'+b.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-')+'"><span class="dot">'+icon('right')+'</span><span>'+b+'<small>'+(l?l+' de '+r.length+' listas':r.length+' temas · muy pronto')+'</small></span></a>';}
+            return '<a class="lk blk" href="'+mapUrl+'#b-'+b.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-')+'"><span class="dot">'+icon('right')+'</span><span>'+b+'<small>'+(l?l+' de '+r.length+' listas':r.length+' temas · muy pronto')+'</small></span></a>';}
           n=0;return '<h3>'+b+'</h3>'+all.filter(x=>x.bloque===b).map(x=>{n++;
           if(x.estado!=='lista')return '<div class="lk soon"><span class="dot">'+n+'</span><span>'+x.titulo+'<small>Muy pronto</small></span></div>';
           const ok=progress.isDone(x.id);
@@ -345,7 +345,7 @@ const paintSides=[];
 function drawMap(host,mat){
   const name=id=>(TEMAS.find(t=>t.id===id)||{}).titulo||id;
   const temas=TEMAS.filter(t=>t.materia===mat),bloques=[...new Set(temas.map(t=>t.bloque))];
-  const slug=b=>'b-'+b.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-');
+  const slug=b=>'b-'+b.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-');
   const count=b=>{const r=temas.filter(t=>t.bloque===b),l=r.filter(t=>t.estado==='lista');return [l.length,r.length,l.filter(t=>progress.isDone(t.id)).length];};
   host.innerHTML='<nav class="blocks" aria-label="Bloques">'+bloques.map(b=>{const[c,n]=count(b);return '<a href="#'+slug(b)+'">'+b+'<small>'+c+' de '+n+'</small></a>';}).join('')+'</nav>'+
   bloques.map(b=>{const tb=temas.filter(t=>t.bloque===b),pasos=[...new Set(tb.map(t=>t.paso))].sort((a,c)=>a-c),[c,n,d]=count(b);

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Productos notables · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#pn{touch-action:none;cursor:grab;border-radius:12px}
+#pn.drag{cursor:grabbing}
+table.f{width:100%;border-collapse:collapse;margin:16px 0;font-size:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table.f td{padding:10px 16px;border-bottom:1px solid var(--line);font-family:var(--mono)}
+table.f td:last-child{font-family:var(--body);font-size:14px;color:var(--muted)}
+table.f tr:last-child td{border-bottom:0}
+</style>
+</head>
+<body data-base="../../" data-nav="matematica">
+<main>
+<div class="crumb"><a href="../index.html">Matemática</a><span>Álgebra · Paso 0</span></div>
+<h1>Productos notables</h1>
+<p class="lede">Hay multiplicaciones que salen tanto que vale la pena saberlas de memoria. Y todas se pueden ver como áreas.</p>
+
+<div class="card">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el producto">
+    <button data-k="sum" aria-pressed="true">(a + b)²</button><button data-k="res" aria-pressed="false">(a − b)²</button><button data-k="dif" aria-pressed="false">(a + b)(a − b)</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="pn" data-w="660" data-h="360" tabindex="0" aria-label="Modelo de áreas del producto notable; arrastra para mover el corte entre a y b"></canvas>
+  <p class="cap"><b>Arrastra sobre el cuadrado</b> para cambiar dónde termina a y empieza b.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Los que más se usan</h2>
+<table class="f"><tbody>
+  <tr><td>(a + b)² = a² + 2ab + b²</td><td>Binomio al cuadrado: no olvides el doble producto.</td></tr>
+  <tr><td>(a − b)² = a² − 2ab + b²</td><td>Igual, con el doble producto restando.</td></tr>
+  <tr><td>(a + b)(a − b) = a² − b²</td><td>Suma por diferencia: los términos del medio se cancelan.</td></tr>
+  <tr><td>(x + m)(x + n) = x² + (m + n)x + mn</td><td>Producto de binomios con término común. Al revés, es el aspa simple.</td></tr>
+  <tr><td>(a + b)³ = a³ + 3a²b + 3ab² + b³</td><td>Binomio al cubo.</td></tr>
+</tbody></table>
+<div class="key" data-idea><b class="fx">(a + b)² = a² + 2ab + b²</b>Legendre: (a + b)² + (a − b)² = 2(a² + b²) y (a + b)² − (a − b)² = 4ab.</div>
+
+<h2>Para qué sirven</h2>
+<p>Sirven para calcular rápido (99² = (100 − 1)² = 10000 − 200 + 1 = 9801) y, sobre todo, para <a href="factorizacion.html">factorizar</a>: si reconoces un producto notable “desarrollado”, lo puedes volver a juntar. Por ejemplo, (a + b)⁴ − (a − b)⁴ es una diferencia de cuadrados: [(a + b)² + (a − b)²][(a + b)² − (a − b)²] = 2(a² + b²) · 4ab = 8ab(a² + b²).</p>
+<p>Otro truco de concurso: si te dan a + b y ab, sacas a² + b² sin hallar a y b: a² + b² = (a + b)² − 2ab.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="(a + b)² = a² + 2ab + b² con a = x y b = 5.">
+  <p>¿Cuánto es (x + 5)²?</p>
+  <label><input type="radio" name="q1" value="a"> x² + 25</label>
+  <label><input type="radio" name="q1" value="b"> x² + 10x + 25</label>
+  <label><input type="radio" name="q1" value="c"> x² + 5x + 25</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! El doble producto es 2 · x · 5 = 10x. Olvidarlo es el error más común.</template>
+</div>
+<div class="q" data-ans="a" data-hint="a² + b² = (a + b)² − 2ab.">
+  <p>Si a + b = 7 y ab = 10, ¿cuánto vale a² + b²?</p>
+  <label><input type="radio" name="q2" value="a"> 29</label>
+  <label><input type="radio" name="q2" value="b"> 49</label>
+  <label><input type="radio" name="q2" value="c"> 39</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 7² − 2 · 10 = 49 − 20 = 29 (a y b son 5 y 2: 25 + 4 = 29).</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,prep,controls,seg,onRedraw,lessonNav}=Kit;
+let k='sum',v={a:6,b:3},geo=null,drag=false;
+function box(g,x,y,w,h,col,label,s,al){g.fillStyle=cv(col);g.globalAlpha=al||0.85;g.fillRect(x,y,w,h);g.globalAlpha=1;g.strokeStyle=cv('--card');g.lineWidth=2*s;g.strokeRect(x,y,w,h);
+  if(w>28*s&&h>20*s){g.fillStyle=cv('--on-accent');g.font='600 '+(14*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText(label,x+w/2,y+h/2+5*s);}}
+function draw(){
+  const a=v.a,b=k==='sum'?v.b:Math.min(v.b,a-1),c=$('#pn'),{x:g,w,h,s}=prep(c);g.clearRect(0,0,w,h);
+  const size=k==='sum'?a+b:a,U=(h-70*s)/size,x0=w/2-size*U/2-40*s,y0=36*s;geo={x0,y0,U,w,h};
+  g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';
+  if(k==='sum'){
+    box(g,x0,y0,a*U,a*U,'--c1','a² = '+a*a,s);box(g,x0+a*U,y0,b*U,a*U,'--c2','ab',s);box(g,x0,y0+a*U,a*U,b*U,'--c2','ab',s);box(g,x0+a*U,y0+a*U,b*U,b*U,'--c3','b²',s);
+    g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText('a = '+a,x0+a*U/2,y0-10*s);g.fillText('b = '+b,x0+(a+b/2)*U,y0-10*s);
+    $('#fm').textContent='('+a+' + '+b+')² = '+a*a+' + 2·'+a+'·'+b+' + '+b*b+' = '+(a+b)**2;
+    $('#ro').innerHTML='El cuadrado de lado '+(a+b)+' tiene área <b>'+(a+b)**2+'</b>: un cuadrado a² ('+a*a+'), <b>dos</b> rectángulos ab ('+a*b+' cada uno) y un cuadrado b² ('+b*b+'). Por eso (a + b)² no es a² + b²: faltarían los dos rectángulos.';}
+  else if(k==='res'){
+    box(g,x0,y0,(a-b)*U,(a-b)*U,'--c1','(a−b)²',s);box(g,x0+(a-b)*U,y0,b*U,a*U,'--c2','',s,0.45);box(g,x0,y0+(a-b)*U,a*U,b*U,'--c2','',s,0.45);box(g,x0+(a-b)*U,y0+(a-b)*U,b*U,b*U,'--c3','b²',s);
+    g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText('a = '+a,x0+a*U/2,y0-10*s);g.fillText('b',x0+(a-b/2)*U,y0+a*U+20*s);
+    $('#fm').textContent='('+a+' − '+b+')² = '+a*a+' − 2·'+a+'·'+b+' + '+b*b+' = '+(a-b)**2;
+    $('#ro').innerHTML='Al cuadrado a² ('+a*a+') le quitas las dos franjas naranjas de '+a+' × '+b+' (2ab = '+2*a*b+'). Pero el cuadradito verde b² estaba en las dos franjas: lo quitaste dos veces, así que lo devuelves una. Queda <b>'+(a-b)**2+'</b>, el cuadrado morado.';}
+  else{
+    box(g,x0,y0,a*U,a*U,'--c1','',s,0.85);g.fillStyle=cv('--card');g.fillRect(x0+(a-b)*U,y0+(a-b)*U,b*U,b*U);g.strokeStyle=cv('--c3');g.setLineDash([5*s,4*s]);g.lineWidth=2*s;g.strokeRect(x0+(a-b)*U,y0+(a-b)*U,b*U,b*U);g.setLineDash([]);
+    const rx=x0+a*U+50*s;box(g,rx,y0,(a+b)*U*0.6,(a-b)*U*0.6,'--c1','(a+b)(a−b)',s);
+    g.fillStyle=cv('--ink');g.font='500 '+(13*s).toFixed(1)+'px "JetBrains Mono", monospace';g.textAlign='center';g.fillText('a² − b²',x0+a*U/2,y0+a*U+22*s);g.fillText((a+b)+' × '+(a-b),rx+(a+b)*U*0.3,y0+(a-b)*U*0.6+22*s);
+    $('#fm').textContent='('+a+' + '+b+')('+a+' − '+b+') = '+a*a+' − '+b*b+' = '+(a*a-b*b);
+    $('#ro').innerHTML='Al cuadrado de lado '+a+' le quitas uno de lado '+b+': quedan <b>'+(a*a-b*b)+'</b>. Esa “L” se reacomoda en un rectángulo de '+(a+b)+' por '+(a-b)+' (lo viste en factorización): (a + b)(a − b) = a² − b².';}
+}
+function set(kk){k=kk;v=controls($('#ctl'),[
+  {id:'a',label:'a',min:2,max:10,step:1,val:6,fmt:x=>String(x),hint:''},
+  {id:'b',label:'b',min:1,max:9,step:1,val:3,fmt:x=>String(x),hint:k==='sum'?'':'Tiene que ser menor que a.'}],vv=>{v=vv;draw();});draw();}
+seg($('#kSeg'),set);set('sum');onRedraw(draw);
+/* arrastrar: mueve el corte entre a y b (a + b fijo en la suma) */
+const pn=$('#pn');
+function pick(e){const r=pn.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w,cut=Math.round((px-geo.x0)/geo.U),ins=$('#ctl').querySelectorAll('input');
+  if(k==='sum'){const tot=v.a+v.b,a=Math.max(2,Math.min(tot-1,cut));ins[0].value=a;ins[1].value=tot-a;}else{const b=Math.max(1,Math.min(v.a-1,v.a-cut));ins[1].value=b;}
+  ins[0].dispatchEvent(new Event('input',{bubbles:true}));ins[1].dispatchEvent(new Event('input',{bubbles:true}));}
+pn.addEventListener('pointerdown',e=>{drag=true;pn.classList.add('drag');pn.setPointerCapture(e.pointerId);pick(e);e.preventDefault();});
+pn.addEventListener('pointermove',e=>{if(drag)pick(e);});
+for(const t of['pointerup','pointercancel','lostpointercapture'])pn.addEventListener(t,()=>{drag=false;pn.classList.remove('drag');});
+lessonNav('productos');
+})();
+</script>
+</body>
+</html>
