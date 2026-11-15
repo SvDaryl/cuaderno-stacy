@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cantidad de movimiento y choques · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.play{margin:16px 2px 4px}
+#tk{touch-action:none;cursor:grab;border-radius:12px}
+#tk.drag{cursor:grabbing}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Dinámica · Paso 4</span></div>
+<h1>Cantidad de movimiento y choques</h1>
+<p class="lede">Cuando dos cosas chocan, una le pasa “movimiento” a la otra. La cantidad total de movimiento antes y después del choque es la misma.</p>
+
+<div class="card stage">
+  <div class="seg" id="kSeg" role="group" aria-label="Elige el tipo de choque">
+    <button data-k="el" aria-pressed="true">Choque elástico (rebotan)</button><button data-k="pl" aria-pressed="false">Choque plástico (se pegan)</button>
+  </div>
+  <p class="formula" id="fm"></p>
+  <canvas id="tk" data-w="660" data-h="170" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0" aria-label="Dos carritos sobre un riel que van a chocar; el carrito morado se arrastra para mover el tiempo"></canvas>
+  <p class="cap"><b>Arrastra el carrito morado</b> para avanzar o retroceder el tiempo, o dale a reproducir.</p>
+  <canvas id="gr" data-w="660" data-h="240" role="img" aria-label="Velocidad de cada carrito contra el tiempo"></canvas>
+  <div class="row play"><button class="btn ghost" type="button" id="play">Reproducir</button></div>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>La cantidad de movimiento</h2>
+<p>La <b>cantidad de movimiento</b> (o momento lineal) de un cuerpo es su masa por su velocidad: p = m · v, en kg·m/s. Es un vector: el signo dice hacia dónde va. Un camión lento puede tener más cantidad de movimiento que una bicicleta rápida.</p>
+<div class="key" data-idea><b class="fx">m₁v₁ + m₂v₂ = m₁v₁' + m₂v₂'</b>En un choque, la cantidad de movimiento total se conserva (si no hay fuerzas externas). Las comillas marcan las velocidades después del choque.</div>
+<p>Se conserva por la <a href="1-leyes-de-newton.html">tercera ley</a>: durante el choque, cada carrito empuja al otro con la misma fuerza en sentido contrario, por el mismo tiempo. Lo que uno gana, el otro lo pierde. Pasa igual cuando dos <button class="term" data-p="choques">patinadores se empujan</button>.</p>
+
+<h2>Elástico o plástico</h2>
+<p>En un choque <b>elástico</b> (bolas de billar) también se conserva la <a href="4-trabajo-y-energia.html">energía cinética</a>: rebotan. En un choque <b>plástico</b> (una bala que se incrusta en un bloque, dos autos que quedan enganchados) salen juntos con la misma velocidad y parte de la energía se pierde en deformar y calentar. Aun así, la cantidad de movimiento se conserva siempre.</p>
+<p style="font-family:var(--mono);font-size:18px">Plástico: v' = (m₁v₁ + m₂v₂) / (m₁ + m₂)</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Antes: 2 · 6 + 4 · 0. Después se mueven juntos con 6 kg.">
+  <p>Un carrito de 2 kg a 6 m/s choca con otro de 4 kg en reposo y se quedan pegados. ¿Con qué velocidad se mueven juntos?</p>
+  <label><input type="radio" name="q1" value="a"> 3 m/s</label>
+  <label><input type="radio" name="q1" value="b"> 2 m/s</label>
+  <label><input type="radio" name="q1" value="c"> 6 m/s</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! p = 2 · 6 = 12 kg·m/s antes; después 6 · v' = 12 → v' = 2 m/s.</template>
+</div>
+<div class="q" data-ans="c" data-hint="Antes la cantidad de movimiento total es 0. Después también: 50 · v + 40 · 2,5 = 0.">
+  <p>Dos patinadores quietos, de 50 kg y 40 kg, se empujan. Si el de 40 kg sale a 2,5 m/s, ¿qué velocidad tiene el de 50 kg?</p>
+  <label><input type="radio" name="q2" value="a"> 2,5 m/s en el mismo sentido</label>
+  <label><input type="radio" name="q2" value="b"> 3,1 m/s en sentido contrario</label>
+  <label><input type="radio" name="q2" value="c"> 2 m/s en sentido contrario</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: 50 · v = −40 · 2,5 = −100 → v = −2 m/s. Sale hacia el otro lado.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,$$,cv,nf,plot,prep,controls,seg,onRedraw,lessonNav,icon}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const TM=6,W=1.6,X10=0.5,X20=7.5,A0=-0.5,A1=14;
+let kind='el',playing=false,T=0,v={m1:2,m2:4,v1:4,v2:0,t:0},geo=null,drag=false;
+function sim(){
+  const{m1,m2,v1,v2}=v,tc=v1>v2?(X20-X10-W)/(v1-v2):Infinity;
+  let u1,u2;if(kind==='pl'){u1=u2=(m1*v1+m2*v2)/(m1+m2);}else{u1=((m1-m2)*v1+2*m2*v2)/(m1+m2);u2=((m2-m1)*v2+2*m1*v1)/(m1+m2);}
+  const x1=t=>t<tc?X10+v1*t:X10+v1*tc+u1*(t-tc),x2=t=>t<tc?X20+v2*t:X20+v2*tc+u2*(t-tc);
+  return{tc,u1,u2,x1,x2,V1:t=>t<tc?v1:u1,V2:t=>t<tc?v2:u2};
+}
+function cart(g,x,y,wpx,col,label,s){g.fillStyle=col;g.beginPath();g.roundRect?g.roundRect(x,y-34*s,wpx,30*s,5*s):g.rect(x,y-34*s,wpx,30*s);g.fill();
+  g.fillStyle=cv('--sc-tire');g.beginPath();g.arc(x+wpx*0.25,y-4*s,5*s,0,7);g.arc(x+wpx*0.75,y-4*s,5*s,0,7);g.fill();
+  g.fillStyle=cv('--on-accent');g.font='600 '+(12*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(label,x+wpx/2,y-14*s);}
+function draw(){
+  const S=sim(),Tr=Math.round(T*10)/10;
+  const p0=v.m1*v.v1+v.m2*v.v2,p1=v.m1*S.u1+v.m2*S.u2,e0=0.5*v.m1*v.v1**2+0.5*v.m2*v.v2**2,e1=0.5*v.m1*S.u1**2+0.5*v.m2*S.u2**2;
+  const pp=(x,d)=>x<0?'('+n(x,d)+')':n(x,d);
+  $('#fm').textContent='p antes = '+n(p0,2)+' kg·m/s    p después = '+n(p1,2)+' kg·m/s';
+  const c=$('#tk'),{x:g,w,h,s}=prep(c),L=20*s,R=w-20*s,PX=x=>L+(x-A0)/(A1-A0)*(R-L),ty=h*0.72;geo={PX,L,R,w};
+  g.clearRect(0,0,w,h);g.fillStyle=cv('--sunk');g.fillRect(0,ty,w,h-ty);g.fillStyle=cv('--line-2');g.fillRect(0,ty,w,3*s);
+  g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.textAlign='center';for(let m=0;m<=A1;m+=2)g.fillText(m+' m',PX(m),ty+22*s);
+  const wpx=PX(W)-PX(0);
+  if(drag){g.fillStyle=cv('--accent');g.globalAlpha=0.25;g.beginPath();g.ellipse(PX(S.x1(T))+wpx/2,ty-18*s,wpx*0.9,30*s,0,0,7);g.fill();g.globalAlpha=1;}
+  cart(g,PX(S.x1(T)),ty,wpx,cv('--c1'),v.m1+' kg',s);cart(g,PX(S.x2(T)),ty,wpx,cv('--c2'),v.m2+' kg',s);
+  if(T>=S.tc&&T<S.tc+0.25){g.fillStyle=cv('--c4');g.font='700 '+(16*s).toFixed(1)+'px Lexend, sans-serif';g.fillText('¡choque!',PX(S.x2(T)),ty-48*s);}
+  const lo=Math.min(v.v1,v.v2,S.u1,S.u2,0),hi=Math.max(v.v1,v.v2,S.u1,S.u2,1);
+  plot($('#gr'),{xr:[0,TM],yr:[Math.floor(lo)-1,Math.ceil(hi)+1],xs:1,ys:1,xl:'t (s)',yl:'v (m/s)',fns:[{f:S.V1,color:cv('--c1'),width:3,n:600},{f:S.V2,color:cv('--c2'),width:3,dash:kind==='pl'?[6,5]:null,n:600}],
+    vx:isFinite(S.tc)&&S.tc<TM?[{x:S.tc,color:cv('--muted')}]:[],pts:[{x:T,y:S.V1(T),color:cv('--c1')},{x:T,y:S.V2(T),color:cv('--c2')}]});
+  $('#ro').innerHTML=(isFinite(S.tc)?(T<S.tc?'Faltan <b>'+n(S.tc-T,2)+' s</b> para el choque. ':'Ya chocaron (en t = '+n(S.tc,2)+' s). '):'<b>No chocan</b>: el morado no alcanza al naranja. ')+
+    'Antes: '+v.m1+'·'+pp(v.v1,1)+' + '+v.m2+'·'+pp(v.v2,1)+' = <b>'+n(p0,2)+'</b>. Después: '+v.m1+'·'+pp(S.u1,2)+' + '+v.m2+'·'+pp(S.u2,2)+' = <b>'+n(p1,2)+'</b> kg·m/s: se conserva. '+
+    'Energía cinética: '+n(e0,1)+' J antes y '+n(e1,1)+' J después'+(kind==='pl'&&isFinite(S.tc)?' (se perdieron <b>'+n(e0-e1,1)+' J</b> al pegarse).':' (se conserva: choque elástico).');
+}
+const ctl=controls($('#ctl'),[
+  {id:'m1',label:'Masa morado (m₁)',min:1,max:10,step:1,val:2,fmt:a=>a+' kg',hint:'Prueba m₁ = m₂ en choque elástico: intercambian velocidades.'},
+  {id:'v1',label:'Velocidad morado (v₁)',min:0,max:6,step:0.5,val:4,fmt:a=>nf(a,1)+' m/s',hint:'Hacia la derecha.'},
+  {id:'m2',label:'Masa naranja (m₂)',min:1,max:10,step:1,val:4,fmt:a=>a+' kg',hint:'Un carrito muy pesado casi no se mueve; el liviano rebota.'},
+  {id:'v2',label:'Velocidad naranja (v₂)',min:-4,max:3,step:0.5,val:0,fmt:a=>nf(a,1)+' m/s',hint:'Negativa: viene hacia el morado.'},
+  {id:'t',label:'Tiempo (t)',min:0,max:TM,step:0.1,val:0,fmt:a=>nf(a,1)+' s',hint:'O arrastra el carrito morado.'}
+],vv=>{v=vv;T=vv.t;if(playing)stop();draw();});
+v=ctl;T=ctl.t;
+const tIn=$$('#ctl input')[4],tOut=$$('#ctl output')[4],btn=$('#play');
+let raf=0,last=0;
+function setT(t){T=Math.max(0,Math.min(TM,t));const r=Math.round(T*10)/10;v.t=r;tIn.value=r;tOut.textContent=nf(r,1)+' s';$('#tk').setAttribute('aria-valuenow',r);}
+function stop(){cancelAnimationFrame(raf);raf=0;playing=false;$('#ro').setAttribute('aria-live','polite');setT(Math.round(T*10)/10);T=v.t;btn.innerHTML=T>=TM?icon('again')+'Otra vez':icon('play')+'Reproducir';draw();}
+function step(now){const dt=Math.min(0.1,(now-last)/1000);last=now;setT(T+dt);draw();if(T>=TM){stop();return;}raf=requestAnimationFrame(step);}
+btn.addEventListener('click',()=>{if(playing){stop();return;}if(T>=TM)setT(0);playing=true;$('#ro').setAttribute('aria-live','off');btn.innerHTML=icon('pause')+'Pausa';last=performance.now();raf=requestAnimationFrame(step);});
+btn.innerHTML=icon('play')+'Reproducir';
+if(reduce)$('.play').hidden=true;
+/* arrastrar el carrito morado: busca el instante en que estuvo ahí (el más cercano al tiempo actual) */
+const tk=$('#tk');
+function tFrom(e){const r=tk.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w,pos=A0+(px-geo.L)/(geo.R-geo.L)*(A1-A0)-W/2,S=sim();
+  let best=T,bd=1e9;for(let i=0;i<=600;i++){const t=i/100,d=Math.abs(S.x1(t)-pos)+Math.abs(t-T)*0.05;if(d<bd){bd=d;best=t;}}return best;}
+tk.addEventListener('pointerdown',e=>{if(playing)stop();drag=true;tk.classList.add('drag');tk.setPointerCapture(e.pointerId);T=tFrom(e);setT(T);draw();e.preventDefault();});
+tk.addEventListener('pointermove',e=>{if(!drag)return;T=tFrom(e);setT(T);draw();});
+for(const k of['pointerup','pointercancel','lostpointercapture'])tk.addEventListener(k,()=>{if(!drag)return;drag=false;tk.classList.remove('drag');T=v.t;draw();});
+tk.addEventListener('keydown',e=>{const d={ArrowRight:0.1,ArrowLeft:-0.1}[e.key];if(!d)return;e.preventDefault();if(playing)stop();setT(T+d*(e.shiftKey?10:1));T=v.t;draw();});
+seg($('#kSeg'),k=>{kind=k;draw();});
+onRedraw(draw);
+lessonNav('choques');
+})();
+</script>
+</body>
+</html>

@@ -165,6 +165,49 @@ const PANELS={
     draw(v,c,r){const R=0.35,rpm=x=>x/3.6/R*60/(2*Math.PI),w=v.v/3.6/R;
       plot(c,{xr:[0,40],yr:[0,350],xs:5,ys:50,xl:'km/h',yl:'rpm',fns:[{f:rpm,color:cv('--c1')}],pts:[{x:v.v,y:rpm(v.v),color:cv('--c2'),label:nf(rpm(v.v),0)+' rpm'}]});
       r.innerHTML=v.v+' km/h = '+nf(v.v/3.6,2)+' m/s. ω = v / r = '+nf(w,1)+' rad/s, o sea <b>'+nf(w/(2*Math.PI),2)+' vueltas por segundo = '+nf(rpm(v.v),0)+' rpm</b>.';}},
+  newton:{title:'Segunda ley: empujar un carrito del súper',uses:['Carritos y coches','Ascensores','Cohetes'],
+    intro:'El mismo empujón no hace lo mismo con un carrito vacío que con uno lleno. La aceleración es la fuerza dividida entre la masa: a = F / m.',
+    ctl:[{id:'F',label:'Tu empuje',min:20,max:150,step:5,val:60,fmt:v=>v+' N',hint:'Fuerza neta (sin contar el roce).'},
+         {id:'m',label:'Carrito + compras',min:10,max:60,step:5,val:20,fmt:v=>v+' kg',hint:'Más compras, más masa.'}],
+    draw(v,c,r){const a=v.F/v.m;
+      plot(c,{xr:[0,150],yr:[0,16],xs:25,ys:2,xl:'F (N)',yl:'a (m/s²)',fns:[{f:x=>x/v.m,color:cv('--c1')}],pts:[{x:v.F,y:a,color:cv('--c2'),label:nf(a,2)+' m/s²'}]});
+      r.innerHTML='a = '+v.F+' / '+v.m+' = <b>'+nf(a,2)+' m/s²</b>. Con el carrito el doble de pesado, el mismo empujón da la mitad: '+nf(a/2,2)+' m/s².';}},
+  rozamiento:{title:'Rozamiento: frenar en pista seca o mojada',uses:['Seguridad vial','Llantas y zapatillas','Pistas de hielo'],
+    intro:'Un auto que frena sin derrapar se detiene gracias al rozamiento: su desaceleración es μ · g. Con lluvia μ baja y la distancia de frenado sube mucho.',
+    ctl:[{id:'v',label:'Velocidad',min:30,max:120,step:5,val:60,fmt:v=>v+' km/h',hint:'La distancia crece con el cuadrado de la velocidad.'},
+         {id:'u',label:'Coeficiente μ',min:0.1,max:0.9,step:0.05,val:0.7,fmt:v=>nf(v,2),hint:'Asfalto seco ≈ 0,7 · mojado ≈ 0,4 · hielo ≈ 0,1.'}],
+    draw(v,c,r){const d=x=>(x/3.6)**2/(2*v.u*9.8);
+      plot(c,{xr:[0,130],yr:[0,Math.max(60,Math.ceil(d(130)/50)*50)],xs:10,xl:'km/h',yl:'m',fns:[{f:d,color:cv('--c2')}],pts:[{x:v.v,y:d(v.v),color:cv('--c1'),label:nf(d(v.v),1)+' m'}]});
+      r.innerHTML='A '+v.v+' km/h = '+nf(v.v/3.6,1)+' m/s, con μ = '+nf(v.u,2)+' frena en d = v² / (2 · μ · g) = <b>'+nf(d(v.v),1)+' m</b> (sin contar el tiempo de reacción).';}},
+  momento:{title:'Momento de una fuerza: la llave de un perno',uses:['Llaves y alicates','Puertas y manijas','Sube y baja'],
+    intro:'Para aflojar un perno importa la fuerza y también a qué distancia del perno empujas. El giro que logras es el momento: M = F · d.',
+    ctl:[{id:'F',label:'Fuerza',min:20,max:200,step:10,val:80,fmt:v=>v+' N',hint:'Empujando perpendicular a la llave.'},
+         {id:'d',label:'Largo de la llave',min:0.1,max:0.5,step:0.05,val:0.25,fmt:v=>nf(v*100,0)+' cm',hint:'Una llave más larga multiplica el efecto.'}],
+    draw(v,c,r){plot(c,{xr:[0,0.5],yr:[0,100],xs:0.1,ys:20,xl:'d (m)',yl:'M (N·m)',fns:[{f:x=>v.F*x,color:cv('--c1')}],pts:[{x:v.d,y:v.F*v.d,color:cv('--c2'),label:nf(v.F*v.d,1)+' N·m'}]});
+      r.innerHTML='M = '+v.F+' · '+nf(v.d,2)+' = <b>'+nf(v.F*v.d,1)+' N·m</b>. Para lograr lo mismo con una llave de 50 cm bastarían '+nf(v.F*v.d/0.5,0)+' N.';}},
+  energia:{title:'Trabajo y potencia: subir las escaleras',uses:['Escaleras y ascensores','Motores','Gimnasio'],
+    intro:'Subir un piso cuesta un trabajo W = m · g · h, sin importar si vas lento o rápido. Lo que cambia es la potencia: el trabajo dividido entre el tiempo.',
+    ctl:[{id:'m',label:'Tu masa',min:40,max:80,step:5,val:55,fmt:v=>v+' kg',hint:''},
+         {id:'p',label:'Pisos',min:1,max:5,step:1,val:2,fmt:v=>v+' (de 3 m)',hint:'Cada piso mide unos 3 m.'},
+         {id:'t',label:'Tiempo',min:10,max:120,step:5,val:30,fmt:v=>v+' s',hint:'Corriendo o caminando.'}],
+    draw(v,c,r){const W=v.m*9.8*3*v.p,P=t=>W/t;
+      plot(c,{xr:[0,120],yr:[0,Math.ceil(P(10)/100)*100],xs:20,xl:'t (s)',yl:'P (W)',fns:[{f:P,color:cv('--c1'),from:5}],pts:[{x:v.t,y:P(v.t),color:cv('--c2'),label:nf(P(v.t),0)+' W'}]});
+      r.innerHTML='Trabajo: '+v.m+' · 9,8 · '+3*v.p+' = <b>'+nf(W,0)+' J</b>. En '+v.t+' s, potencia = <b>'+nf(P(v.t),0)+' W</b>, como '+nf(P(v.t)/10,0)+' focos LED de 10 W.';}},
+  choques:{title:'Cantidad de movimiento: patinadores que se empujan',uses:['Patinaje y skate','Cohetes','Botes y remos'],
+    intro:'Dos patinadores quietos se empujan. Antes la cantidad de movimiento total era cero, así que después también: salen en sentidos opuestos, y el más liviano más rápido.',
+    ctl:[{id:'m1',label:'Patinador 1',min:30,max:90,step:5,val:60,fmt:v=>v+' kg',hint:''},
+         {id:'m2',label:'Patinador 2',min:30,max:90,step:5,val:45,fmt:v=>v+' kg',hint:''},
+         {id:'v2',label:'Velocidad del 2',min:0.5,max:4,step:0.5,val:2,fmt:v=>nf(v,1)+' m/s',hint:'Hacia la derecha.'}],
+    draw(v,c,r){const v1=x=>v.m2*v.v2/x;
+      plot(c,{xr:[30,90],yr:[0,Math.ceil(v1(30))+1],xs:10,ys:1,xl:'masa del 1 (kg)',yl:'v₁ (m/s)',fns:[{f:v1,color:cv('--c1')}],pts:[{x:v.m1,y:v1(v.m1),color:cv('--c2'),label:nf(v1(v.m1),2)+' m/s'}]});
+      r.innerHTML='0 = '+v.m1+' · v₁ + '+v.m2+' · '+nf(v.v2,1)+' → v₁ = <b>−'+nf(v1(v.m1),2)+' m/s</b>: el patinador 1 sale hacia la izquierda.';}},
+  gravedad:{title:'Gravitación: tu peso en otros mundos',uses:['Misiones espaciales','Astronautas','Satélites'],
+    intro:'Tu masa es la misma en todas partes, pero tu peso (m · g) depende de la gravedad del lugar. En la Luna pesarías como un niño pequeño en la Tierra.',
+    ctl:[{id:'m',label:'Tu masa',min:30,max:100,step:5,val:55,fmt:v=>v+' kg',hint:''},
+         {id:'p',label:'Lugar',min:0,max:5,step:1,val:1,fmt:i=>['Luna','Marte','Venus','Tierra','Saturno','Júpiter'][i],hint:'g: Luna 1,62 · Marte 3,71 · Venus 8,87 · Tierra 9,8 · Saturno 10,4 · Júpiter 24,8 m/s².'}],
+    draw(v,c,r){const gs=[1.62,3.71,8.87,9.8,10.4,24.8],nm=['la Luna','Marte','Venus','la Tierra','Saturno','Júpiter'],g=gs[v.p];
+      plot(c,{xr:[0,100],yr:[0,2500],xs:10,ys:500,xl:'masa (kg)',yl:'peso (N)',fns:[{f:x=>x*9.8,color:cv('--muted'),dash:[6,5],width:2},{f:x=>x*g,color:cv('--c1')}],pts:[{x:v.m,y:v.m*g,color:cv('--c2'),label:nf(v.m*g,0)+' N'}]});
+      r.innerHTML='En '+nm[v.p]+' (g = '+nf(g,2)+' m/s²) tu peso es '+v.m+' · '+nf(g,2)+' = <b>'+nf(v.m*g,0)+' N</b>; en la Tierra, '+nf(v.m*9.8,0)+' N. La línea punteada es la Tierra.';}},
   lineal:{title:'Función lineal: el precio de un taxi',uses:['Taxis y apps de viaje','Planes de celular','Recibo de luz'],
     intro:'Un taxi cobra un monto fijo al subir (la b) y un precio por cada kilómetro (la m, o pendiente). El total es y = m·x + b. Cada kilómetro suma lo mismo, por eso la gráfica es una recta.',
     ctl:[{id:'b',label:'Al subir (b)',min:0,max:10,step:0.5,val:4,fmt:v=>'S/ '+nf(v),hint:'Sube o baja la recta.'},

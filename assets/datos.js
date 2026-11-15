@@ -29,7 +29,10 @@ window.TEMAS = [
   { id:'divisibilidad',materia:'matematica', bloque:'Aritmética', paso:2, titulo:'Divisibilidad y paridad',    resumen:'Cuándo un número divide a otro, pares e impares.', antes:['reales'], estado:'pronto' },
   { id:'primos',       materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Divisores y números primos', resumen:'Descomposición en primos y cuántos divisores tiene un número.', antes:['divisibilidad'], estado:'pronto' },
   { id:'bases',        materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Numeración en otras bases',  resumen:'Escribir números en base 2, 5 o 12, y volver a base 10.', antes:['potencias'], estado:'pronto' },
-  { id:'mezclas',      materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Promedios y mezclas',        resumen:'Precio medio de una mezcla y promedio ponderado.', antes:['reales'], estado:'pronto' },
+  { id:'porcentajes',  materia:'matematica', bloque:'Aritmética', paso:2, titulo:'Tanto por ciento',           resumen:'Aumentos, descuentos sucesivos, ganancia y pérdida.', antes:['reales'], estado:'pronto' },
+  { id:'proporcionalidad',materia:'matematica',bloque:'Aritmética', paso:2, titulo:'Magnitudes proporcionales y regla de tres', resumen:'Directa, inversa y compuesta.', antes:['reales'], estado:'pronto' },
+  { id:'obras',        materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Problemas de obras',          resumen:'Cuánto avanza cada uno por día cuando trabajan juntos.', antes:['proporcionalidad'], estado:'pronto' },
+  { id:'mezclas',      materia:'matematica', bloque:'Aritmética', paso:3, titulo:'Promedios y mezclas',        resumen:'Precio medio, promedio ponderado y porcentaje de pureza.', antes:['reales'], estado:'pronto' },
   { id:'conteo',       materia:'matematica', bloque:'Aritmética', paso:4, titulo:'Conteo y combinaciones',     resumen:'Principio de multiplicación, permutaciones y combinaciones.', antes:['potencias'], estado:'pronto' },
   { id:'probabilidad', materia:'matematica', bloque:'Aritmética', paso:5, titulo:'Probabilidad',               resumen:'Casos favorables entre casos posibles, y "al menos uno".', antes:['conteo'], estado:'pronto' },
   /* --- Lógica --- */
@@ -49,9 +52,14 @@ window.TEMAS = [
   { id:'derivadas',    materia:'matematica', bloque:'Funciones', paso:7, titulo:'Derivadas',                 resumen:'La pendiente en cada punto: qué tan rápido cambia.', antes:['limites'], estado:'pronto' },
   { id:'optimizacion', materia:'matematica', bloque:'Funciones', paso:8, titulo:'Máximos y mínimos',         resumen:'Usar la derivada para encontrar la caja más grande.', antes:['derivadas'], estado:'pronto' },
   /* --- Álgebra --- */
+  { id:'ecuaciones',   materia:'matematica', bloque:'Álgebra',   paso:0, titulo:'Ecuaciones lineales',        resumen:'Despejar x, también cuando hay letras como a o b.', antes:[], estado:'pronto' },
+  { id:'productos',    materia:'matematica', bloque:'Álgebra',   paso:0, titulo:'Productos notables',         resumen:'(a + b)², (a + b)(a − b) y sus parientes.', antes:['potencias'], estado:'pronto' },
+  { id:'factorizacion',materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Factorización',              resumen:'Factor común, diferencia de cuadrados, aspa simple y más.', antes:['productos'], estado:'pronto' },
+  { id:'ecuadratica',  materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Ecuación cuadrática',        resumen:'Raíces, discriminante, suma y producto de raíces.', antes:['factorizacion','ecuaciones'], estado:'pronto' },
   { id:'absoluto',     materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Valor absoluto',            resumen:'La distancia al cero y sus ecuaciones.', antes:['intervalos'], estado:'pronto' },
-  { id:'inecuaciones', materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Inecuaciones',              resumen:'Lineales, cuadráticas, racionales y con valor absoluto.', antes:['absoluto','polinomicas'], estado:'pronto' },
-  { id:'proglineal',   materia:'matematica', bloque:'Álgebra',   paso:3, titulo:'Programación lineal',       resumen:'La mejor decisión dentro de una región de restricciones.', antes:['inecuaciones','recta'], estado:'pronto' },
+  { id:'inecuaciones', materia:'matematica', bloque:'Álgebra',   paso:3, titulo:'Inecuaciones',              resumen:'Lineales, cuadráticas, racionales y con valor absoluto.', antes:['absoluto','polinomicas','ecuadratica'], estado:'pronto' },
+  { id:'proglineal',   materia:'matematica', bloque:'Álgebra',   paso:4, titulo:'Programación lineal',       resumen:'La mejor decisión dentro de una región de restricciones.', antes:['inecuaciones','recta'], estado:'pronto' },
+  { id:'progresiones', materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Progresiones aritméticas y geométricas', resumen:'Sumar o multiplicar siempre lo mismo.', antes:['sucesiones'], estado:'pronto' },
   { id:'sucesiones',   materia:'matematica', bloque:'Álgebra',   paso:1, titulo:'Sucesiones',                resumen:'Listas de números con una regla, y hacia dónde van.', antes:['funcion'], estado:'pronto' },
   { id:'complejos',    materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Números complejos',         resumen:'La unidad i, el plano complejo y el módulo.', antes:['reales','potencias'], estado:'pronto' },
   { id:'matrices',     materia:'matematica', bloque:'Álgebra',   paso:2, titulo:'Matrices y determinantes',  resumen:'Tablas de números que se suman y se multiplican.', antes:['reales'], estado:'pronto' },
@@ -88,12 +96,12 @@ window.TEMAS = [
   { id:'caida',        materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Caída libre',              resumen:'El MRUV de todo lo que cae.', antes:['mruv'], estado:'lista', url:'fisica/cinematica/3-caida-libre.html', fecha:'2026-11-11' },
   { id:'circular',     materia:'fisica', bloque:'Cinemática', paso:3, titulo:'Movimiento circular',      resumen:'Velocidad angular y aceleración centrípeta.', antes:['mruv','vectores'], estado:'lista', url:'fisica/cinematica/4-movimiento-circular.html', fecha:'2026-11-11' },
   /* --- Dinámica --- */
-  { id:'newton',       materia:'fisica', bloque:'Dinámica', paso:1, titulo:'Leyes de Newton',          resumen:'Fuerza, masa y aceleración: F = m · a.', antes:['mruv','vectores'], estado:'pronto' },
-  { id:'rozamiento',   materia:'fisica', bloque:'Dinámica', paso:2, titulo:'Rozamiento',               resumen:'La fuerza que se opone a deslizar.', antes:['newton'], estado:'pronto' },
-  { id:'estatica',     materia:'fisica', bloque:'Dinámica', paso:2, titulo:'Estática y equilibrio',    resumen:'Cuándo un cuerpo no se mueve: fuerzas que se anulan.', antes:['newton'], estado:'pronto' },
-  { id:'trabajo',      materia:'fisica', bloque:'Dinámica', paso:3, titulo:'Trabajo y energía',        resumen:'Energía cinética, potencial y su conservación.', antes:['newton'], estado:'pronto' },
-  { id:'choques',      materia:'fisica', bloque:'Dinámica', paso:4, titulo:'Cantidad de movimiento y choques', resumen:'Lo que se conserva cuando dos cuerpos chocan.', antes:['trabajo'], estado:'pronto' },
-  { id:'gravitacion',  materia:'fisica', bloque:'Dinámica', paso:4, titulo:'Gravitación',              resumen:'La atracción entre masas y la gravedad a cierta altura.', antes:['newton','circular'], estado:'pronto' },
+  { id:'newton',       materia:'fisica', bloque:'Dinámica', paso:1, titulo:'Leyes de Newton',          resumen:'Fuerza, masa y aceleración: F = m · a.', antes:['mruv','vectores'], estado:'lista', url:'fisica/dinamica/1-leyes-de-newton.html', fecha:'2026-11-14' },
+  { id:'rozamiento',   materia:'fisica', bloque:'Dinámica', paso:2, titulo:'Rozamiento',               resumen:'La fuerza que se opone a deslizar.', antes:['newton'], estado:'lista', url:'fisica/dinamica/2-rozamiento.html', fecha:'2026-11-14' },
+  { id:'estatica',     materia:'fisica', bloque:'Dinámica', paso:2, titulo:'Estática y equilibrio',    resumen:'Cuándo un cuerpo no se mueve: fuerzas que se anulan.', antes:['newton'], estado:'lista', url:'fisica/dinamica/3-estatica.html', fecha:'2026-11-14' },
+  { id:'trabajo',      materia:'fisica', bloque:'Dinámica', paso:3, titulo:'Trabajo y energía',        resumen:'Energía cinética, potencial y su conservación.', antes:['newton'], estado:'lista', url:'fisica/dinamica/4-trabajo-y-energia.html', fecha:'2026-11-14' },
+  { id:'choques',      materia:'fisica', bloque:'Dinámica', paso:4, titulo:'Cantidad de movimiento y choques', resumen:'Lo que se conserva cuando dos cuerpos chocan.', antes:['trabajo'], estado:'lista', url:'fisica/dinamica/5-choques.html', fecha:'2026-11-14' },
+  { id:'gravitacion',  materia:'fisica', bloque:'Dinámica', paso:4, titulo:'Gravitación',              resumen:'La atracción entre masas y la gravedad a cierta altura.', antes:['newton','circular'], estado:'lista', url:'fisica/dinamica/6-gravitacion.html', fecha:'2026-11-14' },
   /* --- Oscilaciones, fluidos y calor --- */
   { id:'mas',          materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:1, titulo:'Movimiento armónico simple', resumen:'Un resorte que sube y baja: amplitud y periodo.', antes:['trabajo','funtrig'], estado:'pronto' },
   { id:'ondas',        materia:'fisica', bloque:'Oscilaciones, fluidos y calor', paso:2, titulo:'Ondas',            resumen:'Longitud de onda, frecuencia y rapidez.', antes:['mas'], estado:'pronto' },
@@ -149,6 +157,12 @@ window.EJEMPLOS = [
   { panel:'vectores',    titulo:'Un avión con viento de costado', tema:'vectores' },
   { panel:'mruv',        titulo:'Frenar a tiempo',        tema:'mruv' },
   { panel:'circular',    titulo:'La rueda de tu bicicleta', tema:'circular' },
+  { panel:'newton',      titulo:'Empujar un carrito del súper', tema:'newton' },
+  { panel:'rozamiento',  titulo:'Frenar en pista mojada', tema:'rozamiento' },
+  { panel:'momento',     titulo:'La llave de un perno', tema:'estatica' },
+  { panel:'energia',     titulo:'Subir las escaleras', tema:'trabajo' },
+  { panel:'choques',     titulo:'Patinadores que se empujan', tema:'choques' },
+  { panel:'gravedad',    titulo:'Tu peso en otros mundos', tema:'gravitacion' },
   { panel:'cuadratica',  titulo:'El camino de un balón',  tema:'polinomicas' },
   { panel:'cubica',      titulo:'La caja más grande',     tema:'polinomicas' },
   { panel:'exponencial', titulo:'Un chisme en WhatsApp',  tema:'trascendentes' },
@@ -159,5 +173,7 @@ window.EJEMPLOS = [
 
 window.EXAMENES = [
   { id:'funciones-1', titulo:'Funciones · Examen 1', desc:'Función, dominio y rango, clasificación. 8 preguntas.', url:'examenes/funciones-1.html' },
-  { id:'fisica-1',    titulo:'Física · Examen 1',    desc:'Bases y cinemática: unidades, vectores, MRU, MRUV, caída libre y circular. 8 preguntas.', url:'examenes/fisica-1.html' }
+  { id:'omasur-practica', titulo:'Práctica tipo OMASUR', desc:'20 problemas como los del concurso OMASUR-UNI (3.º de secundaria): porcentajes, obras, álgebra, funciones, matrices y geometría.', url:'examenes/omasur-practica.html' },
+  { id:'fisica-1',    titulo:'Física · Examen 1',    desc:'Bases y cinemática: unidades, vectores, MRU, MRUV, caída libre y circular. 8 preguntas.', url:'examenes/fisica-1.html' },
+  { id:'fisica-2',    titulo:'Física · Examen 2',    desc:'Dinámica: Newton, rozamiento, equilibrio, energía, choques y gravitación. 8 preguntas.', url:'examenes/fisica-2.html' }
 ];

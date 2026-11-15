@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estática y equilibrio · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#sb{touch-action:none;cursor:grab;border-radius:12px}
+#sb.drag{cursor:grabbing}
+.steps{font-family:var(--mono);font-size:16px;line-height:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Dinámica · Paso 2</span></div>
+<h1>Estática y equilibrio</h1>
+<p class="lede">Un sube y baja queda quieto cuando los dos lados “giran” igual de fuerte. No basta con pesar lo mismo: importa a qué distancia te sientas.</p>
+
+<div class="card">
+  <p class="formula" id="fm"></p>
+  <canvas id="sb" data-w="660" data-h="260" tabindex="0" aria-label="Sube y baja con dos personas que se pueden arrastrar a lo largo de la tabla"></canvas>
+  <p class="cap"><b>Arrastra a cada persona</b> sobre la tabla para cambiar su distancia al apoyo. Busca que la tabla quede horizontal.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Las dos condiciones del equilibrio</h2>
+<p><b>1.ª condición:</b> la fuerza neta es cero (ΣF = 0). Lo que empuja hacia arriba compensa lo que jala hacia abajo, y lo mismo a los lados. Es la <a href="1-leyes-de-newton.html">primera ley de Newton</a> con el cuerpo quieto.</p>
+<p><b>2.ª condición:</b> el momento neto es cero (ΣM = 0). El <b>momento</b> (o torque) mide qué tan fuerte una fuerza hace girar algo: fuerza por distancia al punto de giro. Por eso una <button class="term" data-p="momento">llave larga</button> afloja un perno con menos esfuerzo.</p>
+<div class="key" data-idea><b class="fx">M = F · d</b>d es la distancia perpendicular desde el punto de giro hasta la línea de la fuerza. En equilibrio, los momentos horarios igualan a los antihorarios.</div>
+
+<h2>Ejemplo: una lámpara colgada</h2>
+<p>Una lámpara de 50 N cuelga de dos cuerdas que forman 37° y 53° con el techo. Las componentes horizontales se anulan y las verticales suman 50 N (cos 37° ≈ 0,8 · sen 37° ≈ 0,6):</p>
+<div class="steps">Horizontal: T₁ · cos 37° = T₂ · cos 53° → 0,8 T₁ = 0,6 T₂ → T₂ = 4T₁/3<br>Vertical: T₁ · 0,6 + T₂ · 0,8 = 50 → 0,6 T₁ + 1,07 T₁ = 50<br>T₁ = 30 N y T₂ = 40 N</div>
+<p>Fíjate que 30, 40 y 50 forman el triángulo 3–4–5: las tres fuerzas, puestas cola con punta, cierran un triángulo. Es la suma de <a href="../bases/3-vectores.html">vectores</a> dando cero.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="Iguala los momentos: m₁ · d₁ = m₂ · d₂ (la g se cancela).">
+  <p>Ana (40 kg) se sienta a 1,5 m del centro de un sube y baja. ¿A qué distancia del centro debe sentarse Beto (60 kg) para equilibrarlo?</p>
+  <label><input type="radio" name="q1" value="a"> 1,5 m</label>
+  <label><input type="radio" name="q1" value="b"> 2,25 m</label>
+  <label><input type="radio" name="q1" value="c"> 1 m</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! 40 · 1,5 = 60 · d → d = 60 / 60 = 1 m. El más pesado va más cerca.</template>
+</div>
+<div class="q" data-ans="a" data-hint="M = F · d, con d en metros.">
+  <p>Aprietas un perno con una llave de 25 cm, empujando con 40 N perpendicular a la llave. ¿Qué momento haces?</p>
+  <label><input type="radio" name="q2" value="a"> 10 N·m</label>
+  <label><input type="radio" name="q2" value="b"> 1000 N·m</label>
+  <label><input type="radio" name="q2" value="c"> 160 N·m</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: M = 40 · 0,25 = 10 N·m. Con una llave del doble de largo, la mitad de fuerza bastaría.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const G=9.8,LEN=3;
+let v={m1:40,m2:60},d1=1.5,d2=1.5,geo=null,drag=null;
+function person(g,x,y,mass,col,s,label){const r=(15+mass/8)*s;g.fillStyle=col;g.beginPath();g.arc(x,y-r-14*s-r*0.9,r*0.55,0,7);g.fill();
+  g.beginPath();g.roundRect?g.roundRect(x-r*0.8,y-r*1.8,r*1.6,r*1.8,6*s):g.rect(x-r*0.8,y-r*1.8,r*1.6,r*1.8);g.fill();
+  g.fillStyle=cv('--on-accent');g.font='600 '+(12*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(mass+' kg',x,y-r*0.7);
+  g.fillStyle=col;g.fillText(label,x,y+18*s);return r;}
+function draw(){
+  const t1=v.m1*G*d1,t2=v.m2*G*d2,net=t2-t1,ang=Math.max(-14,Math.min(14,net/40))*Math.PI/180;
+  $('#fm').textContent='M₁ = m₁·g·d₁ = '+n(t1,0)+' N·m    M₂ = m₂·g·d₂ = '+n(t2,0)+' N·m';
+  const c=$('#sb'),{x:g,w,h,s}=prep(c),px=w/2,py=h*0.62,U=(w*0.42)/LEN;geo={px,py,U,w,h,ang};
+  g.clearRect(0,0,w,h);
+  g.fillStyle=cv('--sunk');g.fillRect(0,h*0.86,w,h*0.14);
+  g.fillStyle=cv('--muted');g.beginPath();g.moveTo(px,py);g.lineTo(px-26*s,h*0.86);g.lineTo(px+26*s,h*0.86);g.closePath();g.fill();
+  g.save();g.translate(px,py);g.rotate(ang);
+  g.fillStyle=cv('--c4');g.fillRect(-LEN*U-10*s,-6*s,2*LEN*U+20*s,12*s);
+  g.fillStyle=cv('--card');for(let m=-LEN;m<=LEN;m+=0.5){g.fillRect(m*U-1*s,-6*s,2*s,m%1===0?12*s:6*s);}
+  g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--muted');g.textAlign='center';
+  for(let m=1;m<=LEN;m++){g.fillText(m+' m',-m*U,22*s);g.fillText(m+' m',m*U,22*s);}
+  /* personas: se dibujan rectas aunque la tabla se incline */
+  const p1=-d1*U,p2=d2*U;
+  for(const [x,mass,col,lb,id] of [[p1,v.m1,cv('--c1'),'1',1],[p2,v.m2,cv('--c2'),'2',2]]){
+    g.save();g.translate(x,-6*s);g.rotate(-ang);
+    if(drag===id){g.fillStyle=col;g.globalAlpha=0.25;g.beginPath();g.arc(0,-30*s,40*s,0,7);g.fill();g.globalAlpha=1;}
+    person(g,0,0,mass,col,s,'');g.restore();}
+  g.restore();
+  const eq=Math.abs(net)<1e-6;
+  $('#ro').innerHTML=(eq?'<b>¡Equilibrio!</b> Los dos momentos valen '+n(t1,0)+' N·m: la tabla queda horizontal. ':
+    'M₁ = '+v.m1+' · 9,8 · '+n(d1,2)+' y M₂ = '+v.m2+' · 9,8 · '+n(d2,2)+'. Gana el lado '+(net>0?'derecho':'izquierdo')+' por <b>'+n(Math.abs(net),0)+' N·m</b>: la tabla gira hacia ese lado. ')+
+    'Para equilibrar con '+n(d1,2)+' m a la izquierda, la persona 2 debería estar a <b>'+n(v.m1*d1/v.m2,2)+' m</b> (m₁·d₁ = m₂·d₂).';
+}
+const ctl=controls($('#ctl'),[
+  {id:'m1',label:'Persona 1 (izquierda)',min:20,max:80,step:5,val:40,fmt:a=>a+' kg',hint:'Masa de quien se sienta a la izquierda.'},
+  {id:'m2',label:'Persona 2 (derecha)',min:20,max:80,step:5,val:60,fmt:a=>a+' kg',hint:'El más pesado tiene que sentarse más cerca del apoyo.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+/* arrastrar: la persona del lado tocado se mueve a lo largo de la tabla, en pasos de 0,25 m */
+const sb=$('#sb');
+function setD(e){const r=sb.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*geo.w,dd=Math.round(Math.abs(x-geo.px)/geo.U/Math.cos(geo.ang)*4)/4,dc=Math.max(0.25,Math.min(LEN,dd));
+  if(drag===1)d1=dc;else d2=dc;draw();}
+sb.addEventListener('pointerdown',e=>{const r=sb.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*geo.w;drag=x<geo.px?1:2;sb.classList.add('drag');sb.setPointerCapture(e.pointerId);setD(e);e.preventDefault();});
+sb.addEventListener('pointermove',e=>{if(drag)setD(e);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])sb.addEventListener(k,()=>{if(!drag)return;drag=null;sb.classList.remove('drag');draw();});
+sb.addEventListener('keydown',e=>{const dd={ArrowRight:0.25,ArrowLeft:-0.25}[e.key];if(!dd)return;e.preventDefault();if(e.shiftKey)d1=Math.max(0.25,Math.min(LEN,d1+dd));else d2=Math.max(0.25,Math.min(LEN,d2+dd));draw();});
+onRedraw(draw);
+lessonNav('estatica');
+})();
+</script>
+</body>
+</html>

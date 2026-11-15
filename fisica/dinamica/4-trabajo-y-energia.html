@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trabajo y energía · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.duo{display:grid;grid-template-columns:7fr 3fr;gap:18px;align-items:start}
+#rp{touch-action:none;cursor:grab;border-radius:12px}
+#rp.drag{cursor:grabbing}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.cols div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px;line-height:1.5}
+.cols b{display:block;font-family:var(--mono);font-weight:500;font-size:17px;margin-bottom:4px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Dinámica · Paso 3</span></div>
+<h1>Trabajo y energía</h1>
+<p class="lede">En una rampa de skate la energía no se pierde: cambia de forma. Arriba es altura; abajo, velocidad.</p>
+
+<div class="card">
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="rp" data-w="460" data-h="320" tabindex="0" aria-label="Rampa en forma de U con una skater que se puede arrastrar por la rampa"></canvas>
+    <canvas id="bars" data-w="200" data-h="320" role="img" aria-label="Barras de energía potencial, cinética y total"></canvas>
+  </div>
+  <p class="cap"><b>Arrastra a la skater</b> por la rampa. La línea punteada es la altura desde donde la soltaste: sin rozamiento nunca pasa de ahí.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Trabajo y potencia</h2>
+<p>Una fuerza hace <b>trabajo</b> cuando mueve algo en su dirección: W = F · d · cos θ, donde θ es el ángulo entre la fuerza y el desplazamiento. Se mide en joules (1 J = 1 N · m). Si empujas una pared y no se mueve, no hay trabajo. La <b>potencia</b> es qué tan rápido haces ese trabajo: P = W / t, en watts. Subir las <button class="term" data-p="energia">escaleras del colegio</button> corriendo cuesta el mismo trabajo, pero más potencia.</p>
+
+<h2>Las formas de la energía</h2>
+<div class="cols">
+  <div><b>E<sub>c</sub> = ½ · m · v²</b>Energía cinética: la que tiene algo por moverse. El doble de rapidez da cuatro veces más.</div>
+  <div><b>E<sub>p</sub> = m · g · h</b>Energía potencial gravitatoria: la que tiene por estar a una altura h.</div>
+  <div><b>E = E<sub>c</sub> + E<sub>p</sub></b>Energía mecánica: la suma. Sin rozamiento, se conserva.</div>
+</div>
+<div class="key" data-idea><b class="fx">½mv² + mgh = constante</b>Sin rozamiento, la energía mecánica se conserva. Si cae desde una altura h, llega abajo con v = √(2gh), sin importar la forma de la rampa.</div>
+<p>Con rozamiento, parte de la energía se convierte en calor, y la skater ya no vuelve a subir hasta la misma altura. El trabajo del rozamiento es justo esa energía que “desaparece” de la suma.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="b" data-hint="Energía potencial = m · g · h.">
+  <p>Una pelota de 2 kg está en un estante a 5 m del suelo (g = 10 m/s²). ¿Cuánta energía potencial tiene respecto al suelo?</p>
+  <label><input type="radio" name="q1" value="a"> 10 J</label>
+  <label><input type="radio" name="q1" value="b"> 100 J</label>
+  <label><input type="radio" name="q1" value="c"> 50 J</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! E = 2 · 10 · 5 = 100 J.</template>
+</div>
+<div class="q" data-ans="a" data-hint="Toda la energía potencial se vuelve cinética: v = √(2gh).">
+  <p>Una skater parte del reposo desde 5 m de altura en una rampa sin rozamiento (g = 10 m/s²). ¿Con qué rapidez pasa por el punto más bajo?</p>
+  <label><input type="radio" name="q2" value="a"> 10 m/s</label>
+  <label><input type="radio" name="q2" value="b"> 50 m/s</label>
+  <label><input type="radio" name="q2" value="c"> 7 m/s</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: v = √(2 · 10 · 5) = √100 = 10 m/s. Y no depende de su masa.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=1)=>nf(Math.abs(a)<1e-9?0:a,d).replace(/,0+$/,'').replace(/^-0$/,'0');
+const G=9.8,XM=5,HM=10;
+const H=x=>HM*(x/XM)*(x/XM);           /* rampa en U: 10 m de alto en los bordes */
+let v={m:50,h0:8},X=-Math.sqrt(8/HM)*XM,geo=null,drag=false;
+const xLim=()=>Math.sqrt(v.h0/HM)*XM;
+function draw(){
+  X=Math.max(-xLim(),Math.min(xLim(),X));
+  const h=H(X),ep=v.m*G*h,et=v.m*G*v.h0,ec=Math.max(0,et-ep),vel=Math.sqrt(Math.max(0,2*G*(v.h0-h)));
+  $('#fm').textContent='½·'+v.m+'·'+n(vel,2)+'² + '+v.m+'·9,8·'+n(h,2)+' = '+n(ec,0)+' + '+n(ep,0)+' = '+n(et,0)+' J';
+  const c=$('#rp'),{x:g,w,h:hh,s}=prep(c),L=30*s,R=w-30*s,T=24*s,B=hh-30*s,PX=x=>L+(x+XM)/(2*XM)*(R-L),PY=y=>B-y/HM*(B-T);geo={PX,L,R,w,XM};
+  g.clearRect(0,0,w,hh);
+  g.fillStyle=cv('--sc-sky');g.fillRect(0,0,w,hh);
+  /* rampa */
+  g.beginPath();g.moveTo(PX(-XM),PY(HM));for(let i=0;i<=100;i++){const x=-XM+2*XM*i/100;g.lineTo(PX(x),PY(H(x)));}g.lineTo(PX(XM),hh);g.lineTo(PX(-XM),hh);g.closePath();
+  g.fillStyle=cv('--sc-road');g.fill();
+  g.strokeStyle=cv('--line-2');g.lineWidth=1*s;g.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';g.fillStyle=cv('--ink');g.textAlign='left';
+  for(let y=0;y<=HM;y+=2){g.globalAlpha=0.5;g.fillText(y+' m',4*s,PY(y)+4*s);g.globalAlpha=1;}
+  /* altura de salida */
+  g.strokeStyle=cv('--c4');g.setLineDash([6*s,5*s]);g.lineWidth=2*s;g.beginPath();g.moveTo(PX(-xLim()),PY(v.h0));g.lineTo(PX(xLim()),PY(v.h0));g.stroke();g.setLineDash([]);
+  /* skater: tabla tangente a la rampa y una figura simple */
+  const px=PX(X),py=PY(h),sl=Math.atan(-(2*HM*X/(XM*XM))*(B-T)/HM/((R-L)/(2*XM)));
+  g.save();g.translate(px,py);g.rotate(sl);
+  if(drag){g.fillStyle=cv('--accent');g.globalAlpha=0.3;g.beginPath();g.arc(0,-22*s,30*s,0,7);g.fill();g.globalAlpha=1;}
+  g.fillStyle=cv('--ink');g.fillRect(-16*s,-5*s,32*s,4*s);g.beginPath();g.arc(-10*s,-1*s,2.5*s,0,7);g.arc(10*s,-1*s,2.5*s,0,7);g.fill();
+  g.restore();
+  /* el cuerpo va siempre de pie (la gravedad apunta hacia abajo), sobre la tabla */
+  const kx=px-Math.sin(sl)*6*s,ky=py-Math.cos(sl)*6*s;
+  g.fillStyle=cv('--sc-car');g.fillRect(kx-6*s,ky-26*s,12*s,24*s);g.beginPath();g.arc(kx,ky-33*s,7*s,0,7);g.fill();
+  /* barras de energía */
+  const b=$('#bars'),{x:q,w:bw,h:bh,s:bs}=prep(b),top=v.m*G*HM,BH=bh-50*bs,bx=[bw*0.18,bw*0.5,bw*0.82],cw=bw*0.22;
+  q.clearRect(0,0,bw,bh);
+  [[ep,'--c1','Ep'],[ec,'--c2','Ec'],[et,'--c3','Total']].forEach(([val,col,lb],i)=>{const hh2=val/top*BH;
+    q.fillStyle=cv('--sunk');q.fillRect(bx[i]-cw/2,bh-30*bs-BH,cw,BH);q.fillStyle=cv(col);q.fillRect(bx[i]-cw/2,bh-30*bs-hh2,cw,hh2);
+    q.fillStyle=cv('--ink');q.font='600 '+(12*bs).toFixed(1)+'px Lexend, sans-serif';q.textAlign='center';q.fillText(lb,bx[i],bh-12*bs);
+    q.font=(11*bs).toFixed(1)+'px "JetBrains Mono", monospace';q.fillText(n(val/1000,1)+' kJ',bx[i],bh-36*bs-hh2);});
+  $('#ro').innerHTML='Está a <b>'+n(h,2)+' m</b> de altura y va a <b>'+n(vel,2)+' m/s</b> ('+n(vel*3.6,0)+' km/h). '+
+    'Energía potencial '+n(ep,0)+' J + cinética '+n(ec,0)+' J = <b>'+n(et,0)+' J</b>, siempre lo mismo. '+(h<0.05?'En el fondo toda la energía es cinética: va lo más rápido posible.':v.h0-h<0.05?'Aquí se detiene un instante: toda la energía es potencial.':'');
+}
+const ctl=controls($('#ctl'),[
+  {id:'m',label:'Masa (m)',min:30,max:80,step:5,val:50,fmt:a=>a+' kg',hint:'Cambia la energía, pero no la rapidez: m se cancela en ½mv² = mgh.'},
+  {id:'h0',label:'Altura de salida (h₀)',min:1,max:10,step:0.5,val:8,fmt:a=>nf(a,1)+' m',hint:'Desde dónde la sueltas, quieta. Fija la energía total.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+const rp=$('#rp');
+function setX(e){const r=rp.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w;X=-XM+(px-geo.L)/(geo.R-geo.L)*2*XM;draw();}
+rp.addEventListener('pointerdown',e=>{drag=true;rp.classList.add('drag');rp.setPointerCapture(e.pointerId);setX(e);e.preventDefault();});
+rp.addEventListener('pointermove',e=>{if(drag)setX(e);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])rp.addEventListener(k,()=>{if(!drag)return;drag=false;rp.classList.remove('drag');draw();});
+rp.addEventListener('keydown',e=>{const d={ArrowRight:0.1,ArrowLeft:-0.1}[e.key];if(!d)return;e.preventDefault();X+=d*(e.shiftKey?5:1);draw();});
+onRedraw(draw);
+lessonNav('trabajo');
+})();
+</script>
+</body>
+</html>

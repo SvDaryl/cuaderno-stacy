@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rozamiento · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+#fb{touch-action:none;cursor:grab;border-radius:12px}
+#fb.drag{cursor:grabbing}
+.lg{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin:8px 2px 0}
+.lg i{display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:3px}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Dinámica · Paso 2</span></div>
+<h1>Rozamiento</h1>
+<p class="lede">Empujas una caja y no se mueve… hasta que empujas más. El piso la sujeta con una fuerza que crece contigo, pero tiene un límite.</p>
+
+<div class="card stage">
+  <p class="formula" id="fm"></p>
+  <div class="duo">
+    <canvas id="fb" data-w="400" data-h="320" tabindex="0" aria-label="Caja sobre el piso con las fuerzas: empuje, rozamiento, peso y normal; el empuje se arrastra"></canvas>
+    <canvas id="gr" data-w="400" data-h="320" role="img" aria-label="Gráfica de la fuerza de rozamiento contra la fuerza con que empujas"></canvas>
+  </div>
+  <div class="lg"><span><i style="background:var(--c1)"></i>tu empuje F</span><span><i style="background:var(--c2)"></i>rozamiento</span><span><i style="background:var(--muted)"></i>peso</span><span><i style="background:var(--c3)"></i>normal</span></div>
+  <p class="cap"><b>Arrastra la punta de la flecha morada</b> para empujar más o menos fuerte, y mira cuándo la caja empieza a deslizar.</p>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>Dos rozamientos</h2>
+<p>Mientras la caja <b>no se mueve</b>, el rozamiento es <b>estático</b>: vale exactamente lo que empujas, para anular tu fuerza. Pero tiene un máximo: f<sub>s máx</sub> = μ<sub>s</sub> · N. Si empujas más que eso, la caja arranca.</p>
+<p>Cuando la caja <b>ya desliza</b>, el rozamiento es <b>cinético</b> y vale f<sub>k</sub> = μ<sub>k</sub> · N, casi siempre un poco menos que el máximo estático. Por eso cuesta más arrancar algo que mantenerlo en movimiento: en la gráfica se ve el salto hacia abajo.</p>
+<div class="key" data-idea><b class="fx">f = μ · N</b>μ (mu) es el coeficiente de rozamiento: depende de los materiales, no tiene unidades. En un piso horizontal sin otras fuerzas verticales, N = m · g.</div>
+<p>Con la caja deslizando, la <a href="1-leyes-de-newton.html">segunda ley</a> dice: m · a = F − f<sub>k</sub>. El rozamiento también es lo que frena a un auto: con la pista mojada μ baja y la <button class="term" data-p="rozamiento">distancia de frenado</button> se dispara.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="a" data-hint="La caja no se mueve mientras F ≤ μₛ · m · g.">
+  <p>Una caja de 10 kg está en un piso con μₛ = 0,5 (usa g = 10 m/s²). ¿Cuál es la fuerza horizontal máxima que puedes hacer sin que se mueva?</p>
+  <label><input type="radio" name="q1" value="a"> 50 N</label>
+  <label><input type="radio" name="q1" value="b"> 5 N</label>
+  <label><input type="radio" name="q1" value="c"> 100 N</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! N = 10 · 10 = 100 N, y f máx = 0,5 · 100 = 50 N.</template>
+</div>
+<div class="q" data-ans="b" data-hint="Rozamiento cinético: μₖ · m · g. Luego a = (F − f) / m.">
+  <p>Arrastras una caja de 5 kg con 20 N; el rozamiento cinético es μₖ = 0,2 (g = 10 m/s²). ¿Qué aceleración tiene?</p>
+  <label><input type="radio" name="q2" value="a"> 4 m/s²</label>
+  <label><input type="radio" name="q2" value="b"> 2 m/s²</label>
+  <label><input type="radio" name="q2" value="c"> 0,4 m/s²</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: f = 0,2 · 5 · 10 = 10 N, y a = (20 − 10) / 5 = 2 m/s².</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const G=9.8;
+let v={m:10,us:0.5,uk:0.3},F=30,geo=null,drag=false;
+const N=()=>v.m*G,fs=()=>v.us*N(),fk=()=>Math.min(v.uk,v.us)*N(),FM=()=>Math.max(80,Math.ceil(fs()*1.6/20)*20);
+const fr=f=>f<=fs()?f:fk();
+function arrow(g,x0,y0,x1,y1,col,w,s){g.strokeStyle=col;g.fillStyle=col;g.lineWidth=w*s;g.lineCap='round';g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();
+  const a=Math.atan2(y1-y0,x1-x0),L=11*s;if(Math.hypot(x1-x0,y1-y0)<L)return;g.beginPath();g.moveTo(x1,y1);g.lineTo(x1-L*Math.cos(a-0.45),y1-L*Math.sin(a-0.45));g.lineTo(x1-L*Math.cos(a+0.45),y1-L*Math.sin(a+0.45));g.closePath();g.fill();}
+function draw(){
+  const f=fr(F),moves=F>fs(),a=moves?(F-fk())/v.m:0;
+  $('#fm').textContent=moves?'a = (F − μₖ·N) / m = ('+n(F,0)+' − '+n(fk())+') / '+v.m+' = '+n(a,2)+' m/s²':'F = '+n(F,0)+' N ≤ μₛ·N = '+n(fs())+' N  →  no se mueve';
+  const c=$('#fb'),{x:g,w,h,s}=prep(c),fy=h*0.7,bw=90*s,bh=70*s,cx=w*0.45,k=(w*0.45-20*s)/FM();geo={cx,k,w,h,bw};
+  g.clearRect(0,0,w,h);
+  g.fillStyle=cv('--sunk');g.fillRect(0,fy,w,h-fy);g.strokeStyle=cv('--line-2');g.lineWidth=2*s;g.beginPath();g.moveTo(0,fy);g.lineTo(w,fy);g.stroke();
+  /* rayitas del piso: se corren si la caja desliza */
+  g.strokeStyle=cv('--line-2');for(let x=-20;x<w;x+=22*s){g.beginPath();g.moveTo(x,fy+10*s);g.lineTo(x+10*s,fy+4*s);g.stroke();}
+  g.fillStyle=cv('--c4');g.globalAlpha=0.85;g.fillRect(cx-bw/2,fy-bh,bw,bh);g.globalAlpha=1;g.strokeStyle=cv('--ink');g.lineWidth=1.5*s;g.strokeRect(cx-bw/2,fy-bh,bw,bh);
+  g.fillStyle=cv('--on-accent');g.font='600 '+(14*s).toFixed(1)+'px Lexend, sans-serif';g.textAlign='center';g.fillText(v.m+' kg',cx,fy-bh/2+5*s);
+  const my=fy-bh/2,pk=0.6*s;
+  arrow(g,cx,fy-bh,cx,fy-bh-Math.min(90*s,N()*pk*0.6),cv('--c3'),3,s);
+  arrow(g,cx,fy,cx,fy+Math.min(60*s,N()*pk*0.4),cv('--muted'),3,s);
+  const xF=cx+bw/2+F*k;arrow(g,cx+bw/2,my,xF,my,cv('--c1'),5,s);
+  if(f>0)arrow(g,cx-bw/2,fy-6*s,cx-bw/2-f*k,fy-6*s,cv('--c2'),5,s);
+  g.fillStyle=cv('--c1');g.globalAlpha=drag?0.4:0.2;g.beginPath();g.arc(xF,my,18*s,0,7);g.fill();g.globalAlpha=1;g.beginPath();g.arc(xF,my,8*s,0,7);g.fill();
+  g.font='600 '+(13*s).toFixed(1)+'px Lexend, sans-serif';g.fillStyle=cv('--c1');g.textAlign='left';g.fillText('F = '+n(F,0)+' N',Math.min(xF,w-80*s)-10*s,my-22*s);
+  g.fillStyle=cv('--c2');g.textAlign='right';g.fillText('f = '+n(f)+' N',cx-bw/2-6*s,fy-20*s);
+  if(moves){g.fillStyle=cv('--ok');g.textAlign='center';g.fillText('¡desliza!  a = '+n(a,2)+' m/s²',cx,fy-bh-24*s);}
+  plot($('#gr'),{xr:[0,FM()],yr:[0,FM()],xs:FM()/8,ys:FM()/8,xl:'F (N)',yl:'f (N)',fns:[{f:x=>x,from:0,to:fs(),color:cv('--c2'),width:3},{f:()=>fk(),from:fs(),to:FM(),color:cv('--c2'),width:3},{f:x=>x,color:cv('--line-2'),dash:[5,5],width:1.5}],
+    vx:[{x:fs(),color:cv('--muted')}],pts:[{x:F,y:f,color:cv('--c1'),label:moves?'cinético':'estático'}]});
+  $('#ro').innerHTML='Normal N = m·g = <b>'+n(N())+' N</b>. El piso aguanta hasta <b>'+n(fs())+' N</b> sin que la caja se mueva. '+
+    (moves?'Empujas '+n(F,0)+' N: la caja <b>desliza</b> y el rozamiento baja a μₖ·N = '+n(fk())+' N. Sobra '+n(F-fk())+' N, que la acelera a '+n(a,2)+' m/s².':
+    'Empujas '+n(F,0)+' N y el rozamiento estático responde con lo mismo, '+n(f)+' N: <b>no se mueve</b>. Te faltan '+n(fs()-F)+' N para que arranque.');
+}
+const ctl=controls($('#ctl'),[
+  {id:'m',label:'Masa (m)',min:2,max:30,step:1,val:10,fmt:a=>a+' kg',hint:'Más masa, más normal y más rozamiento.'},
+  {id:'us',label:'μ estático (μₛ)',min:0.1,max:1,step:0.05,val:0.5,fmt:a=>nf(a,2),hint:'Qué tan difícil es arrancarla. Goma sobre asfalto: ~0,8. Hielo: ~0,1.'},
+  {id:'uk',label:'μ cinético (μₖ)',min:0.05,max:1,step:0.05,val:0.3,fmt:a=>nf(a,2),hint:'Rozamiento mientras ya desliza. Casi siempre menor que μₛ.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+const fb=$('#fb');
+function setF(e){const r=fb.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w;F=Math.max(0,Math.min(FM(),Math.round((px-geo.cx-geo.bw/2)/geo.k)));draw();}
+fb.addEventListener('pointerdown',e=>{drag=true;fb.classList.add('drag');fb.setPointerCapture(e.pointerId);setF(e);e.preventDefault();});
+fb.addEventListener('pointermove',e=>{if(drag)setF(e);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])fb.addEventListener(k,()=>{if(!drag)return;drag=false;fb.classList.remove('drag');draw();});
+fb.addEventListener('keydown',e=>{const d={ArrowRight:1,ArrowUp:1,ArrowLeft:-1,ArrowDown:-1}[e.key];if(!d)return;e.preventDefault();F=Math.max(0,Math.min(FM(),F+d*(e.shiftKey?10:1)));draw();});
+onRedraw(draw);
+lessonNav('rozamiento');
+})();
+</script>
+</body>
+</html>

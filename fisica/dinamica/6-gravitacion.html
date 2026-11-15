@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gravitación · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/estilo.css">
+<style>
+#sp{touch-action:none;cursor:grab;border-radius:12px}
+#sp.drag{cursor:grabbing}
+</style>
+</head>
+<body data-base="../../" data-nav="fisica">
+<main>
+<div class="crumb"><a href="../index.html">Física</a><span>Dinámica · Paso 4</span></div>
+<h1>Gravitación</h1>
+<p class="lede">La misma fuerza que te mantiene en el piso sostiene a la Luna en su órbita. Y se debilita rápido cuando te alejas.</p>
+
+<div class="card">
+  <p class="formula" id="fm"></p>
+  <canvas id="sp" data-w="660" data-h="230" tabindex="0" aria-label="La Tierra y una nave a cierta altura; la nave se arrastra para alejarla o acercarla"></canvas>
+  <p class="cap"><b>Arrastra la nave</b> para alejarla o acercarla a la Tierra. La flecha naranja es la fuerza de gravedad sobre ella.</p>
+  <canvas id="gr" data-w="660" data-h="240" role="img" aria-label="Gravedad contra la altura sobre la superficie"></canvas>
+  <div id="ctl"></div>
+  <div class="readout" id="ro" aria-live="polite"></div>
+</div>
+
+<h2>La ley de gravitación universal</h2>
+<p>Newton descubrió que <b>dos masas cualquiera se atraen</b>. La fuerza crece con las masas y disminuye con el <b>cuadrado</b> de la distancia entre sus centros:</p>
+<div class="key" data-idea><b class="fx">F = G · m₁ · m₂ / d²</b>G = 6,67 × 10⁻¹¹ N·m²/kg². Si la distancia se duplica, la fuerza se divide entre 4; si se triplica, entre 9.</div>
+<p>G es tan pequeña que entre dos personas la fuerza no se nota; con la masa de un planeta, sí. Por eso tu <button class="term" data-p="gravedad">peso cambia en otros planetas</button>, aunque tu masa sea la misma.</p>
+
+<h2>La gravedad a cierta altura</h2>
+<p>Si m₂ es una nave y m₁ = M es la Tierra, la aceleración de la gravedad a una altura h sobre la superficie es:</p>
+<p style="font-family:var(--mono);font-size:19px">g = G · M / (R + h)²</p>
+<p>con M = 5,97 × 10²⁴ kg y R = 6370 km (el radio de la Tierra). En la superficie sale g ≈ 9,8 m/s². Ojo: la distancia se mide <b>desde el centro</b> de la Tierra, por eso se suma R. Las <a href="../bases/1-magnitudes.html">unidades</a> importan: los km se pasan a metros antes de calcular.</p>
+<p>Un satélite en órbita está cayendo todo el tiempo hacia la Tierra, pero va tan rápido de costado que nunca llega: es un <a href="../cinematica/4-movimiento-circular.html">movimiento circular</a> donde la gravedad hace de fuerza centrípeta.</p>
+
+<h2>Pruébate</h2>
+<div class="q" data-ans="c" data-hint="A esa altura, la distancia al centro es R + R = 2R.">
+  <p>Una nave sube hasta una altura igual al radio de la Tierra (h = R). ¿Cuánto vale ahí la gravedad comparada con la de la superficie?</p>
+  <label><input type="radio" name="q1" value="a"> La mitad</label>
+  <label><input type="radio" name="q1" value="b"> La misma</label>
+  <label><input type="radio" name="q1" value="c"> La cuarta parte</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>¡Sí! La distancia al centro se duplica (2R) y la gravedad se divide entre 2² = 4: unos 2,45 m/s².</template>
+</div>
+<div class="q" data-ans="a" data-hint="La fuerza va con 1 / d².">
+  <p>Si la distancia entre dos masas se triplica, la fuerza de atracción entre ellas…</p>
+  <label><input type="radio" name="q2" value="a"> se divide entre 9</label>
+  <label><input type="radio" name="q2" value="b"> se divide entre 3</label>
+  <label><input type="radio" name="q2" value="c"> se multiplica por 9</label>
+  <div class="row"><button class="btn" type="button">Comprobar</button><span class="fb" aria-live="polite"></span></div>
+  <template>Correcto: F va con 1 / d², y 1 / 3² = 1/9.</template>
+</div>
+
+<nav class="lessonnav" id="lessonnav" aria-label="Lecciones"></nav>
+</main>
+<script src="../../assets/datos.js"></script>
+<script src="../../assets/kit.js"></script>
+<script>
+(function(){
+const {$,cv,nf,plot,prep,controls,onRedraw,lessonNav}=Kit;
+const n=(a,d=1)=>nf(a,d).replace(/,0+$/,'');
+const G=6.67e-11,M=5.97e24,R=6370,HMAX=40000;
+const g_=h=>G*M/Math.pow((R+h)*1000,2);
+let v={m:1000,h:3000},geo=null,drag=false;
+function draw(){
+  const g=g_(v.h),F=v.m*g,g0=g_(0);
+  $('#fm').textContent='g = 6,67×10⁻¹¹ · 5,97×10²⁴ / ('+n(R+v.h,0)+' × 10³ m)² = '+n(g,2)+' m/s²';
+  const c=$('#sp'),{x:q,w,h,s}=prep(c),cy=h/2,er=60*s,ex=30*s+er,k=(w-ex-er-50*s)/HMAX,X=hh=>ex+er+hh*k;geo={X,k,ex,er,w};
+  q.clearRect(0,0,w,h);q.fillStyle=cv('--sc-sky');q.globalAlpha=0.35;q.fillRect(0,0,w,h);q.globalAlpha=1;
+  /* Tierra */
+  q.fillStyle=cv('--c3');q.beginPath();q.arc(ex,cy,er,0,7);q.fill();q.fillStyle=cv('--sc-grass');q.beginPath();q.arc(ex-18*s,cy-14*s,20*s,0,7);q.arc(ex+16*s,cy+18*s,16*s,0,7);q.fill();
+  /* regla de altura */
+  q.font=(11*s).toFixed(1)+'px "JetBrains Mono", monospace';q.fillStyle=cv('--muted');q.textAlign='center';
+  for(let hh=0;hh<=HMAX;hh+=10000){q.fillRect(X(hh)-1*s,h-26*s,2*s,6*s);q.fillText(hh/1000+' mil km',X(hh),h-8*s);}
+  q.strokeStyle=cv('--line-2');q.setLineDash([4*s,4*s]);q.beginPath();q.moveTo(ex+er,cy);q.lineTo(X(v.h),cy);q.stroke();q.setLineDash([]);
+  /* nave */
+  const nx=X(v.h);
+  if(drag){q.fillStyle=cv('--accent');q.globalAlpha=0.3;q.beginPath();q.arc(nx,cy,26*s,0,7);q.fill();q.globalAlpha=1;}
+  q.fillStyle=cv('--ink');q.beginPath();q.moveTo(nx+16*s,cy);q.lineTo(nx-10*s,cy-9*s);q.lineTo(nx-10*s,cy+9*s);q.closePath();q.fill();q.fillStyle=cv('--sc-glass');q.beginPath();q.arc(nx+2*s,cy,3.5*s,0,7);q.fill();
+  /* fuerza: largo proporcional a g */
+  const L=Math.max(8*s,70*s*g/g0);q.strokeStyle=cv('--c2');q.fillStyle=cv('--c2');q.lineWidth=4*s;q.beginPath();q.moveTo(nx-14*s,cy+24*s);q.lineTo(nx-14*s-L,cy+24*s);q.stroke();
+  q.beginPath();q.moveTo(nx-18*s-L,cy+24*s);q.lineTo(nx-6*s-L,cy+16*s);q.lineTo(nx-6*s-L,cy+32*s);q.closePath();q.fill();
+  q.font='600 '+(12*s).toFixed(1)+'px Lexend, sans-serif';q.textAlign='center';q.fillText('F = '+n(F,0)+' N',nx-14*s-L/2,cy+46*s);
+  q.fillStyle=cv('--ink');q.fillText('h = '+n(v.h,0)+' km',nx,cy-22*s);
+  plot($('#gr'),{xr:[0,HMAX],yr:[0,10],xs:5000,ys:2,xl:'h (km)',yl:'g (m/s²)',fns:[{f:g_,color:cv('--c1'),width:3}],vx:[{x:R,color:cv('--line-2')}],pts:[{x:v.h,y:g,color:cv('--c2'),label:n(g,2)+' m/s²'}]});
+  $('#ro').innerHTML='A <b>'+n(v.h,0)+' km</b> de altura está a '+n(R+v.h,0)+' km del centro. La gravedad vale <b>'+n(g,2)+' m/s²</b>, '+(v.h<50?'igual que en la superficie.':n(g0/g,1)+' veces menos que en la superficie.')+
+    ' Sobre la nave de '+v.m+' kg actúa una fuerza de <b>'+n(F,0)+' N</b>. (La línea vertical gris marca h = R: ahí la gravedad es la cuarta parte.)';
+}
+const ctl=controls($('#ctl'),[
+  {id:'m',label:'Masa de la nave',min:100,max:5000,step:100,val:1000,fmt:a=>a+' kg',hint:'Cambia la fuerza, pero no la aceleración g.'},
+  {id:'h',label:'Altura (h)',min:0,max:HMAX,step:100,val:3000,fmt:a=>a+' km',hint:'La Estación Espacial está a unos 400 km; los satélites de TV, a unos 36000 km.'}
+],vv=>{v=vv;draw();});
+v=ctl;
+const sp=$('#sp'),hIn=sp.closest('.card').querySelectorAll('#ctl input')[1];
+function setH(e){const r=sp.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*geo.w,hh=Math.max(0,Math.min(HMAX,Math.round((px-geo.ex-geo.er)/geo.k/100)*100));hIn.value=hh;hIn.dispatchEvent(new Event('input',{bubbles:true}));}
+sp.addEventListener('pointerdown',e=>{drag=true;sp.classList.add('drag');sp.setPointerCapture(e.pointerId);setH(e);e.preventDefault();});
+sp.addEventListener('pointermove',e=>{if(drag)setH(e);});
+for(const k of['pointerup','pointercancel','lostpointercapture'])sp.addEventListener(k,()=>{if(!drag)return;drag=false;sp.classList.remove('drag');draw();});
+sp.addEventListener('keydown',e=>{const d={ArrowRight:1,ArrowLeft:-1}[e.key];if(!d)return;e.preventDefault();hIn.value=Math.max(0,Math.min(HMAX,+hIn.value+d*(e.shiftKey?5000:500)));hIn.dispatchEvent(new Event('input',{bubbles:true}));});
+onRedraw(draw);
+lessonNav('gravitacion');
+})();
+</script>
+</body>
+</html>

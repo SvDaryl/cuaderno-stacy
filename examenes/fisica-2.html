@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Física · Examen 2 · El cuaderno de Stacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/estilo.css">
+<style>
+.bar{position:sticky;top:var(--stick,52px);z-index:3;background:var(--paper);display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:15px}
+.bar .t{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ex .q.right{border-color:var(--ok)} .ex .q.wrong{border-color:var(--bad)}
+.ex .exp{font-size:15px;margin:6px 0 0;display:none}
+.done .exp{display:block}
+.score{background:var(--accent);color:var(--on-accent);border-radius:20px;padding:20px;text-align:center;margin:24px 0}
+.score b{font-family:var(--display);font-size:54px;display:block;line-height:1}
+.score .row{justify-content:center}
+.score .btn{background:var(--card);color:var(--accent)}
+.err{color:var(--bad);font-size:14px}
+</style>
+</head>
+<body data-base="../" data-nav="examenes">
+<main>
+  <div class="crumb"><a href="index.html">Exámenes</a><span>Física</span></div>
+  <h1>Física · Examen 2</h1>
+  <p class="lede">8 preguntas de dinámica: leyes de Newton, rozamiento, equilibrio, trabajo y energía, choques y gravitación. Usa g = 10 m/s² salvo que diga otra cosa.</p>
+  <div class="bar"><span id="prog">0 de 8 respondidas</span><span class="t" id="clock">00:00</span></div>
+  <form class="ex" id="ex" novalidate></form>
+  <div id="result"></div>
+</main>
+<script src="../assets/datos.js"></script>
+<script src="../assets/kit.js"></script>
+<script>
+(function(){
+const EXAMEN={id:'fisica-2',titulo:'Física · Examen 2',preguntas:[
+  {q:'Una fuerza neta de 30 N actúa sobre un cuerpo de 6 kg. ¿Qué aceleración le produce?',o:['5 m/s²','180 m/s²','0,2 m/s²','24 m/s²'],a:0,e:'a = 30 / 6 = 5 m/s².'},
+  {q:'¿Cuánto pesa una mochila de 7 kg en la Tierra? (g = 10 m/s²)',o:['7 N','70 N','0,7 N','700 N'],a:1,e:'W = m · g = 7 · 10 = 70 N.'},
+  {q:'Una caja de 20 kg está en un piso con μₛ = 0,3 (g = 10 m/s²). ¿Cuál es la menor fuerza horizontal que la pone en movimiento?',o:['6 N','200 N','60 N','66,7 N'],a:2,e:'f máx = 0,3 · 20 · 10 = 60 N; hay que superar ese valor.'},
+  {q:'En un sube y baja, una persona de 50 kg está a 1,2 m del apoyo. ¿A qué distancia debe ponerse una de 40 kg para equilibrar?',o:['0,96 m','1,2 m','1,6 m','1,5 m'],a:3,e:'50 · 1,2 = 40 · d → d = 60 / 40 = 1,5 m.'},
+  {q:'Una fuerza de 50 N mueve una caja 4 m en su misma dirección. ¿Qué trabajo hace?',o:['200 J','12,5 J','54 J','46 J'],a:0,e:'W = F · d = 50 · 4 = 200 J.'},
+  {q:'Un objeto cae desde 20 m sin rozamiento (g = 10 m/s²). ¿Con qué rapidez llega al suelo?',o:['10 m/s','40 m/s','20 m/s','200 m/s'],a:2,e:'½ v² = g · h → v = √(2 · 10 · 20) = √400 = 20 m/s.'},
+  {q:'Un carrito de 3 kg a 4 m/s choca con otro de 1 kg en reposo y quedan pegados. ¿Con qué velocidad se mueven juntos?',o:['4 m/s','3 m/s','12 m/s','1 m/s'],a:1,e:'3 · 4 = (3 + 1) · v → v = 12 / 4 = 3 m/s.'},
+  {q:'A una altura igual a dos radios terrestres sobre la superficie (h = 2R), la gravedad es aproximadamente:',o:['≈ 4,9 m/s²','≈ 2,45 m/s²','≈ 3,3 m/s²','≈ 1,1 m/s²'],a:3,e:'La distancia al centro es 3R: g = 9,8 / 3² = 9,8 / 9 ≈ 1,1 m/s².'}
+]};
+const {$,$$,store,m}=Kit,P=EXAMEN.preguntas,form=$('#ex');
+form.innerHTML=P.map((p,i)=>'<div class="q" id="q'+i+'"><p><b>'+(i+1)+'.</b> '+m(p.q)+'</p>'+p.o.map((o,j)=>'<label><input type="radio" name="p'+i+'" value="'+j+'"> '+m(o)+'</label>').join('')+'<p class="exp"></p></div>').join('')+
+  '<div class="row"><button class="btn" type="submit">Terminar y ver mi nota</button><span class="err" id="err" aria-live="polite"></span></div>';
+const t0=Date.now();let tick=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('#clock').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');},1000);
+form.addEventListener('change',()=>{const n=P.filter((p,i)=>$('input[name="p'+i+'"]:checked')).length;$('#prog').textContent=n+' de '+P.length+' respondidas';$('#err').textContent='';});
+form.addEventListener('submit',e=>{e.preventDefault();
+  const miss=P.map((p,i)=>$('input[name="p'+i+'"]:checked')?null:i+1).filter(Boolean);
+  if(miss.length){$('#err').textContent='Te falta responder: '+miss.join(', ')+'.';return;}
+  clearInterval(tick);const secs=Math.floor((Date.now()-t0)/1000),mins=Math.max(1,Math.round(secs/60));let ok=0;
+  P.forEach((p,i)=>{const v=+$('input[name="p'+i+'"]:checked').value,q=$('#q'+i),r=v===p.a;if(r)ok++;q.classList.add(r?'right':'wrong');
+    $('.exp',q).innerHTML=(r?'<span style="color:var(--ok)">✓ Correcto.</span> ':'<span style="color:var(--bad)">✗ La respuesta era: '+p.o[p.a]+'.</span> ')+m(p.e);});
+  form.classList.add('done');$$('input,button[type=submit]',form).forEach(x=>x.disabled=true);
+  const nota=ok+'/'+P.length,vig=Math.round(ok/P.length*20),best=store.get('notas',{});
+  const prev=best[EXAMEN.id]?+best[EXAMEN.id].split('/')[0]:-1;if(ok>prev){best[EXAMEN.id]=nota;store.set('notas',best);}
+  const msg='Hola! Soy '+SITE.apodo+' 😊 Terminé "'+EXAMEN.titulo+'" y saqué '+nota+' (equivale a '+vig+' sobre 20) en '+mins+' min.';
+  const wa='https://wa.me/'+(SITE.whatsapp||'')+'?text='+encodeURIComponent(msg);
+  $('#result').innerHTML='<div class="score"><span>Tu nota</span><b>'+nota+'</b><span>'+vig+' sobre 20 · '+mins+' min</span><p>'+(ok===P.length?'¡Perfecto! Dominas el tema.':ok>=6?'¡Muy bien! Revisa abajo las que fallaste.':'Repasa las lecciones de las preguntas en rojo y vuelve a intentarlo.')+'</p>'+
+    '<div class="row"><a class="btn" href="'+wa+'" target="_blank" rel="noopener">Enviar mi nota por WhatsApp</a><a class="btn" href="fisica-2.html">Intentar de nuevo</a></div></div>';
+  $('#result').scrollIntoView({behavior:'smooth',block:'start'});});
+})();
+</script>
+</body>
+</html>
